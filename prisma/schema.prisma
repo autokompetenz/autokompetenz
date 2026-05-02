@@ -8,12 +8,47 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum Role         { CLIENT ADMIN }
-enum FuelType     { Essence Diesel Electrique Hybride }
-enum Transmission { Manuelle Automatique }
-enum Category     { Berline SUV Citadine Break Coupe Cabriolet Utilitaire }
-enum PaymentType  { full deposit monthly }
-enum OrderStatus  { pending confirmed processing shipped delivered cancelled }
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum FuelType {
+  Essence
+  Diesel
+  Electrique
+  Hybride
+}
+
+enum Transmission {
+  Manuelle
+  Automatique
+}
+
+enum Category {
+  Berline
+  SUV
+  Citadine
+  Break
+  Coupe
+  Cabriolet
+  Utilitaire
+}
+
+enum PaymentType {
+  full
+  deposit
+  monthly
+}
+
+enum OrderStatus {
+  pending
+  confirmed
+  processing
+  shipped
+  delivered
+  cancelled
+}
 
 model User {
   id            Int      @id @default(autoincrement())
