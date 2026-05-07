@@ -89,6 +89,8 @@ export default function AdminCarForm() {
   };
 
   const handleImageChange = (e) => {
+    if (!e.target || !e.target.files) return;
+    
     const files = Array.from(e.target.files);
     if (files.length > 0) {
       const validFiles = files.filter(file => {
@@ -116,6 +118,8 @@ export default function AdminCarForm() {
   };
 
   const removeImage = (imageId) => {
+    if (!previews || !Array.isArray(previews)) return;
+    
     const previewToRemove = previews.find(p => p.id === imageId);
 
     if (!previewToRemove) return;
