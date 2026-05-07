@@ -17,7 +17,17 @@ export default function Cart() {
   const [notes, setNotes] = useState('');
   const [placing, setPlacing] = useState(false);
 
-  useEffect(() => { fetchCart(); }, []);
+  useEffect(() => { 
+    console.log('=== Cart Component Mount ===');
+    console.log('Initial cartItems:', cartItems);
+    fetchCart(); 
+  }, []);
+
+  useEffect(() => {
+    console.log('=== Cart Component Update ===');
+    console.log('cartItems changed:', cartItems);
+    console.log('cartItems length:', cartItems?.length || 0);
+  }, [cartItems]);
 
   const handleRemove = async (carId, carName) => {
     try { await removeItem(carId); addToast(`${carName} ${lang==='fr'?'retiré du panier':lang==='en'?'removed from cart':lang==='de'?'entfernt':'تم الإزالة'}`, 'info'); }

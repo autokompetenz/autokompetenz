@@ -78,6 +78,7 @@ export const useCartStore = create((set, get) => ({
       });
       
       console.log('Cart state after add:', { cartItems: updatedItems, cartCount: data.cartCount });
+      console.log('Current store state:', get());
       return data;
     } catch (error) {
       console.error('Cart add error:', error);
