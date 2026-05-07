@@ -47,9 +47,15 @@ export const useCartStore = create((set, get) => ({
   fetchCart: async () => {
     try {
       set({ loading: true });
+      console.log('=== Cart Debug: Fetching cart ===');
       const { data } = await cartAPI.get();
+      console.log('Cart API response:', data);
       set({ cartItems: data.cartItems, total: data.total, cartCount: data.count, loading: false });
-    } catch { set({ loading: false }); }
+      console.log('Cart state updated:', { cartItems: data.cartItems, total: data.total, count: data.count });
+    } catch (error) { 
+      console.error('Cart fetch error:', error);
+      set({ loading: false }); 
+    }
   },
   fetchCount: async () => {
     try { const { data } = await cartAPI.count(); set({ cartCount: data.count }); } catch {}
