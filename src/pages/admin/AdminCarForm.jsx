@@ -146,12 +146,13 @@ export default function AdminCarForm() {
       if (form.price !== undefined && form.price !== null) formData.append('price', form.price);
       if (form.stock !== undefined && form.stock !== null) formData.append('stock', form.stock);
       if (form.description) formData.append('description', form.description);
-      if (form.fuelType) formData.append('fuelType', form.fuelType);
-      if (form.transmission) formData.append('transmission', form.transmission);
+      // Always include required fields that have default values
+      if (form.fuelType !== undefined && form.fuelType !== null) formData.append('fuelType', form.fuelType);
+      if (form.transmission !== undefined && form.transmission !== null) formData.append('transmission', form.transmission);
       if (form.mileage !== undefined && form.mileage !== null) formData.append('mileage', form.mileage);
       if (form.color) formData.append('color', form.color);
       if (form.power !== undefined && form.power !== null) formData.append('power', form.power);
-      if (form.category) formData.append('category', form.category);
+      if (form.category !== undefined && form.category !== null) formData.append('category', form.category);
       if (form.minSalary !== undefined && form.minSalary !== null) formData.append('minSalary', form.minSalary);
       formData.append('featured', form.featured);
       formData.append('isActive', form.isActive);
