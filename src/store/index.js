@@ -61,9 +61,28 @@ export const useCartStore = create((set, get) => ({
     try { const { data } = await cartAPI.count(); set({ cartCount: data.count }); } catch {}
   },
   addItem: async (carId, paymentType = 'full') => {
-    const { data } = await cartAPI.add({ carId, paymentType });
-    set({ cartCount: data.cartCount });
-    return data;
+    try {
+      console.log('=== Cart Debug: Adding item to cart ===');
+      console.log('Car ID:', carId, 'Payment Type:', paymentType);
+      
+      const { data } = await cartAPI.add({ carId, paymentType });
+      console.log('Cart API add response:', data);
+      
+      // Update cartItems with the new item
+      const currentItems = get().cartItems || [];
+      const updatedItems = [...currentItems, data.cartItem];
+      set({ 
+        cartItems: updatedItems, 
+        cartCount: data.cartCount,
+        total: updatedItems.reduce((sum, item) => sum + item.car.price * item.quantity, 0)
+      });
+      
+      console.log('Cart state after add:', { cartItems: updatedItems, cartCount: data.cartCount });
+      return data;
+    } catch (error) {
+      console.error('Cart add error:', error);
+      throw error;
+    }
   },
   removeItem: async (carId) => {
     const { data } = await cartAPI.remove(carId);

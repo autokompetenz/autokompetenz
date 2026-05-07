@@ -604,7 +604,28 @@ app.put('/api/cart/:carId', authenticateToken, async (req, res) => {
       include: { car: true },
     });
 
-    res.json(updated);
+    // Fetch updated cart to return complete cart state
+    const updatedCart = await prisma.cart.findMany({
+      where: { userId: req.user.id },
+      include: { car: true },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const cartItems = updatedCart.map(item => ({
+      id: item.id,
+      quantity: item.quantity,
+      carId: item.carId,
+      paymentType: item.paymentType,
+      car: item.car
+    }));
+
+    const total = cartItems.reduce((sum, item) => sum + item.car.price * item.quantity, 0);
+
+    console.log('=== Cart PUT Debug ===');
+    console.log('Updated cart item:', updated);
+    console.log('Full cart response:', { cartItems, total, count: cartItems.length });
+
+    res.json({ cartItems, total, count: cartItems.length });
   } catch (e) {
     res.status(500).json({ error: 'Erreur serveur' });
   }
