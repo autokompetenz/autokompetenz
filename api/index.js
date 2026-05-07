@@ -282,10 +282,11 @@ app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
         imageUrl: data.imageUrl || null,
       };
       
-      // Handle uploaded file
-      if (files.image) {
-        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image.name}`;
-        // TODO: Save file to filesystem/cloud storage
+      // Handle uploaded files
+      if (files.images && Array.isArray(files.images)) {
+        files.images.forEach((file, index) => {
+          carData[`imageUrl${index === 0 ? '' : index + 1}`] = `/uploads/cars/${Date.now()}-${file.name}`;
+        });
       }
       
       const car = await prisma.car.create({ data: carData });

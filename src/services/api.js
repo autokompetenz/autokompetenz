@@ -38,7 +38,11 @@ export const carAPI = {
   create:        (d)    => {
     const formData = new FormData();
     Object.keys(d).forEach(key => {
-      if (key === 'image' && d[key] instanceof File) {
+      if (key === 'images' && Array.isArray(d[key])) {
+        d[key].forEach((file, index) => {
+          formData.append(`image${index + 1}`, file);
+        });
+      } else if (key === 'image' && d[key] instanceof File) {
         formData.append('image', d[key]);
       } else if (key === 'image' && typeof d[key] === 'string') {
         formData.append('imageUrl', d[key]);
@@ -53,7 +57,11 @@ export const carAPI = {
   update:        (id,d) => {
     const formData = new FormData();
     Object.keys(d).forEach(key => {
-      if (key === 'image' && d[key] instanceof File) {
+      if (key === 'images' && Array.isArray(d[key])) {
+        d[key].forEach((file, index) => {
+          formData.append(`image${index + 1}`, file);
+        });
+      } else if (key === 'image' && d[key] instanceof File) {
         formData.append('image', d[key]);
       } else if (key === 'image' && typeof d[key] === 'string') {
         formData.append('imageUrl', d[key]);
