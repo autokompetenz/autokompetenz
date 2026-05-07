@@ -17,7 +17,7 @@ export default function Orders() {
     orderAPI.getMy().then(r => { 
       console.log('=== Orders API Response ===');
       console.log('Orders data:', r.data);
-      setOrders(Array.isArray(r.data.orders) ? r.data.orders : []); 
+      setOrders(Array.isArray(r.data) ? r.data : []);
       setLoading(false); 
     }).catch(error => { 
       console.error('Orders API error:', error);

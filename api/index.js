@@ -72,7 +72,7 @@ function calculateOrderTotals(subtotal, paymentType) {
   const discountedTotal = subtotal - discountAmount;
   
   if (paymentType === 'deposit') {
-    const depositAmount = discountedTotal * 0.2;
+    const depositAmount = discountedTotal * 0.25;
     return { 
       totalPrice: discountedTotal, 
       discountAmount, 
@@ -81,8 +81,9 @@ function calculateOrderTotals(subtotal, paymentType) {
       monthlyDuration: null 
     };
   } else if (paymentType === 'monthly') {
-    const monthlyDuration = 48;
-    const monthlyAmount = discountedTotal / monthlyDuration;
+    const monthlyDuration = 60;
+    const r = 0.06 / 12;
+    const monthlyAmount = Math.round((discountedTotal * r * Math.pow(1 + r, monthlyDuration)) / (Math.pow(1 + r, monthlyDuration) - 1));
     return { 
       totalPrice: discountedTotal, 
       discountAmount, 
@@ -327,7 +328,7 @@ app.get('/api/cars/:id', async (req, res) => {
       return res.status(404).json({ error: 'Voiture non trouvée' });
     }
     
-    res.json(car);
+    res.json({ car });
   } catch (error) {
     console.error('=== GET /api/cars/:id ERROR ===');
     console.error('Error details:', error);
@@ -588,11 +589,32 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
 // Cart Routes
 app.get('/api/cart', authenticateToken, async (req, res) => {
   try {
-    const cartItems = await prisma.cart.findMany({
+    const items = await prisma.cart.findMany({
       where: { userId: req.user.id },
       include: { car: true },
+      orderBy: { createdAt: 'desc' },
     });
-    res.json(cartItems);
+    const cartItems = items.map(item => ({
+      id: item.id,
+      quantity: item.quantity,
+      carId: item.carId,
+      paymentType: item.paymentType,
+      car: item.car,
+    }));
+    const total = cartItems.reduce((sum, item) => sum + item.car.price * item.quantity, 0);
+    res.json({ cartItems, total, count: cartItems.length });
+  } catch (e) {
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// IMPORTANT: /count MUST come before /:carId to avoid Express matching "count" as a carId
+app.get('/api/cart/count', authenticateToken, async (req, res) => {
+  try {
+    const count = await prisma.cart.count({
+      where: { userId: req.user.id },
+    });
+    res.json({ count });
   } catch (e) {
     res.status(500).json({ error: 'Erreur serveur' });
   }
@@ -772,24 +794,15 @@ app.delete('/api/cart/:carId', authenticateToken, async (req, res) => {
     
     console.log('Removing from cart car ID:', carIdNum);
     await prisma.cart.deleteMany({
-      where: { userId: req.user.id, carId: parseInt(carId) },
+      where: { userId: req.user.id, carId: carIdNum },
     });
-    res.json({ success: true });
+    const cartCount = await prisma.cart.count({ where: { userId: req.user.id } });
+    res.json({ success: true, cartCount });
   } catch (e) {
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
-app.get('/api/cart/count', authenticateToken, async (req, res) => {
-  try {
-    const count = await prisma.cart.count({
-      where: { userId: req.user.id },
-    });
-    res.json({ count });
-  } catch (e) {
-    res.status(500).json({ error: 'Erreur serveur' });
-  }
-});
 
 // Orders Routes
 app.post('/api/orders', authenticateToken, async (req, res) => {
@@ -913,25 +926,46 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
   }
 });
 
-app.get('/api/orders/:id', authenticateToken, async (req, res) => {
+// IMPORTANT: /my MUST come before /:id to avoid Express matching "my" as an ID
+app.get('/api/orders/my', authenticateToken, async (req, res) => {
   try {
-    console.log('=== GET /api/orders/:id ===');
-    console.log('Order route param:', req.params.id);
+    console.log('=== GET /api/orders/my ===');
+    console.log('User ID:', req.user?.id);
     
-    const { id } = req.params;
-    const orderId = Number(id);
-    
-    // Validate ID
-    if (isNaN(orderId) || orderId <= 0) {
-      console.log('Invalid order ID:', id);
-      return res.status(400).json({ 
-        error: 'Invalid order ID - must be a positive number' 
-      });
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: 'Utilisateur non authentifié', orders: [] });
     }
     
-    console.log('Looking for order ID:', orderId);
-    const where = { id: orderId };
+    const orders = await prisma.order.findMany({
+      where: { userId: req.user.id },
+      include: { 
+        items: { include: { car: true } },
+        tracking: true
+      },
+      orderBy: { createdAt: 'desc' },
+    });
     
+    const transformedOrders = orders.map(order => ({
+      ...order,
+      items: order.items || [],
+      tracking: order.tracking || []
+    }));
+    
+    res.json(transformedOrders);
+  } catch (error) {
+    console.error('GET /api/orders/my ERROR:', error);
+    res.status(500).json({ error: error.message || 'Erreur serveur', orders: [] });
+  }
+});
+
+// Supports both numeric ID and orderNumber string (e.g. CMD-20260507-1234)
+app.get('/api/orders/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const orderId = Number(id);
+    const isNumeric = !isNaN(orderId) && orderId > 0;
+
+    const where = isNumeric ? { id: orderId } : { orderNumber: id };
     if (req.user.role !== 'ADMIN') {
       where.userId = req.user.id;
     }
@@ -952,66 +986,10 @@ app.get('/api/orders/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Commande non trouvée' });
     }
 
-    res.json(order);
+    res.json({ order });
   } catch (e) {
+    console.error('GET /api/orders/:id ERROR:', e);
     res.status(500).json({ error: 'Erreur serveur' });
-  }
-});
-
-app.get('/api/orders/my', authenticateToken, async (req, res) => {
-  try {
-    console.log('=== GET /api/orders/my ===');
-    console.log('User:', req.user);
-    console.log('Headers:', req.headers);
-    console.log('User ID:', req.user?.id);
-    
-    if (!req.user || !req.user.id) {
-      console.error('No user found in request');
-      return res.status(401).json({ 
-        error: 'Utilisateur non authentifié',
-        orders: []
-      });
-    }
-    
-    console.log('Fetching orders for user ID:', req.user.id);
-    
-    const orders = await prisma.order.findMany({
-      where: { userId: req.user.id },
-      include: { 
-        items: { 
-          include: { 
-            car: true 
-          } 
-        },
-        tracking: true
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-    
-    console.log('Orders found:', orders);
-    console.log('Orders count:', orders.length);
-    
-    // Transform data to ensure consistent format
-    const transformedOrders = orders.map(order => ({
-      ...order,
-      items: order.items || [],
-      tracking: order.tracking || []
-    }));
-    
-    console.log('Transformed orders:', transformedOrders);
-    
-    res.json(transformedOrders);
-  } catch (error) {
-    console.error('=== GET /api/orders/my ERROR ===');
-    console.error('Error details:', error);
-    console.error('Error stack:', error.stack);
-    
-    // Return safe fallback response
-    res.status(500).json({ 
-      error: error.message || 'Erreur serveur inconnue',
-      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined,
-      orders: []
-    });
   }
 });
 
@@ -1021,6 +999,7 @@ app.get('/api/orders/track/:orderNumber', async (req, res) => {
     const order = await prisma.order.findUnique({
       where: { orderNumber },
       include: { 
+        items: { include: { car: true } },
         tracking: { 
           include: { admin: { select: { firstName:true, lastName:true } } },
           orderBy: { createdAt: 'desc' }
@@ -1032,8 +1011,31 @@ app.get('/api/orders/track/:orderNumber', async (req, res) => {
       return res.status(404).json({ error: 'Commande non trouvée' });
     }
 
-    res.json(order);
+    res.json({ order });
   } catch (e) {
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Admin: update order status
+app.patch('/api/orders/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, comment } = req.body;
+    const validStatuses = ['pending','confirmed','processing','shipped','delivered','cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Statut invalide' });
+    }
+    const order = await prisma.order.update({
+      where: { id: parseInt(id) },
+      data: { status },
+    });
+    await prisma.orderTracking.create({
+      data: { orderId: order.id, status, comment: comment || null, updatedBy: req.user.id },
+    });
+    res.json({ success: true, order });
+  } catch (e) {
+    console.error('PATCH /api/orders/:id ERROR:', e);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
@@ -1178,30 +1180,28 @@ app.get('/api/admin/clients', authenticateToken, requireAdmin, async (req, res) 
 });
 
 // Simulation Route
-app.post('/api/simulation', async (req, res) => {
+app.get('/api/simulation', async (req, res) => {
   try {
-    const { carPrice, monthlySalary, paymentType } = req.body;
-    if (!carPrice || !monthlySalary || !paymentType) {
-      return res.status(400).json({ error: 'Paramètres manquants' });
+    const salary = parseFloat(req.query.salary);
+    if (!salary || salary <= 0) {
+      return res.status(400).json({ error: 'Salaire invalide' });
     }
+    const maxMonthly = salary * 0.3;
+    // Find cars affordable via monthly payment (60 months, 6%/year)
+    const r = 0.06 / 12;
+    const months = 60;
+    // Max affordable price from monthly budget: price = maxMonthly * (((1+r)^n - 1) / (r*(1+r)^n))
+    const factor = (Math.pow(1 + r, months) - 1) / (r * Math.pow(1 + r, months));
+    const maxAffordablePrice = maxMonthly * factor;
 
-    const maxMonthlyPayment = monthlySalary * 0.3;
-    const totals = calculateOrderTotals(carPrice, paymentType);
+    const cars = await prisma.car.findMany({
+      where: { isActive: true, price: { lte: maxAffordablePrice } },
+      orderBy: { price: 'desc' },
+    });
 
-    if (paymentType === 'monthly') {
-      const affordable = totals.monthlyAmount <= maxMonthlyPayment;
-      res.json({
-        ...totals,
-        maxMonthlyPayment,
-        affordable,
-        recommendation: affordable 
-          ? 'Financement mensuel recommandé' 
-          : 'Veuillez considérer un apport plus élevé ou un véhicule moins cher',
-      });
-    } else {
-      res.json(totals);
-    }
+    res.json({ count: cars.length, salary, maxMonthly, cars });
   } catch (e) {
+    console.error('Simulation error:', e);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });

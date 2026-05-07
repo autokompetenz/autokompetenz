@@ -19,7 +19,7 @@ export default function Dashboard() {
     orderAPI.getMy().then(r => { 
       console.log('=== Dashboard API Response ===');
       console.log('Orders data:', r.data);
-      setOrders(Array.isArray(r.data.orders) ? r.data.orders.slice(0,5) : []); 
+      setOrders(Array.isArray(r.data) ? r.data.slice(0,5) : []); 
       setLoading(false); 
     }).catch(error => { 
       console.error('Dashboard API error:', error);

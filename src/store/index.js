@@ -68,17 +68,14 @@ export const useCartStore = create((set, get) => ({
       const { data } = await cartAPI.add({ carId, paymentType });
       console.log('Cart API add response:', data);
       
-      // Update cartItems with the new item
-      const currentItems = get().cartItems || [];
-      const updatedItems = [...currentItems, data.cartItem];
+      // Use the full cart state returned by the server
       set({ 
-        cartItems: updatedItems, 
-        cartCount: data.cartCount,
-        total: updatedItems.reduce((sum, item) => sum + item.car.price * item.quantity, 0)
+        cartItems: data.cartItems, 
+        cartCount: data.count,
+        total: data.total,
       });
       
-      console.log('Cart state after add:', { cartItems: updatedItems, cartCount: data.cartCount });
-      console.log('Current store state:', get());
+      console.log('Cart state after add:', { cartItems: data.cartItems, cartCount: data.count });
       return data;
     } catch (error) {
       console.error('Cart add error:', error);
