@@ -629,10 +629,11 @@ app.get('/api/admin/stats', authenticateToken, requireAdmin, async (req, res) =>
     });
 
     res.json({
-      users,
-      cars,
-      orders,
-      revenue: revenue._sum.totalPrice || 0,
+      totalClients: users,
+      totalCars: cars,
+      totalOrders: orders,
+      totalRevenue: revenue._sum.totalPrice || 0,
+      pendingOrders: await prisma.order.count({ where: { status: 'pending' } }),
       recentOrders,
     });
   } catch (e) {
