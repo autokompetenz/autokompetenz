@@ -253,6 +253,172 @@ app.get('/api/cars/categories', async (req, res) => {
   }
 });
 
+// Car Routes
+app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    console.log('Creating car with data:', Object.keys(req.body));
+    
+    // Handle FormData for file uploads
+    if (req.headers['content-type']?.includes('multipart/form-data')) {
+      const data = req.body;
+      const files = req.files;
+      
+      const carData = {
+        make: data.make,
+        model: data.model,
+        year: parseInt(data.year),
+        price: parseFloat(data.price),
+        stock: parseInt(data.stock),
+        description: data.description || null,
+        fuelType: data.fuelType,
+        transmission: data.transmission,
+        mileage: parseInt(data.mileage) || 0,
+        color: data.color || null,
+        power: data.power ? parseInt(data.power) : null,
+        category: data.category,
+        minSalary: data.minSalary ? parseFloat(data.minSalary) : null,
+        featured: data.featured === 'true',
+        isActive: data.isActive !== 'false',
+        imageUrl: data.imageUrl || null,
+        imageUrl2: data.imageUrl2 || null,
+        imageUrl3: data.imageUrl3 || null,
+      };
+      
+      // Handle uploaded files
+      if (files.image1) {
+        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image1.name}`;
+        // TODO: Save file to filesystem/cloud storage
+      }
+      if (files.image2) {
+        carData.imageUrl2 = `/uploads/cars/${Date.now()}-${files.image2.name}`;
+      }
+      if (files.image3) {
+        carData.imageUrl3 = `/uploads/cars/${Date.now()}-${files.image3.name}`;
+      }
+      
+      const car = await prisma.car.create({ data: carData });
+      console.log('Car created:', car);
+      res.status(201).json({ car });
+    } else {
+      // Handle regular JSON data
+      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl, imageUrl2, imageUrl3 } = req.body;
+      
+      const car = await prisma.car.create({
+        data: {
+          make,
+          model,
+          year: parseInt(year),
+          price: parseFloat(price),
+          stock: parseInt(stock),
+          description: description || null,
+          fuelType,
+          transmission,
+          mileage: parseInt(mileage) || 0,
+          color: color || null,
+          power: power ? parseInt(power) : null,
+          category,
+          minSalary: minSalary ? parseFloat(minSalary) : null,
+          featured: featured === 'true',
+          isActive: isActive !== 'false',
+          imageUrl: imageUrl || null,
+          imageUrl2: imageUrl2 || null,
+          imageUrl3: imageUrl3 || null,
+        }
+      });
+      
+      res.status(201).json({ car });
+    }
+  } catch (error) {
+    console.error('Create car error:', error);
+    res.status(500).json({ error: 'Erreur lors de la création du véhicule' });
+  }
+});
+
+app.put('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('Updating car:', id, 'with data:', Object.keys(req.body));
+    
+    // Handle FormData for file uploads
+    if (req.headers['content-type']?.includes('multipart/form-data')) {
+      const data = req.body;
+      const files = req.files;
+      
+      const carData = {
+        make: data.make,
+        model: data.model,
+        year: parseInt(data.year),
+        price: parseFloat(data.price),
+        stock: parseInt(data.stock),
+        description: data.description || null,
+        fuelType: data.fuelType,
+        transmission: data.transmission,
+        mileage: parseInt(data.mileage) || 0,
+        color: data.color || null,
+        power: data.power ? parseInt(data.power) : null,
+        category: data.category,
+        minSalary: data.minSalary ? parseFloat(data.minSalary) : null,
+        featured: data.featured === 'true',
+        isActive: data.isActive !== 'false',
+        imageUrl: data.imageUrl || null,
+        imageUrl2: data.imageUrl2 || null,
+        imageUrl3: data.imageUrl3 || null,
+      };
+      
+      // Handle uploaded files
+      if (files.image1) {
+        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image1.name}`;
+      }
+      if (files.image2) {
+        carData.imageUrl2 = `/uploads/cars/${Date.now()}-${files.image2.name}`;
+      }
+      if (files.image3) {
+        carData.imageUrl3 = `/uploads/cars/${Date.now()}-${files.image3.name}`;
+      }
+      
+      const car = await prisma.car.update({
+        where: { id: parseInt(id) },
+        data: carData
+      });
+      
+      console.log('Car updated:', car);
+      res.json({ car });
+    } else {
+      // Handle regular JSON data
+      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl, imageUrl2, imageUrl3 } = req.body;
+      
+      const car = await prisma.car.update({
+        where: { id: parseInt(id) },
+        data: {
+          make,
+          model,
+          year: parseInt(year),
+          price: parseFloat(price),
+          stock: parseInt(stock),
+          description: description || null,
+          fuelType,
+          transmission,
+          mileage: parseInt(mileage) || 0,
+          color: color || null,
+          power: power ? parseInt(power) : null,
+          category,
+          minSalary: minSalary ? parseFloat(minSalary) : null,
+          featured: featured === 'true',
+          isActive: isActive !== 'false',
+          imageUrl: imageUrl || null,
+          imageUrl2: imageUrl2 || null,
+          imageUrl3: imageUrl3 || null,
+        }
+      });
+      
+      res.json({ car });
+    }
+  } catch (error) {
+    console.error('Update car error:', error);
+    res.status(500).json({ error: 'Erreur lors de la mise à jour du véhicule' });
+  }
+});
+
 // Cart Routes
 app.get('/api/cart', authenticateToken, async (req, res) => {
   try {

@@ -35,8 +35,36 @@ export const carAPI = {
   getAll:        (p)    => api.get('/cars', { params: p }),
   getById:       (id)   => api.get(`/cars/${id}`),
   getCategories: ()     => api.get('/cars/categories'),
-  create:        (d)    => api.post('/cars', d),
-  update:        (id,d) => api.put(`/cars/${id}`, d),
+  create:        (d)    => {
+    const formData = new FormData();
+    Object.keys(d).forEach(key => {
+      if (d[key] instanceof File) {
+        formData.append(key, d[key]);
+      } else if (typeof d[key] === 'object' && d[key] !== null) {
+        formData.append(key, JSON.stringify(d[key]));
+      } else {
+        formData.append(key, d[key]);
+      }
+    });
+    return api.post('/cars', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  update:        (id,d) => {
+    const formData = new FormData();
+    Object.keys(d).forEach(key => {
+      if (d[key] instanceof File) {
+        formData.append(key, d[key]);
+      } else if (typeof d[key] === 'object' && d[key] !== null) {
+        formData.append(key, JSON.stringify(d[key]));
+      } else {
+        formData.append(key, d[key]);
+      }
+    });
+    return api.put(`/cars/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
   toggle:        (id)   => api.patch(`/cars/${id}/toggle`),
 };
 export const cartAPI = {
