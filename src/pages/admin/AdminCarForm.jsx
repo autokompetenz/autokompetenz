@@ -96,20 +96,49 @@ export default function AdminCarForm() {
     </div>
   );
 
-  const Field = ({ label, field, type='text', placeholder, opts, half, rows }) => (
-    <div>
-      <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{label}</label>
-      {opts ? (
-        <select value={form[field]} onChange={set(field)} className="input-luxury" style={{ fontSize:15 }}>
-          {opts.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
-      ) : rows ? (
-        <textarea value={form[field]} onChange={set(field)} rows={rows} placeholder={placeholder} className="input-luxury" style={{ resize:'none', fontSize:15 }} />
-      ) : (
-        <input type={type} value={form[field]} onChange={set(field)} placeholder={placeholder} className="input-luxury" style={{ fontSize:15 }} />
-      )}
-    </div>
-  );
+  const Field = ({ label, field, type='text', placeholder, opts, half, rows }) => {
+    const handleChange = (e) => {
+      const val = e.target.type==='checkbox' ? e.target.checked : e.target.value;
+      setForm(p => ({ ...p, [f]:val }));
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === ' ') {
+        e.preventDefault();
+      }
+    };
+
+    return (
+      <div>
+        <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{label}</label>
+        {opts ? (
+          <select value={form[field]} onChange={set(field)} className="input-luxury" style={{ fontSize:15 }}>
+            {opts.map(o => <option key={o} value={o}>{o}</option>)}
+          </select>
+        ) : rows ? (
+          <textarea 
+            value={form[field]} 
+            onChange={set(field)} 
+            rows={rows} 
+            placeholder={placeholder} 
+            className="input-luxury" 
+            style={{ resize:'none', fontSize:15 }}
+            onKeyDown={handleKeyDown}
+          />
+        ) : (
+          <input 
+            type={type} 
+            value={form[field]} 
+            onChange={set(field)} 
+            placeholder={placeholder} 
+            className="input-luxury" 
+            style={{ fontSize:15 }}
+            onKeyDown={handleKeyDown}
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--black)' }}>
