@@ -24,8 +24,20 @@ export default function AdminCarForm() {
     }
   }, [id, isEdit]);
 
-  const set = (f) => (e) => {
-    setForm(p => ({ ...p, [f]: e.target.value }));
+  const set = (field) => (e) => {
+    const { type, value, checked } = e.target;
+
+    setForm(prev => ({
+      ...prev,
+      [field]:
+        type === 'checkbox'
+          ? checked
+          : type === 'number'
+          ? value === ''
+            ? ''
+            : Number(value)
+          : value
+    }));
   };
 
   const handleImageChange = (e) => {
@@ -56,8 +68,17 @@ export default function AdminCarForm() {
   };
 
   const removeImage = (imageId) => {
-    setImageFiles(prev => prev.filter(f => f !== imageId));
-    setPreviews(prev => prev.filter(p => p.id !== imageId));
+    const previewToRemove = previews.find(p => p.id === imageId);
+
+    if (!previewToRemove) return;
+
+    setImageFiles(prev =>
+      prev.filter(file => file !== previewToRemove.file)
+    );
+
+    setPreviews(prev =>
+      prev.filter(p => p.id !== imageId)
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -70,20 +91,20 @@ export default function AdminCarForm() {
       
       const formData = new FormData();
       
-      // Add all form fields with explicit checks
-      if (form.make) formData.append('make', form.make);
-      if (form.model) formData.append('model', form.model);
-      if (form.year) formData.append('year', form.year);
-      if (form.price) formData.append('price', form.price);
-      if (form.stock) formData.append('stock', form.stock);
+      // Add all form fields with proper checks
+      if (form.make !== undefined && form.make !== null) formData.append('make', form.make);
+      if (form.model !== undefined && form.model !== null) formData.append('model', form.model);
+      if (form.year !== undefined && form.year !== null) formData.append('year', form.year);
+      if (form.price !== undefined && form.price !== null) formData.append('price', form.price);
+      if (form.stock !== undefined && form.stock !== null) formData.append('stock', form.stock);
       if (form.description) formData.append('description', form.description);
       if (form.fuelType) formData.append('fuelType', form.fuelType);
       if (form.transmission) formData.append('transmission', form.transmission);
-      if (form.mileage) formData.append('mileage', form.mileage);
+      if (form.mileage !== undefined && form.mileage !== null) formData.append('mileage', form.mileage);
       if (form.color) formData.append('color', form.color);
-      if (form.power) formData.append('power', form.power);
+      if (form.power !== undefined && form.power !== null) formData.append('power', form.power);
       if (form.category) formData.append('category', form.category);
-      if (form.minSalary) formData.append('minSalary', form.minSalary);
+      if (form.minSalary !== undefined && form.minSalary !== null) formData.append('minSalary', form.minSalary);
       formData.append('featured', form.featured);
       formData.append('isActive', form.isActive);
       if (form.imageUrl) formData.append('imageUrl', form.imageUrl);
@@ -266,7 +287,7 @@ export default function AdminCarForm() {
           <div style={{ display:'flex', gap:24 }}>
             {[['featured','Véhicule vedette (★ Top)'],['isActive','Actif (visible en catalogue)']].map(([f,l]) => (
               <label key={f} style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }}>
-                <input type="checkbox" checked={form[f]} onChange={set(f)} style={{ accentColor:'#C8102E', width:18, height:18 }} />
+                <input type="checkbox" checked={Boolean(form[f])} onChange={set(f)} style={{ accentColor:'#C8102E', width:18, height:18 }} />
                 <span style={{ fontSize:14, color:'rgba(255,255,255,0.6)', fontWeight:500 }}>{l}</span>
               </label>
             ))}
