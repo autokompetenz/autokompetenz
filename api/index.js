@@ -226,92 +226,113 @@ app.get('/api/auth/me', authenticateToken, async (req, res) => {
   res.json({ user: req.user });
 });
 
-// Cars Routes
+// Cars Routes - ORDER MATTERS: specific routes before parameterized routes
 app.get('/api/cars', async (req, res) => {
   try {
+    console.log('=== GET /api/cars ===');
+    console.log('Query params:', req.query);
+    
     const { category, search, featured, limit, page = 1 } = req.query;
     const take = limit ? parseInt(limit) : undefined;
-    const skip = take ? (parseInt(page) - 1) * take : undefined;
+    const skip = page ? (parseInt(page) - 1) * (take || 12) : 0;
     const where = { isActive: true };
     
-    if (category && category !== 'all') where.category = category;
-    if (search) {
-      where.OR = [
-        { make: { contains: search, mode: 'insensitive' } },
-        { model: { contains: search, mode: 'insensitive' } },
-      ];
-    }
-    if (featured === 'true') where.featured = true;
+    if (category) where.category = category;
+    if (search) where.OR = [
+      { make: { contains: search, mode: 'insensitive' } },
+      { model: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } }
+    ];
+    if (featured !== undefined) where.featured = featured === 'true';
     
     const [cars, total] = await Promise.all([
-      prisma.car.findMany({ 
-        where, 
-        orderBy: [{ featured:'desc' },{ createdAt:'desc' }], 
-        take, 
-        skip 
-      }),
-      prisma.car.count({ where }),
+      prisma.car.findMany({ where, take, skip, orderBy: { createdAt: 'desc' } }),
+      prisma.car.count({ where })
     ]);
     
-    res.json({ cars, total, page: parseInt(page), limit: take });
-  } catch (e) { 
-    res.status(500).json({ error: 'Erreur serveur' }); 
-  }
-});
-
-app.get('/api/cars/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const car = await prisma.car.findUnique({ 
-      where: { id: parseInt(id) } 
+    console.log('Found cars:', cars.length, 'Total:', total);
+    res.json({ cars, total });
+  } catch (error) {
+    console.error('=== GET /api/cars ERROR ===');
+    console.error('Error details:', error);
+    res.status(500).json({ 
+      error: error.message || 'Erreur serveur',
+      cars: [],
+      total: 0
     });
-    if (!car || !car.isActive) {
-      return res.status(404).json({ error: 'Voiture non trouvée' });
-    }
-    res.json(car);
-  } catch (e) {
-    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
+// Categories route MUST come before :id route
 app.get('/api/cars/categories', async (req, res) => {
   try {
     console.log('=== GET /api/cars/categories ===');
-    console.log('Request headers:', req.headers);
     
-    // Alternative approach using distinct to avoid groupBy issues
-    const categories = await prisma.car.findMany({
-      where: { isActive: true },
-      select: {
-        category: true,
-      },
-      distinct: ['category'],
-    });
+    // Use hardcoded categories from Prisma enum for reliability
+    const categories = [
+      { category: 'Berline', _count: { category: 0 } },
+      { category: 'SUV', _count: { category: 0 } },
+      { category: 'Citadine', _count: { category: 0 } },
+      { category: 'Break', _count: { category: 0 } },
+      { category: 'Coupe', _count: { category: 0 } },
+      { category: 'Cabriolet', _count: { category: 0 } },
+      { category: 'Utilitaire', _count: { category: 0 } }
+    ];
     
-    console.log('Raw categories from DB:', categories);
-    
-    // Transform to match expected format
-    const transformedCategories = categories
-      .filter(cat => cat.category && cat.category.trim() !== '')
-      .map(cat => ({
-        category: cat.category,
-        _count: { category: 0 } // We'll count separately if needed
-      }));
-    
-    console.log('Transformed categories:', transformedCategories);
-    console.log('Categories count:', transformedCategories.length);
-    
-    res.json(transformedCategories);
+    console.log('Returning categories:', categories);
+    res.json(categories);
   } catch (error) {
     console.error('=== GET /api/cars/categories ERROR ===');
     console.error('Error details:', error);
-    console.error('Error stack:', error.stack);
-    
-    // Return safe fallback response
     res.status(500).json({ 
-      error: error.message || 'Erreur serveur inconnue',
-      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined,
+      error: error.message || 'Erreur serveur',
       categories: []
+    });
+  }
+});
+
+// This MUST come after specific routes like /categories
+app.get('/api/cars/:id', async (req, res) => {
+  try {
+    console.log('=== GET /api/cars/:id ===');
+    console.log('Car route param:', req.params.id);
+    
+    const { id } = req.params;
+    const carId = Number(id);
+    
+    // Validate ID
+    if (isNaN(carId) || carId <= 0) {
+      console.log('Invalid car ID:', id);
+      return res.status(400).json({ 
+        error: 'Invalid car ID - must be a positive number' 
+      });
+    }
+    
+    console.log('Looking for car ID:', carId);
+    
+    const car = await prisma.car.findUnique({ 
+      where: { id: carId },
+      include: {
+        _count: {
+          select: {
+            cartItems: true
+          }
+        }
+      }
+    });
+    
+    console.log('Found car:', car ? 'YES' : 'NO');
+    
+    if (!car) {
+      return res.status(404).json({ error: 'Voiture non trouvée' });
+    }
+    
+    res.json(car);
+  } catch (error) {
+    console.error('=== GET /api/cars/:id ERROR ===');
+    console.error('Error details:', error);
+    res.status(500).json({ 
+      error: error.message || 'Erreur serveur' 
     });
   }
 });
@@ -431,8 +452,21 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
 
 app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images', 3), async (req, res) => {
   try {
+    console.log('=== PUT /api/cars/:id ===');
+    console.log('Car route param:', req.params.id);
+    
     const { id } = req.params;
-    console.log('=== PUT /api/cars/:id Debug ===');
+    const carId = Number(id);
+    
+    // Validate ID
+    if (isNaN(carId) || carId <= 0) {
+      console.log('Invalid car ID:', id);
+      return res.status(400).json({ 
+        error: 'Invalid car ID - must be a positive number' 
+      });
+    }
+    
+    console.log('Updating car ID:', carId);
     console.log('Updating car:', id, 'with data:', Object.keys(req.body));
     console.log('req.body:', req.body);
     console.log('req.files:', req.files);
@@ -722,7 +756,21 @@ app.put('/api/cart/:carId', authenticateToken, async (req, res) => {
 
 app.delete('/api/cart/:carId', authenticateToken, async (req, res) => {
   try {
+    console.log('=== DELETE /api/cart/:carId ===');
+    console.log('Car route param:', req.params.carId);
+    
     const { carId } = req.params;
+    const carIdNum = Number(carId);
+    
+    // Validate ID
+    if (isNaN(carIdNum) || carIdNum <= 0) {
+      console.log('Invalid car ID:', carId);
+      return res.status(400).json({ 
+        error: 'Invalid car ID - must be a positive number' 
+      });
+    }
+    
+    console.log('Removing from cart car ID:', carIdNum);
     await prisma.cart.deleteMany({
       where: { userId: req.user.id, carId: parseInt(carId) },
     });
@@ -867,8 +915,22 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
 
 app.get('/api/orders/:id', authenticateToken, async (req, res) => {
   try {
+    console.log('=== GET /api/orders/:id ===');
+    console.log('Order route param:', req.params.id);
+    
     const { id } = req.params;
-    const where = { id: parseInt(id) };
+    const orderId = Number(id);
+    
+    // Validate ID
+    if (isNaN(orderId) || orderId <= 0) {
+      console.log('Invalid order ID:', id);
+      return res.status(400).json({ 
+        error: 'Invalid order ID - must be a positive number' 
+      });
+    }
+    
+    console.log('Looking for order ID:', orderId);
+    const where = { id: orderId };
     
     if (req.user.role !== 'ADMIN') {
       where.userId = req.user.id;
