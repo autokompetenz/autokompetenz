@@ -67,14 +67,27 @@ export default function AdminCarForm() {
     try {
       const formData = new FormData();
       
-      Object.keys(form).forEach(key => {
-        if (key !== 'imageUrl' && key !== 'imageUrl2' && key !== 'imageUrl3') {
-          formData.append(key, form[key]);
-        }
-      });
+      // Add all form fields
+      formData.append('make', form.make);
+      formData.append('model', form.model);
+      formData.append('year', form.year);
+      formData.append('price', form.price);
+      formData.append('stock', form.stock);
+      formData.append('description', form.description || '');
+      formData.append('fuelType', form.fuelType);
+      formData.append('transmission', form.transmission);
+      formData.append('mileage', form.mileage || 0);
+      formData.append('color', form.color || '');
+      formData.append('power', form.power || '');
+      formData.append('category', form.category);
+      formData.append('minSalary', form.minSalary || '');
+      formData.append('featured', form.featured);
+      formData.append('isActive', form.isActive);
+      formData.append('imageUrl', form.imageUrl || '');
       
+      // Add image files
       imageFiles.forEach((file, index) => {
-        formData.append(`image${index+1}`, file);
+        formData.append(`image${index + 1}`, file);
       });
       
       if (isEdit) { 
@@ -96,49 +109,42 @@ export default function AdminCarForm() {
     </div>
   );
 
-  const Field = ({ label, field, type='text', placeholder, opts, half, rows }) => {
-    const handleChange = (e) => {
-      const val = e.target.type==='checkbox' ? e.target.checked : e.target.value;
-      setForm(p => ({ ...p, [f]:val }));
-    };
-
-    const handleKeyDown = (e) => {
-      if (e.key === ' ') {
-        e.preventDefault();
-      }
-    };
-
-    return (
-      <div>
-        <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{label}</label>
-        {opts ? (
-          <select value={form[field]} onChange={set(field)} className="input-luxury" style={{ fontSize:15 }}>
-            {opts.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
-        ) : rows ? (
-          <textarea 
-            value={form[field]} 
-            onChange={set(field)} 
-            rows={rows} 
-            placeholder={placeholder} 
-            className="input-luxury" 
-            style={{ resize:'none', fontSize:15 }}
-            onKeyDown={handleKeyDown}
-          />
-        ) : (
-          <input 
-            type={type} 
-            value={form[field]} 
-            onChange={set(field)} 
-            placeholder={placeholder} 
-            className="input-luxury" 
-            style={{ fontSize:15 }}
-            onKeyDown={handleKeyDown}
-          />
-        )}
-      </div>
-    );
-  };
+  const Field = ({ label, field, type='text', placeholder, opts, half, rows }) => (
+    <div>
+      <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{label}</label>
+      {opts ? (
+        <select 
+          name={field}
+          value={form[field]} 
+          onChange={set(field)} 
+          className="input-luxury" 
+          style={{ fontSize:15 }}
+        >
+          {opts.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+      ) : rows ? (
+        <textarea 
+          name={field}
+          value={form[field]} 
+          onChange={set(field)} 
+          rows={rows} 
+          placeholder={placeholder} 
+          className="input-luxury" 
+          style={{ resize:'none', fontSize:15 }}
+        />
+      ) : (
+        <input 
+          name={field}
+          type={type} 
+          value={form[field]} 
+          onChange={set(field)} 
+          placeholder={placeholder} 
+          className="input-luxury" 
+          style={{ fontSize:15 }}
+        />
+      )}
+    </div>
+  );
 
   return (
     <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--black)' }}>

@@ -272,8 +272,20 @@ app.get('/api/cars/categories', async (req, res) => {
 // Car Routes
 app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3), async (req, res) => {
   try {
-    console.log('Creating car with data:', Object.keys(req.body));
+    console.log('=== POST /api/cars Debug ===');
+    console.log('req.body:', req.body);
+    console.log('req.files:', req.files);
     console.log('Files uploaded:', req.files?.length || 0);
+    
+    // Validate required fields
+    const requiredFields = ['make', 'model', 'year', 'price', 'fuelType', 'transmission', 'category'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        error: `Champs obligatoires manquants: ${missingFields.join(', ')}`
+      });
+    }
     
     // Handle FormData for file uploads
     if (req.files && req.files.length > 0) {
@@ -283,17 +295,17 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
       const carData = {
         make: data.make,
         model: data.model,
-        year: parseInt(data.year),
-        price: parseFloat(data.price),
-        stock: parseInt(data.stock),
+        year: Number(data.year),
+        price: Number(data.price),
+        stock: Number(data.stock),
         description: data.description || null,
         fuelType: data.fuelType,
         transmission: data.transmission,
-        mileage: parseInt(data.mileage) || 0,
+        mileage: Number(data.mileage) || 0,
         color: data.color || null,
-        power: data.power ? parseInt(data.power) : null,
+        power: data.power ? Number(data.power) : null,
         category: data.category,
-        minSalary: data.minSalary ? parseFloat(data.minSalary) : null,
+        minSalary: data.minSalary ? Number(data.minSalary) : null,
         featured: data.featured === 'true',
         isActive: data.isActive !== 'false',
         imageUrl: data.imageUrl || null,
@@ -305,6 +317,8 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
         carData[fieldName] = `/uploads/cars/${Date.now()}-${file.originalname}`;
       });
       
+      console.log('Final carData:', carData);
+      
       const car = await prisma.car.create({ data: carData });
       console.log('Car created:', car);
       res.status(201).json({ car });
@@ -312,27 +326,29 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
       // Handle regular JSON data
       const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl } = req.body;
       
-      const car = await prisma.car.create({
-        data: {
-          make,
-          model,
-          year: parseInt(year),
-          price: parseFloat(price),
-          stock: parseInt(stock),
-          description: description || null,
-          fuelType,
-          transmission,
-          mileage: parseInt(mileage) || 0,
-          color: color || null,
-          power: power ? parseInt(power) : null,
-          category,
-          minSalary: minSalary ? parseFloat(minSalary) : null,
-          featured: featured === 'true',
-          isActive: isActive !== 'false',
-          imageUrl: imageUrl || null,
-        }
-      });
+      const carData = {
+        make,
+        model,
+        year: Number(year),
+        price: Number(price),
+        stock: Number(stock),
+        description: description || null,
+        fuelType,
+        transmission,
+        mileage: Number(mileage) || 0,
+        color: color || null,
+        power: power ? Number(power) : null,
+        category,
+        minSalary: minSalary ? Number(minSalary) : null,
+        featured: featured === 'true',
+        isActive: isActive !== 'false',
+        imageUrl: imageUrl || null,
+      };
       
+      console.log('Final carData (JSON):', carData);
+      
+      const car = await prisma.car.create({ data: carData });
+      console.log('Car created:', car);
       res.status(201).json({ car });
     }
   } catch (error) {
@@ -344,8 +360,21 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
 app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images', 3), async (req, res) => {
   try {
     const { id } = req.params;
+    console.log('=== PUT /api/cars/:id Debug ===');
     console.log('Updating car:', id, 'with data:', Object.keys(req.body));
+    console.log('req.body:', req.body);
+    console.log('req.files:', req.files);
     console.log('Files uploaded:', req.files?.length || 0);
+    
+    // Validate required fields
+    const requiredFields = ['make', 'model', 'year', 'price', 'fuelType', 'transmission', 'category'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        error: `Champs obligatoires manquants: ${missingFields.join(', ')}`
+      });
+    }
     
     // Handle FormData for file uploads
     if (req.files && req.files.length > 0) {
@@ -355,17 +384,17 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
       const carData = {
         make: data.make,
         model: data.model,
-        year: parseInt(data.year),
-        price: parseFloat(data.price),
-        stock: parseInt(data.stock),
+        year: Number(data.year),
+        price: Number(data.price),
+        stock: Number(data.stock),
         description: data.description || null,
         fuelType: data.fuelType,
         transmission: data.transmission,
-        mileage: parseInt(data.mileage) || 0,
+        mileage: Number(data.mileage) || 0,
         color: data.color || null,
-        power: data.power ? parseInt(data.power) : null,
+        power: data.power ? Number(data.power) : null,
         category: data.category,
-        minSalary: data.minSalary ? parseFloat(data.minSalary) : null,
+        minSalary: data.minSalary ? Number(data.minSalary) : null,
         featured: data.featured === 'true',
         isActive: data.isActive !== 'false',
         imageUrl: data.imageUrl || null,
@@ -376,6 +405,8 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
         const fieldName = index === 0 ? 'imageUrl' : `imageUrl${index + 1}`;
         carData[fieldName] = `/uploads/cars/${Date.now()}-${file.originalname}`;
       });
+      
+      console.log('Final carData:', carData);
       
       const car = await prisma.car.update({
         where: { id: parseInt(id) },
@@ -388,28 +419,33 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
       // Handle regular JSON data
       const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl } = req.body;
       
+      const carData = {
+        make,
+        model,
+        year: Number(year),
+        price: Number(price),
+        stock: Number(stock),
+        description: description || null,
+        fuelType,
+        transmission,
+        mileage: Number(mileage) || 0,
+        color: color || null,
+        power: power ? Number(power) : null,
+        category,
+        minSalary: minSalary ? Number(minSalary) : null,
+        featured: featured === 'true',
+        isActive: isActive !== 'false',
+        imageUrl: imageUrl || null,
+      };
+      
+      console.log('Final carData (JSON):', carData);
+      
       const car = await prisma.car.update({
         where: { id: parseInt(id) },
-        data: {
-          make,
-          model,
-          year: parseInt(year),
-          price: parseFloat(price),
-          stock: parseInt(stock),
-          description: description || null,
-          fuelType,
-          transmission,
-          mileage: parseInt(mileage) || 0,
-          color: color || null,
-          power: power ? parseInt(power) : null,
-          category,
-          minSalary: minSalary ? parseFloat(minSalary) : null,
-          featured: featured === 'true',
-          isActive: isActive !== 'false',
-          imageUrl: imageUrl || null,
-        }
+        data: carData
       });
       
+      console.log('Car updated:', car);
       res.json({ car });
     }
   } catch (error) {
