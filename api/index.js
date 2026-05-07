@@ -3,8 +3,8 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
-import { createClient } from '@supabase/supabase-js';
-import { prisma } from '../lib/prisma.js';
+const { createClient } = require('@supabase/supabase-js');
+const { prisma } = require('../lib/prisma.js');
 
 // Initialize Express app
 const app = express();
