@@ -9,6 +9,15 @@ const { prisma } = require('../lib/prisma.js');
 // Initialize Express app
 const app = express();
 
+// Verify Supabase environment variables
+if (!process.env.SUPABASE_URL) {
+  throw new Error('SUPABASE_URL manquant');
+}
+
+if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error('SUPABASE_SERVICE_ROLE_KEY manquant');
+}
+
 // Initialize Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
