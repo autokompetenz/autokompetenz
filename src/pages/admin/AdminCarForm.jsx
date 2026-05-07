@@ -12,9 +12,8 @@ export default function AdminCarForm() {
   const isEdit = !!id && id !== 'new';
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
-  const [imageFiles, setImageFiles] = useState({ image1: null, image2: null, image3: null });
-  const [previews, setPreviews] = useState({ image1: null, image2: null, image3: null });
-  const [primaryImage, setPrimaryImage] = useState('image1');
+  const [imageFiles, setImageFiles] = useState({ image1: null });
+  const [previews, setPreviews] = useState({ image1: null });
 
   useEffect(() => {
     if (isEdit) {
@@ -30,7 +29,7 @@ export default function AdminCarForm() {
     setForm(p => ({ ...p, [f]:val }));
   };
 
-  const handleImageChange = (imageKey) => (e) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -38,26 +37,13 @@ export default function AdminCarForm() {
         return;
       }
       
-      setImageFiles(prev => ({ ...prev, [imageKey]: file }));
+      setImageFiles({ image1: file });
       
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviews(prev => ({ ...prev, [imageKey]: reader.result }));
+        setPreviews({ image1: reader.result });
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const setAsPrimary = (imageKey) => {
-    setPrimaryImage(imageKey);
-    addToast('Image principale définie', 'success');
-  };
-
-  const removeImage = (imageKey) => {
-    setImageFiles(prev => ({ ...prev, [imageKey]: null }));
-    setPreviews(prev => ({ ...prev, [imageKey]: null }));
-    if (primaryImage === imageKey) {
-      setPrimaryImage('image1');
     }
   };
 
@@ -68,14 +54,14 @@ export default function AdminCarForm() {
       const formData = new FormData();
       
       Object.keys(form).forEach(key => {
-        if (key !== 'imageUrl' && key !== 'imageUrl2' && key !== 'imageUrl3') {
+        if (key !== 'imageUrl') {
           formData.append(key, form[key]);
         }
       });
       
-      if (imageFiles.image1) formData.append('image1', imageFiles.image1);
-      if (imageFiles.image2) formData.append('image2', imageFiles.image2);
-      if (imageFiles.image3) formData.append('image3', imageFiles.image3);
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
       
       if (isEdit) { 
         await carAPI.update(id, formData); 
@@ -143,83 +129,47 @@ export default function AdminCarForm() {
           </div>
         </Section>
 
-        <Section title="Images">
+        <Section title="Image">
           <div style={{ display:'flex', flexDirection:'column', gap:14, marginBottom:20 }}>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:12 }}>
-              {['image1', 'image2', 'image3'].map((imageKey, index) => (
-                <div key={imageKey} style={{ position:'relative' }}>
-                  <div>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handleImageChange(imageKey)}
-                      style={{ display:'none' }} 
-                      id={`${imageKey}-input`}
-                    />
-                    <label 
-                      htmlFor={`${imageKey}-input`}
-                      style={{ 
-                        display:'block', 
-                        padding:'12px 16px', 
-                        background:'var(--dark-2)', 
-                        border: primaryImage === imageKey ? '2px solid #C8102E' : '1px solid rgba(255,255,255,0.1)', 
-                        borderRadius:8, 
-                        cursor:'pointer', 
-                        fontSize:14, 
-                        color:'rgba(255,255,255,0.6)',
-                        transition:'all 0.3s',
-                        textAlign:'center'
-                      }}
-                      onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.color='rgba(255,255,255,0.8)'; }}
-                      onMouseOut={e => { e.currentTarget.style.borderColor=primaryImage === imageKey ? '#C8102E' : 'rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.6)'; }}
-                    >
-                      {previews[imageKey] ? (
-                        <div style={{ position:'relative' }}>
-                          <img src={previews[imageKey]} alt={`Aperçu ${index + 1}`} style={{ width:'100%', height:120, objectFit:'cover', borderRadius:6 }} />
-                          <div style={{ position:'absolute', top:4, right:4, background:'#C8102E', color:'#fff', borderRadius:'50%', width:20, height:20, display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:'bold' }}>
-                            {primaryImage === imageKey ? '★' : index + 1}
-                          </div>
-                        </div>
-                      ) : (
-                        <div style={{ padding:20, textAlign:'center', color:'rgba(255,255,255,0.4)' }}>
-                          📷<br/>
-                          <span style={{ fontSize:12 }}>Image {index + 1}</span>
-                        </div>
-                      )}
-                    </label>
-                    {previews[imageKey] && (
-                      <button
-                        type="button"
-                        onClick={() => removeImage(imageKey)}
-                        style={{
-                          position:'absolute',
-                          top:4,
-                          left:4,
-                          background:'rgba(0,0,0,0.7)',
-                          color:'#fff',
-                          border:'none',
-                          borderRadius:'50%',
-                          width:16,
-                          height:16,
-                          cursor:'pointer',
-                          display:'flex',
-                          alignItems:'center',
-                          justifyContent:'center',
-                          fontSize:10,
-                          fontWeight:'bold'
-                        }}
-                      >
-                        ✕
-                      </button>
-                    )}
-                  </div>
-                  <p style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:6, textAlign:'center' }}>
-                    {primaryImage === imageKey ? 'Principale' : `Image ${index + 1}`}
-                  </p>
-                </div>
-              ))}
-            </div>
+            {previews.image1 && (
+              <div style={{ marginBottom:20 }}>
+                <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.15em', textTransform:'uppercase', color:'rgba(255,255,255,0.25)', marginBottom:10 }}>Aperçu</p>
+                <img src={previews.image1} alt="Image principale" style={{ width:'100%', maxHeight:200, objectFit:'cover', borderRadius:8, border:'2px solid #C8102E' }} />
+              </div>
+            )}
             
+            <div style={{ marginTop:24, padding:16, background:'rgba(255,255,255,0.02)', borderRadius:8 }}>
+              <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.15em', textTransform:'uppercase', color:'rgba(255,255,255,0.4)', marginBottom:12 }}>OU utiliser une URL externe</p>
+              <Field label="URL Image" field="imageUrl" placeholder="https://images.unsplash.com/..." />
+            </div>
+            <div>
+              <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>Image principale *</label>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handleImageChange}
+                style={{ display:'none' }} 
+                id="image1-input"
+              />
+              <label 
+                htmlFor="image1-input"
+                style={{ 
+                  display:'block', 
+                  padding:'12px 16px', 
+                  background:'var(--dark-2)', 
+                  border:'1px solid rgba(255,255,255,0.1)', 
+                  borderRadius:8, 
+                  cursor:'pointer', 
+                  fontSize:14, 
+                  color:'rgba(255,255,255,0.6)',
+                  transition:'all 0.3s'
+                }}
+                onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.color='rgba(255,255,255,0.8)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.6)'; }}
+              >
+                📷 {imageFiles.image1 ? imageFiles.image1.name : 'Choisir une image'}
+              </label>
+            </div>
             <div style={{ marginTop:16, padding:12, background:'rgba(200,16,46,0.1)', borderRadius:8, border:'1px solid rgba(200,16,46,0.2)' }}>
               <p style={{ fontSize:12, color:'rgba(255,255,255,0.8)', marginBottom:8, fontWeight:600 }}>💡 Conseils</p>
               <ul style={{ fontSize:11, color:'rgba(255,255,255,0.6)', lineHeight:1.6, margin:0, paddingLeft:16 }}>

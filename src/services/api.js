@@ -38,11 +38,11 @@ export const carAPI = {
   create:        (d)    => {
     const formData = new FormData();
     Object.keys(d).forEach(key => {
-      if (d[key] instanceof File) {
-        formData.append(key, d[key]);
-      } else if (typeof d[key] === 'object' && d[key] !== null) {
-        formData.append(key, JSON.stringify(d[key]));
-      } else {
+      if (key === 'image' && d[key] instanceof File) {
+        formData.append('image', d[key]);
+      } else if (key === 'image' && typeof d[key] === 'string') {
+        formData.append('imageUrl', d[key]);
+      } else if (key !== 'imageUrl' && key !== 'imageUrl2' && key !== 'imageUrl3') {
         formData.append(key, d[key]);
       }
     });
@@ -53,11 +53,11 @@ export const carAPI = {
   update:        (id,d) => {
     const formData = new FormData();
     Object.keys(d).forEach(key => {
-      if (d[key] instanceof File) {
-        formData.append(key, d[key]);
-      } else if (typeof d[key] === 'object' && d[key] !== null) {
-        formData.append(key, JSON.stringify(d[key]));
-      } else {
+      if (key === 'image' && d[key] instanceof File) {
+        formData.append('image', d[key]);
+      } else if (key === 'image' && typeof d[key] === 'string') {
+        formData.append('imageUrl', d[key]);
+      } else if (key !== 'imageUrl' && key !== 'imageUrl2' && key !== 'imageUrl3') {
         formData.append(key, d[key]);
       }
     });

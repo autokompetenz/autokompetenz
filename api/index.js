@@ -280,20 +280,12 @@ app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
         featured: data.featured === 'true',
         isActive: data.isActive !== 'false',
         imageUrl: data.imageUrl || null,
-        imageUrl2: data.imageUrl2 || null,
-        imageUrl3: data.imageUrl3 || null,
       };
       
-      // Handle uploaded files
-      if (files.image1) {
-        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image1.name}`;
+      // Handle uploaded file
+      if (files.image) {
+        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image.name}`;
         // TODO: Save file to filesystem/cloud storage
-      }
-      if (files.image2) {
-        carData.imageUrl2 = `/uploads/cars/${Date.now()}-${files.image2.name}`;
-      }
-      if (files.image3) {
-        carData.imageUrl3 = `/uploads/cars/${Date.now()}-${files.image3.name}`;
       }
       
       const car = await prisma.car.create({ data: carData });
@@ -301,7 +293,7 @@ app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
       res.status(201).json({ car });
     } else {
       // Handle regular JSON data
-      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl, imageUrl2, imageUrl3 } = req.body;
+      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl } = req.body;
       
       const car = await prisma.car.create({
         data: {
@@ -321,8 +313,6 @@ app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
           featured: featured === 'true',
           isActive: isActive !== 'false',
           imageUrl: imageUrl || null,
-          imageUrl2: imageUrl2 || null,
-          imageUrl3: imageUrl3 || null,
         }
       });
       
@@ -361,19 +351,11 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
         featured: data.featured === 'true',
         isActive: data.isActive !== 'false',
         imageUrl: data.imageUrl || null,
-        imageUrl2: data.imageUrl2 || null,
-        imageUrl3: data.imageUrl3 || null,
       };
       
-      // Handle uploaded files
-      if (files.image1) {
-        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image1.name}`;
-      }
-      if (files.image2) {
-        carData.imageUrl2 = `/uploads/cars/${Date.now()}-${files.image2.name}`;
-      }
-      if (files.image3) {
-        carData.imageUrl3 = `/uploads/cars/${Date.now()}-${files.image3.name}`;
+      // Handle uploaded file
+      if (files.image) {
+        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image.name}`;
       }
       
       const car = await prisma.car.update({
@@ -385,7 +367,7 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
       res.json({ car });
     } else {
       // Handle regular JSON data
-      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl, imageUrl2, imageUrl3 } = req.body;
+      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl } = req.body;
       
       const car = await prisma.car.update({
         where: { id: parseInt(id) },
@@ -406,8 +388,6 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
           featured: featured === 'true',
           isActive: isActive !== 'false',
           imageUrl: imageUrl || null,
-          imageUrl2: imageUrl2 || null,
-          imageUrl3: imageUrl3 || null,
         }
       });
       
