@@ -57,7 +57,7 @@ export default function Orders() {
                 </div>
                 {/* Thumbnails */}
                 <div style={{ display:'flex', gap:10, marginBottom:18, overflow:'hidden' }}>
-                  {order.items?.slice(0,4).map(item => (
+                  {Array.isArray(order.items) && order.items.slice(0,4).map(item => (
                     <img key={item.id} src={item.car.imageUrl} alt="" style={{ width:80, height:56, objectFit:'cover', borderRadius:6, flexShrink:0 }} />
                   ))}
                   {order.items?.length > 4 && (

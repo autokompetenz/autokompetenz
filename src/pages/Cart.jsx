@@ -82,7 +82,7 @@ export default function Cart() {
       </div>
 
       <div style={{ maxWidth:1200, margin:'0 auto', padding:'48px 6%' }}>
-        {cartItems.length === 0 ? (
+        {(!cartItems || cartItems.length === 0) ? (
           <EmptyState icon="🛒" title={L.empty[lang]} subtitle={L.emptySub[lang]}
             action={<Link to="/catalog" className="btn-primary" style={{ fontSize:14 }}>{L.discover[lang]}</Link>} />
         ) : (

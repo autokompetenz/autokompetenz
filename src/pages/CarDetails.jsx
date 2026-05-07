@@ -57,7 +57,18 @@ export default function CarDetails() {
   if (loading) return <div style={{ paddingTop: 100, background: 'var(--black)', minHeight: '100vh' }}><Loader text="Chargement..." /></div>;
   if (!car) return null;
 
-  const images = [car.imageUrl, car.imageUrl2, car.imageUrl3].filter(Boolean);
+  console.log('=== CarDetails Debug ===');
+  console.log('Car data:', car);
+
+  const images = [
+    car?.imageUrl,
+    car?.imageUrl2, 
+    car?.imageUrl3,
+    // Support for both old and new image formats
+    ...(Array.isArray(car?.images) ? car.images : [])
+  ].filter(Boolean);
+
+  console.log('Images array:', images);
   const totals = calculateOrderTotals(car.price, selectedPayment);
 
   const breadcrumbs = { fr: 'Accueil', en: 'Home', de: 'Startseite', ar: 'الرئيسية' };
@@ -106,7 +117,7 @@ export default function CarDetails() {
               )}
             </motion.div>
 
-            {images.length > 1 && (
+            {Array.isArray(images) && images.length > 1 && (
               <div style={{ display: 'flex', gap: 12, marginTop: 14 }}>
                 {images.map((img, i) => (
                   <button key={i} onClick={() => setActiveImg(i)} style={{ flex: 1, aspectRatio: '4/3', borderRadius: 8, overflow: 'hidden', border: `2px solid ${activeImg === i ? '#C8102E' : 'transparent'}`, opacity: activeImg === i ? 1 : 0.5, cursor: 'pointer', transition: 'all 0.2s', padding: 0, background: 'none' }}>
