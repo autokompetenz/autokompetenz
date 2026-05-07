@@ -22,21 +22,21 @@ export const translations = {
   nav_logout:      { fr: 'Déconnexion',         en: 'Logout',           de: 'Abmelden',        ar: 'تسجيل الخروج' },
 
   // ── Hero ──
-  hero_badge:      { fr: 'Votre spécialiste automobile à Emsdetten', en: 'Your automotive specialist in Emsdetten', de: 'Ihr Fahrzeugspezialist in Emsdetten', ar: 'متخصصكم في السيارات في إمسديتن' },
+  hero_badge:      { fr: 'Votre concessionnaire automobile à Emsdetten', en: 'Your car dealership in Emsdetten', de: 'Ihr Autohaus in Emsdetten', ar: 'معرض السيارات الخاص بكم في إمسديتن' },
   hero_title1:     { fr: 'Auto',                en: 'Auto',             de: 'Auto',            ar: 'أوتو' },
   hero_title2:     { fr: 'Kompetenz',           en: 'Kompetenz',        de: 'Kompetenz',       ar: 'كومبيتنز' },
   hero_title3:     { fr: 'GmbH',                en: 'GmbH',             de: 'GmbH',            ar: 'GmbH' },
-  hero_subtitle:   { fr: 'Réparation, entretien et diagnostic automobiles — honnête, transparent et fiable. Votre véhicule est entre de bonnes mains.', en: 'Professional car repair, servicing and diagnostics — honest, transparent and reliable. Your vehicle is in the best hands.', de: 'Professionelle Kfz-Reparatur, Wartung und Diagnose — fair, transparent, zuverlässig.', ar: 'إصلاح وصيانة وتشخيص احترافي للسيارات — صادق وشفاف وموثوق.' },
-  hero_cta1:       { fr: 'Prendre RDV via WhatsApp', en: 'Book via WhatsApp', de: 'Termin via WhatsApp', ar: 'حجز عبر واتساب' },
+  hero_subtitle:   { fr: 'Voitures neuves et d\'occasion — financement sur mesure, livraison rapide. Trouvez votre véhicule idéal.', en: 'New and used cars — tailored financing, fast delivery. Find your ideal vehicle.', de: 'Neu- und Gebrauchtwagen — maßgeschneiderte Finanzierung, schnelle Lieferung. Finden Sie Ihr Traumauto.', ar: 'سيارات جديدة ومستعملة — تمويل مخصص، تسليم سريع. اعثر على سيارتك المثالية.' },
+  hero_cta1:       { fr: 'Découvrir nos véhicules', en: 'Explore our vehicles', de: 'Fahrzeuge entdecken', ar: 'اكتشف سياراتنا' },
   hero_cta2:       { fr: 'Nos services',        en: 'Our Services',     de: 'Unsere Leistungen', ar: 'خدماتنا' },
-  hero_stat1:      { fr: "Années d'expérience", en: 'Years Experience',  de: 'Jahre Erfahrung', ar: 'سنوات خبرة' },
+  hero_stat1:      { fr: 'Années d\'expérience', en: 'Years Experience',  de: 'Jahre Erfahrung', ar: 'سنوات خبرة' },
   hero_stat2:      { fr: 'Note Google',         en: 'Google Rating',    de: 'Google Bewertung', ar: 'تقييم جوجل' },
   hero_stat3:      { fr: 'Satisfaction garantie', en: 'Satisfaction Guarantee', de: 'Zufriedenheitsgarantie', ar: 'ضمان الرضا' },
 
   // ── Services ──
   services_label:  { fr: 'Nos Services',        en: 'Our Services',     de: 'Leistungen',      ar: 'خدماتنا' },
   services_title:  { fr: 'Ce que nous\nfaisons pour vous', en: 'What we do\nfor you', de: 'Was wir für\nSie tun', ar: 'ما نقدمه\nلكم' },
-  services_sub:    { fr: 'De la vidange au moteur, votre partenaire pour toutes marques.', en: 'From oil changes to engine work, your partner for all makes.', de: 'Vom Ölwechsel bis zur Motorrevision — für alle Marken.', ar: 'من تغيير الزيت إلى المحرك، شريككم لجميع الماركات.' },
+  services_sub:    { fr: 'De la voiture neuve à l\'occasion, votre partenaire pour trouver la perle rare.', en: 'From new to used cars, your partner to find the perfect vehicle.', de: 'Vom Neuwagen bis zum Gebrauchtwagen — Ihr Partner für das Traumauto.', ar: 'من السيارات الجديدة إلى المستعملة، شريككم للعثور على السيارة المثالية.' },
 
   // ── Reviews ──
   reviews_label:   { fr: 'Avis Clients',        en: 'Customer Reviews',  de: 'Kundenstimmen',   ar: 'آراء العملاء' },

@@ -2,15 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
+import { prisma } from '../lib/prisma.js';
 
 // Initialize Express app
 const app = express();
-
-// Initialize Prisma Client
-const prisma = new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['error'] : ['error'],
-});
 
 // CORS configuration
 const corsOptions = {

@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
-const prisma = new PrismaClient();
+import { prisma } from '../lib/prisma.js';
 
 function pmt(price, months = 60, rate = 0.06) {
   const r = rate / 12;

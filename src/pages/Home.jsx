@@ -8,21 +8,21 @@ import { t } from '../utils/i18n';
 import CarCard from '../components/CarCard';
 
 const SERVICES = [
-  { icon: '⚙️', key: 'repair',     title: { fr: 'Réparation auto',    en: 'Car Repair',       de: 'KFZ-Reparatur',    ar: 'إصلاح السيارات' }, desc: { fr: 'Moteur, boîte, châssis — toutes marques avec garantie.', en: 'Engine, gearbox, chassis — all makes with warranty.', de: 'Motor, Getriebe, Fahrwerk — alle Marken mit Garantie.', ar: 'محرك، علبة تروس، هيكل — جميع الماركات مع ضمان.' }, tag: 'All Makes' },
-  { icon: '🔍', key: 'diag',       title: { fr: 'Diagnostic & CT',    en: 'Diagnosis & TÜV',  de: 'Diagnose & TÜV',   ar: 'التشخيص وفحص السيارة' }, desc: { fr: 'Diagnostic OBD, préparation contrôle technique, inspection.', en: 'OBD diagnostics, MOT preparation, vehicle inspection.', de: 'OBD-Diagnose, HU/AU-Vorbereitung, Fahrzeugcheck.', ar: 'تشخيص OBD، تحضير الفحص الفني، فحص المركبة.' }, tag: 'OBD II' },
-  { icon: '🛞', key: 'tires',      title: { fr: 'Pneus & Freins',     en: 'Tyres & Brakes',   de: 'Reifen & Bremsen',  ar: 'الإطارات والفرامل' }, desc: { fr: 'Montage, équilibrage, disques et plaquettes de frein.', en: 'Fitting, balancing, brake discs and pads.', de: 'Montage, Auswuchten, Scheiben und Beläge.', ar: 'التركيب والموازنة وأقراص وتيل الفرامل.' }, tag: 'Safety' },
-  { icon: '🎨', key: 'body',       title: { fr: 'Carrosserie & Peinture', en: 'Body & Paint',  de: 'Karosserie & Lack', ar: 'الهيكل والطلاء' }, desc: { fr: "Réparation d'accidents, débosselage, travaux de peinture.", en: 'Accident repair, dent removal, paintwork.', de: 'Unfallinstandsetzung, Dellen, Lackarbeiten.', ar: 'إصلاح حوادث، نزع الخدوش، أعمال الطلاء.' }, tag: 'Bodywork' },
-  { icon: '❄️', key: 'ac',         title: { fr: 'Climatisation',      en: 'Air Conditioning', de: 'Klimaanlage',       ar: 'تكييف الهواء' }, desc: { fr: 'Service clim, recharge de réfrigérant, inspection complète.', en: 'AC service, refrigerant recharge, full inspection.', de: 'Klimaservice, Kältemittelbefüllung, Inspektion.', ar: 'خدمة التكييف، إعادة شحن المبرد، فحص كامل.' }, tag: 'Comfort' },
-  { icon: '🔋', key: 'electric',   title: { fr: 'Électrique & Hybride', en: 'Electric & Hybrid', de: 'Elektrik & Hybrid', ar: 'كهربائي وهجين' }, desc: { fr: 'Véhicules 12V, 48V, hybrides et 100% électriques.', en: '12V, 48V, hybrid and full electric vehicles.', de: '12V, 48V, Hybrid- und Elektrofahrzeuge.', ar: 'مركبات 12V و48V والهجينة والكهربائية الكاملة.' }, tag: 'EV Ready' },
+  { icon: '🚗', key: 'new-cars', title: { fr: 'Voitures Neuves', en: 'New Cars', de: 'Neuwagen', ar: 'سيارات جديدة' }, desc: { fr: 'Derniers modèles, garantie constructeur, financement personnalisé.', en: 'Latest models, manufacturer warranty, personalized financing.', de: 'Neueste Modelle, Herstellergarantie, maßgeschneiderte Finanzierung.', ar: 'أحدث الطرازات، ضمان الشركة، تمويل مخصص.' }, tag: '2024 Models' },
+  { icon: '�', key: 'used-cars', title: { fr: 'Voitures d\'Occasion', en: 'Used Cars', de: 'Gebrauchtwagen', ar: 'سيارات مستعملة' }, desc: { fr: 'Véhicules vérifiés, historique complet, garantie jusqu\'à 24 mois.', en: 'Verified vehicles, complete history, warranty up to 24 months.', de: 'Geprüfte Fahrzeuge, vollständige Historie, Garantie bis zu 24 Monaten.', ar: 'سيارات م verifiedة، سجل كامل، ضمان حتى 24 شهرًا.' }, tag: 'Certified' },
+  { icon: '�', key: 'financing', title: { fr: 'Financement Auto', en: 'Car Financing', de: 'Autofinanzierung', ar: 'تمويل السيارات' }, desc: { fr: 'Crédit sur mesure, taux avantageux, réponse en 24h.', en: 'Tailored credit, competitive rates, response in 24h.', de: 'Maßgeschneiderter Kredit, wettbewerbsfähige Zinsen, Antwort in 24h.', ar: 'ائتمان مخصص، أسعار تنافسية، رد في 24 ساعة.' }, tag: 'Fast Approval' },
+  { icon: '🔄', key: 'trade-in', title: { fr: 'Reprise & Échange', en: 'Trade-in & Exchange', de: 'Ankauf & Tausch', ar: 'استبدال وتبديل' }, desc: { fr: 'Reprise de votre véhicule actuel, estimation gratuite.', en: 'Trade-in your current vehicle, free valuation.', de: 'Ankauf Ihres aktuellen Fahrzeugs, kostenlose Bewertung.', ar: 'استبدال سيارتك الحالية، تقييم مجاني.' }, tag: 'Best Value' },
+  { icon: '🛡️', key: 'warranty', title: { fr: 'Garantie & SAV', en: 'Warranty & Support', de: 'Garantie & Service', ar: 'الضمان والدعم' }, desc: { fr: 'Garantie étendue, service après-vente, assistance 24/7.', en: 'Extended warranty, after-sales service, 24/7 assistance.', de: 'Erweiterte Garantie, Kundendienst, 24/7 Unterstützung.', ar: 'ضمان موسع، خدمة ما بعد البيع، دعم 24/7.' }, tag: 'Full Coverage' },
+  { icon: '�', key: 'delivery', title: { fr: 'Livraison & Transport', en: 'Delivery & Transport', de: 'Lieferung & Transport', ar: 'التوصيل والنقل' }, desc: { fr: 'Livraison à domicile, transport sécurisé, toute l\'Allemagne.', en: 'Home delivery, secure transport, all of Germany.', de: 'Lieferung nach Hause, sicherer Transport, ganz Deutschland.', ar: 'توصيل للمنزل، نقل آمن، جميع أنحاء ألمانيا.' }, tag: 'Door to Door' },
 ];
 
 const REVIEWS = [
-  { name: 'Marcus Hoffmann', rating: 5, date: '2 semaines', text: { fr: 'Absolument professionnel ! Ma BMW a été réparée parfaitement, rapidement et à un prix juste. Très recommandé !', en: 'Absolutely professional! My BMW was repaired perfectly, quickly and at a fair price. Highly recommended!', de: 'Absolut professionell! Perfekte BMW-Reparatur, schnell und fair.', ar: 'محترف تمامًا! تم إصلاح سيارتي BMW بشكل مثالي وسريع وبسعر عادل.' }, avatar: 'MH' },
-  { name: 'Sophie Becker', rating: 5, date: '1 mois', text: { fr: 'Super garage ! Équipe très sympathique, tarifs transparents et travail de qualité. Je reviens toujours avec plaisir !', en: 'Great garage! Very friendly team, transparent pricing and quality work. Always happy to come back!', de: 'Super Werkstatt! Freundliches Team, faire Preise, top Arbeit.', ar: 'ورشة رائعة! فريق ودود جداً، أسعار شفافة وعمل جيد.' }, avatar: 'SB' },
-  { name: 'Thomas Reinhardt', rating: 5, date: '3 semaines', text: { fr: 'Enfin un garage honnête ! Diagnostic clair, coûts équitables, exécution rapide. Leur confiance est gagnée.', en: 'Finally an honest garage! Clear diagnosis, fair costs, quick execution. They have earned my trust.', de: 'Endlich eine ehrliche Werkstatt! Klare Diagnose, faire Kosten.', ar: 'أخيراً ورشة صادقة! تشخيص واضح، تكاليف عادلة، تنفيذ سريع.' }, avatar: 'TR' },
-  { name: 'Anna Müller', rating: 5, date: '1 mois', text: { fr: 'Équipe très compétente ! Ont remis ma Volkswagen en parfait état. Le service est excellent !', en: 'Very competent team! Got my Volkswagen back in perfect condition. Excellent service!', de: 'Sehr kompetentes Team! VW perfekt repariert. Ausgezeichnet!', ar: 'فريق كفء جداً! أعادوا سيارتي فولكسفاغن إلى حالة ممتازة.' }, avatar: 'AM' },
-  { name: 'Klaus Weber', rating: 5, date: '2 mois', text: { fr: 'Excellente expérience. Tout a été expliqué, rien de caché. Rapport qualité-prix imbattable à Emsdetten !', en: 'Excellent experience. Everything explained, nothing hidden. Unbeatable value in Emsdetten!', de: 'Tolle Erfahrung. Alles erklärt, nichts versteckt. Beste Werkstatt!', ar: 'تجربة ممتازة. كل شيء مُفسَّر، لا شيء مخفي. قيمة لا تُضاهى!' }, avatar: 'KW' },
-  { name: 'Julia Braun', rating: 4, date: '3 mois', text: { fr: 'Bon service, réparation rapide. Équipe aimable et serviable. Je reviendrai volontiers !', en: 'Good service, fast repair. Friendly and helpful team. Happy to come back!', de: 'Guter Service, schnelle Reparatur. Freundliches Team. Gerne wieder!', ar: 'خدمة جيدة، إصلاح سريع. فريق ودود ومفيد. سأعود بكل سرور!' }, avatar: 'JB' },
+  { name: 'Marcus Hoffmann', rating: 5, date: '2 semaines', text: { fr: 'Excellent service ! J\'ai trouvé ma BMW dream car, processus simple et financement au meilleur taux. Recommandé !', en: 'Excellent service! Found my dream BMW, simple process and best financing rate. Recommended!', de: 'Exzellenter Service! Meinen Traum-BMW gefunden, einfacher Prozess, beste Finanzierung.', ar: 'خدمة ممتازة! وجدت سيارتي BMW الأحلام، عملية بسيطة وأفضل تمويل.' }, avatar: 'MH' },
+  { name: 'Sophie Becker', rating: 5, date: '1 mois', text: { fr: 'Super concessionnaire ! Très professionnel, large choix de véhicules et équipe très disponible. Je recommande vivement !', en: 'Great dealership! Very professional, wide vehicle selection and very helpful team. Highly recommend!', de: 'Super Autohaus! Sehr professionell, große Fahrzeugauswahl, hilfsbereites Team.', ar: 'معرض رائع! محترف جدًا، مجموعة واسعة من السيارات وفريق متعاون جدًا.' }, avatar: 'SB' },
+  { name: 'Thomas Reinhardt', rating: 5, date: '3 semaines', text: { fr: 'Vendeur honnête et fiable ! Voiture de qualité, prix juste et livraison rapide. Je suis très satisfait !', en: 'Honest and reliable seller! Quality car, fair price and fast delivery. Very satisfied!', de: 'Ehrlicher und zuverlässiger Verkäufer! Qualitätsauto, fairer Preis, schnelle Lieferung.', ar: 'بائع صادق وموثوق! سيارة عالية الجودة، سعر عادل، تسليم سريع.' }, avatar: 'TR' },
+  { name: 'Anna Müller', rating: 5, date: '1 mois', text: { fr: 'Équipe très compétente ! Ont trouvé la Volkswagen parfaite pour moi. Le service client est exceptionnel !', en: 'Very competent team! Found the perfect Volkswagen for me. Customer service is exceptional!', de: 'Sehr kompetentes Team! Perfekten VW für mich gefunden. Kundenservice herausragend!', ar: 'فريق كفء جدًا! وجدوا فولكسفاغن المثالية لي. خدمة العملاء استثنائية!' }, avatar: 'AM' },
+  { name: 'Klaus Weber', rating: 5, date: '2 mois', text: { fr: 'Excellente expérience. Achat en ligne facile, véhicule conforme à la description et livraison impeccable. Merci !', en: 'Excellent experience. Easy online purchase, car as described and impeccable delivery. Thank you!', de: 'Tolle Erfahrung. Einfacher Online-Kauf, Auto wie beschrieben, makellose Lieferung.', ar: 'تجربة ممتازة. شراء سهل عبر الإنترنت، سيارة حسب الوصف، تسليم مثالي.' }, avatar: 'KW' },
+  { name: 'Julia Braun', rating: 4, date: '3 mois', text: { fr: 'Bon service, bonne qualité de véhicules. Équipe aimable et processus de financement simple. Je reviendrai !', en: 'Good service, good vehicle quality. Friendly team and simple financing process. Will come back!', de: 'Guter Service, gute Fahrzeugqualität. Freundliches Team, einfacher Finanzierungsprozess.', ar: 'خدمة جيدة، جودة سيارات جيدة. فريق ودود وعملية تمويل بسيطة.' }, avatar: 'JB' },
 ];
 
 function Stars({ n = 5, size = 16 }) {
@@ -279,10 +279,10 @@ export default function Home() {
               {t('contact_title', lang)}
             </h2>
             <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: 40 }}>
-              {lang === 'fr' ? 'Pour un rendez-vous, une question ou un devis — nous répondons rapidement.'
-               : lang === 'en' ? 'For an appointment, a question or a quote — we respond quickly.'
-               : lang === 'de' ? 'Für Termine, Fragen oder Kostenvoranschläge — wir antworten schnell.'
-               : 'لموعد أو سؤال أو عرض أسعار — نستجيب بسرعة.'}
+              {lang === 'fr' ? 'Pour acheter une voiture, un financement ou une information — nous répondons rapidement.'
+               : lang === 'en' ? 'For buying a car, financing or information — we respond quickly.'
+               : lang === 'de' ? 'Für Autokauf, Finanzierung oder Informationen — wir antworten schnell.'
+               : 'لشراء سيارة أو تمويل أو معلومات — نستجيب بسرعة.'}
             </p>
 
             {/* Contact items */}
@@ -327,10 +327,10 @@ export default function Home() {
             <div style={{ background: 'var(--dark-2)', border: '1px solid rgba(200,16,46,0.2)', borderRadius: 8, padding: '32px 36px' }}>
               <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#C8102E', marginBottom: 16 }}>{t('contact_appt', lang)}</div>
               <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.45)', marginBottom: 24, lineHeight: 1.65 }}>
-                {lang === 'fr' ? 'Réservez votre créneau facilement par WhatsApp — réponse en quelques minutes.'
-                 : lang === 'en' ? 'Book your slot easily via WhatsApp — reply in minutes.'
-                 : lang === 'de' ? 'Termin ganz einfach per WhatsApp — Antwort in Minuten.'
-                 : 'احجز موعدك بسهولة عبر واتساب — رد في دقائق.'}
+                {lang === 'fr' ? 'Réservez votre essai routier ou votre consultation — réponse en quelques minutes.'
+                 : lang === 'en' ? 'Book your test drive or consultation — reply in minutes.'
+                 : lang === 'de' ? 'Probefahrt oder Beratung buchen — Antwort in Minuten.'
+                 : 'احجز جولة تجريبية أو استشارة — رد في دقائق.'}
               </p>
               <a href="https://wa.me/4915788823274?text=Bonjour%2C%20je%20voudrais%20prendre%20rendez-vous." target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ display: 'flex', width: '100%', justifyContent: 'center', marginBottom: 12, fontSize: 14 }}>
                 💬 {t('hero_cta1', lang)}
@@ -367,10 +367,10 @@ export default function Home() {
           <div>
             <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 8, letterSpacing: '0.02em' }}>AUTO KOMPETENZ <span style={{ color: '#C8102E' }}>GmbH</span></div>
             <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, maxWidth: 280 }}>
-              {lang === 'fr' ? 'Votre spécialiste automobile de confiance à Emsdetten, Allemagne.'
-               : lang === 'en' ? 'Your trusted automotive specialist in Emsdetten, Germany.'
-               : lang === 'de' ? 'Ihr vertrauensvoller Fahrzeugspezialist in Emsdetten.'
-               : 'متخصصكم الموثوق في السيارات في إمسديتن، ألمانيا.'}
+              {lang === 'fr' ? 'Votre concessionnaire automobile de confiance à Emsdetten, Allemagne.'
+               : lang === 'en' ? 'Your trusted car dealership in Emsdetten, Germany.'
+               : lang === 'de' ? 'Ihr vertrauenswürdiges Autohaus in Emsdetten.'
+               : 'معرض السيارات الموثوق في إمسديتن، ألمانيا.'}
             </p>
             <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
               <a href="https://wa.me/4915788823274" target="_blank" rel="noopener noreferrer" style={{ width: 38, height: 38, borderRadius: '50%', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, textDecoration: 'none' }}>💬</a>
