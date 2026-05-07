@@ -276,14 +276,43 @@ app.get('/api/cars/:id', async (req, res) => {
 
 app.get('/api/cars/categories', async (req, res) => {
   try {
-    const categories = await prisma.car.groupBy({
-      by: ['category'],
+    console.log('=== GET /api/cars/categories ===');
+    console.log('Request headers:', req.headers);
+    
+    // Alternative approach using distinct to avoid groupBy issues
+    const categories = await prisma.car.findMany({
       where: { isActive: true },
-      _count: { category: true },
+      select: {
+        category: true,
+      },
+      distinct: ['category'],
     });
-    res.json(categories);
-  } catch (e) {
-    res.status(500).json({ error: 'Erreur serveur' });
+    
+    console.log('Raw categories from DB:', categories);
+    
+    // Transform to match expected format
+    const transformedCategories = categories
+      .filter(cat => cat.category && cat.category.trim() !== '')
+      .map(cat => ({
+        category: cat.category,
+        _count: { category: 0 } // We'll count separately if needed
+      }));
+    
+    console.log('Transformed categories:', transformedCategories);
+    console.log('Categories count:', transformedCategories.length);
+    
+    res.json(transformedCategories);
+  } catch (error) {
+    console.error('=== GET /api/cars/categories ERROR ===');
+    console.error('Error details:', error);
+    console.error('Error stack:', error.stack);
+    
+    // Return safe fallback response
+    res.status(500).json({ 
+      error: error.message || 'Erreur serveur inconnue',
+      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined,
+      categories: []
+    });
   }
 });
 
