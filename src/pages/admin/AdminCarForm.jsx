@@ -14,6 +14,7 @@ export default function AdminCarForm() {
   const [saving, setSaving] = useState(false);
   const [imageFiles, setImageFiles] = useState({ image1: null, image2: null, image3: null });
   const [previews, setPreviews] = useState({ image1: null, image2: null, image3: null });
+  const [primaryImage, setPrimaryImage] = useState('image1');
 
   useEffect(() => {
     if (isEdit) {
@@ -44,6 +45,19 @@ export default function AdminCarForm() {
         setPreviews(prev => ({ ...prev, [imageKey]: reader.result }));
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const setAsPrimary = (imageKey) => {
+    setPrimaryImage(imageKey);
+    addToast('Image principale définie', 'success');
+  };
+
+  const removeImage = (imageKey) => {
+    setImageFiles(prev => ({ ...prev, [imageKey]: null }));
+    setPreviews(prev => ({ ...prev, [imageKey]: null }));
+    if (primaryImage === imageKey) {
+      setPrimaryImage('image1');
     }
   };
 
@@ -129,134 +143,95 @@ export default function AdminCarForm() {
           </div>
         </Section>
 
-        <Section title="Images & Financement">
+        <Section title="Images">
           <div style={{ display:'flex', flexDirection:'column', gap:14, marginBottom:20 }}>
-            <div>
-              <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>Image principale *</label>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={handleImageChange('image1')}
-                style={{ display:'none' }} 
-                id="image1-input"
-              />
-              <label 
-                htmlFor="image1-input"
-                style={{ 
-                  display:'block', 
-                  padding:'12px 16px', 
-                  background:'var(--dark-2)', 
-                  border:'1px solid rgba(255,255,255,0.1)', 
-                  borderRadius:8, 
-                  cursor:'pointer', 
-                  fontSize:14, 
-                  color:'rgba(255,255,255,0.6)',
-                  transition:'all 0.3s'
-                }}
-                onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.color='rgba(255,255,255,0.8)'; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.6)'; }}
-              >
-                📷 {imageFiles.image1 ? imageFiles.image1.name : 'Choisir une image'}
-              </label>
-            </div>
-            
-            <div>
-              <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>Image 2</label>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={handleImageChange('image2')}
-                style={{ display:'none' }} 
-                id="image2-input"
-              />
-              <label 
-                htmlFor="image2-input"
-                style={{ 
-                  display:'block', 
-                  padding:'12px 16px', 
-                  background:'var(--dark-2)', 
-                  border:'1px solid rgba(255,255,255,0.1)', 
-                  borderRadius:8, 
-                  cursor:'pointer', 
-                  fontSize:14, 
-                  color:'rgba(255,255,255,0.6)',
-                  transition:'all 0.3s'
-                }}
-                onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.color='rgba(255,255,255,0.8)'; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.6)'; }}
-              >
-                📷 {imageFiles.image2 ? imageFiles.image2.name : 'Choisir une image'}
-              </label>
-            </div>
-            
-            <div>
-              <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>Image 3</label>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={handleImageChange('image3')}
-                style={{ display:'none' }} 
-                id="image3-input"
-              />
-              <label 
-                htmlFor="image3-input"
-                style={{ 
-                  display:'block', 
-                  padding:'12px 16px', 
-                  background:'var(--dark-2)', 
-                  border:'1px solid rgba(255,255,255,0.1)', 
-                  borderRadius:8, 
-                  cursor:'pointer', 
-                  fontSize:14, 
-                  color:'rgba(255,255,255,0.6)',
-                  transition:'all 0.3s'
-                }}
-                onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.color='rgba(255,255,255,0.8)'; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.6)'; }}
-              >
-                📷 {imageFiles.image3 ? imageFiles.image3.name : 'Choisir une image'}
-              </label>
-            </div>
-            
-            <Field label="Salaire minimum recommandé (€/mois)" field="minSalary" type="number" placeholder="2000" />
-          </div>
-          {/* Preview */}
-          <div style={{ marginBottom:20 }}>
-            <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.15em', textTransform:'uppercase', color:'rgba(255,255,255,0.25)', marginBottom:10 }}>Aperçu</p>
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:12 }}>
-              {previews.image1 && (
-                <div>
-                  <img src={previews.image1} alt="Aperçu 1" style={{ width:'100%', height:150, objectFit:'cover', borderRadius:8, border:'1px solid rgba(255,255,255,0.1)' }} />
-                  <p style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:6, textAlign:'center' }}>Image principale</p>
+              {['image1', 'image2', 'image3'].map((imageKey, index) => (
+                <div key={imageKey} style={{ position:'relative' }}>
+                  <div>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleImageChange(imageKey)}
+                      style={{ display:'none' }} 
+                      id={`${imageKey}-input`}
+                    />
+                    <label 
+                      htmlFor={`${imageKey}-input`}
+                      style={{ 
+                        display:'block', 
+                        padding:'12px 16px', 
+                        background:'var(--dark-2)', 
+                        border: primaryImage === imageKey ? '2px solid #C8102E' : '1px solid rgba(255,255,255,0.1)', 
+                        borderRadius:8, 
+                        cursor:'pointer', 
+                        fontSize:14, 
+                        color:'rgba(255,255,255,0.6)',
+                        transition:'all 0.3s',
+                        textAlign:'center'
+                      }}
+                      onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.color='rgba(255,255,255,0.8)'; }}
+                      onMouseOut={e => { e.currentTarget.style.borderColor=primaryImage === imageKey ? '#C8102E' : 'rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.6)'; }}
+                    >
+                      {previews[imageKey] ? (
+                        <div style={{ position:'relative' }}>
+                          <img src={previews[imageKey]} alt={`Aperçu ${index + 1}`} style={{ width:'100%', height:120, objectFit:'cover', borderRadius:6 }} />
+                          <div style={{ position:'absolute', top:4, right:4, background:'#C8102E', color:'#fff', borderRadius:'50%', width:20, height:20, display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:'bold' }}>
+                            {primaryImage === imageKey ? '★' : index + 1}
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ padding:20, textAlign:'center', color:'rgba(255,255,255,0.4)' }}>
+                          📷<br/>
+                          <span style={{ fontSize:12 }}>Image {index + 1}</span>
+                        </div>
+                      )}
+                    </label>
+                    {previews[imageKey] && (
+                      <button
+                        type="button"
+                        onClick={() => removeImage(imageKey)}
+                        style={{
+                          position:'absolute',
+                          top:4,
+                          left:4,
+                          background:'rgba(0,0,0,0.7)',
+                          color:'#fff',
+                          border:'none',
+                          borderRadius:'50%',
+                          width:16,
+                          height:16,
+                          cursor:'pointer',
+                          display:'flex',
+                          alignItems:'center',
+                          justifyContent:'center',
+                          fontSize:10,
+                          fontWeight:'bold'
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                  <p style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:6, textAlign:'center' }}>
+                    {primaryImage === imageKey ? 'Principale' : `Image ${index + 1}`}
+                  </p>
                 </div>
-              )}
-              {previews.image2 && (
-                <div>
-                  <img src={previews.image2} alt="Aperçu 2" style={{ width:'100%', height:150, objectFit:'cover', borderRadius:8, border:'1px solid rgba(255,255,255,0.1)' }} />
-                  <p style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:6, textAlign:'center' }}>Image 2</p>
-                </div>
-              )}
-              {previews.image3 && (
-                <div>
-                  <img src={previews.image3} alt="Aperçu 3" style={{ width:'100%', height:150, objectFit:'cover', borderRadius:8, border:'1px solid rgba(255,255,255,0.1)' }} />
-                  <p style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:6, textAlign:'center' }}>Image 3</p>
-                </div>
-              )}
-              {!previews.image1 && !previews.image2 && !previews.image3 && (
-                <div style={{ padding:40, textAlign:'center', color:'rgba(255,255,255,0.2)', border:'1px dashed rgba(255,255,255,0.1)', borderRadius:8 }}>
-                  📷 Aucune image sélectionnée
-                </div>
-              )}
+              ))}
+            </div>
+            
+            <div style={{ marginTop:16, padding:12, background:'rgba(200,16,46,0.1)', borderRadius:8, border:'1px solid rgba(200,16,46,0.2)' }}>
+              <p style={{ fontSize:12, color:'rgba(255,255,255,0.8)', marginBottom:8, fontWeight:600 }}>💡 Conseils</p>
+              <ul style={{ fontSize:11, color:'rgba(255,255,255,0.6)', lineHeight:1.6, margin:0, paddingLeft:16 }}>
+                <li style={{ marginBottom:4 }}>Cliquez sur une image pour la définir comme principale (★)</li>
+                <li style={{ marginBottom:4 }}>Formats acceptés : JPG, PNG, WebP (max 5MB)</li>
+                <li style={{ marginBottom:4 }}>L'image principale sera affichée en premier dans la galerie</li>
+              </ul>
             </div>
           </div>
-          
-          {/* Fallback URL fields */}
-          <div style={{ marginTop:24, padding:16, background:'rgba(255,255,255,0.02)', borderRadius:8 }}>
-            <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.15em', textTransform:'uppercase', color:'rgba(255,255,255,0.4)', marginBottom:12 }}>OU utiliser des URLs externes</p>
-            <Field label="URL Image principale" field="imageUrl" placeholder="https://images.unsplash.com/..." />
-            <Field label="URL Image 2" field="imageUrl2" placeholder="https://..." />
-            <Field label="URL Image 3" field="imageUrl3" placeholder="https://..." />
-          </div>
+        </Section>
+
+        <Section title="Options">
           <div style={{ display:'flex', gap:24 }}>
             {[['featured','Véhicule vedette (★ Top)'],['isActive','Actif (visible en catalogue)']].map(([f,l]) => (
               <label key={f} style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }}>
