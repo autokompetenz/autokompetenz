@@ -537,23 +537,37 @@ app.get('/api/cart', authenticateToken, async (req, res) => {
 
 app.post('/api/cart', authenticateToken, async (req, res) => {
   try {
+    console.log('=== POST /api/cart ===');
+    console.log('Request body:', req.body);
+    console.log('User:', req.user);
+    
     const { carId, quantity = 1, paymentType = 'full' } = req.body;
     
+    console.log('Parsed data:', { carId, quantity, paymentType });
+    
     const car = await prisma.car.findUnique({ where: { id: parseInt(carId) } });
+    console.log('Found car:', car);
+    
     if (!car || !car.isActive) {
+      console.log('Car not found or inactive');
       return res.status(404).json({ error: 'Voiture non trouvée' });
     }
     if (car.stock < quantity) {
+      console.log('Insufficient stock:', { stock: car.stock, requested: quantity });
       return res.status(400).json({ error: 'Stock insuffisant' });
     }
 
     const existingItem = await prisma.cart.findFirst({
       where: { userId: req.user.id, carId: parseInt(carId) },
     });
+    
+    console.log('Existing item:', existingItem);
 
     if (existingItem) {
+      console.log('Updating existing cart item');
       const newQuantity = existingItem.quantity + quantity;
       if (car.stock < newQuantity) {
+        console.log('Insufficient stock for update:', { stock: car.stock, newQuantity });
         return res.status(400).json({ error: 'Stock insuffisant' });
       }
       const updated = await prisma.cart.update({
@@ -561,8 +575,29 @@ app.post('/api/cart', authenticateToken, async (req, res) => {
         data: { quantity: newQuantity, paymentType },
         include: { car: true },
       });
-      res.json(updated);
+      console.log('Updated cart item:', updated);
+      
+      // Return full cart state like PUT endpoint
+      const updatedCart = await prisma.cart.findMany({
+        where: { userId: req.user.id },
+        include: { car: true },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      const cartItems = updatedCart.map(item => ({
+        id: item.id,
+        quantity: item.quantity,
+        carId: item.carId,
+        paymentType: item.paymentType,
+        car: item.car
+      }));
+
+      const total = cartItems.reduce((sum, item) => sum + item.car.price * item.quantity, 0);
+
+      console.log('Full cart response after update:', { cartItems, total, count: cartItems.length });
+      res.json({ cartItems, total, count: cartItems.length });
     } else {
+      console.log('Creating new cart item');
       const created = await prisma.cart.create({
         data: { 
           userId: req.user.id, 
@@ -572,11 +607,36 @@ app.post('/api/cart', authenticateToken, async (req, res) => {
         },
         include: { car: true },
       });
-      res.status(201).json(created);
+      console.log('Created cart item:', created);
+      
+      // Return full cart state for consistency
+      const updatedCart = await prisma.cart.findMany({
+        where: { userId: req.user.id },
+        include: { car: true },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      const cartItems = updatedCart.map(item => ({
+        id: item.id,
+        quantity: item.quantity,
+        carId: item.carId,
+        paymentType: item.paymentType,
+        car: item.car
+      }));
+
+      const total = cartItems.reduce((sum, item) => sum + item.car.price * item.quantity, 0);
+
+      console.log('Full cart response after create:', { cartItems, total, count: cartItems.length });
+      res.status(201).json({ cartItems, total, count: cartItems.length });
     }
   } catch (e) {
-    console.error('Add to cart error:', e);
-    res.status(500).json({ error: 'Erreur serveur' });
+    console.error('=== POST /api/cart ERROR ===');
+    console.error('Error details:', e);
+    console.error('Error stack:', e.stack);
+    res.status(500).json({ 
+      error: e.message || 'Erreur serveur',
+      stack: process.env.NODE_ENV !== 'production' ? e.stack : undefined
+    });
   }
 });
 
