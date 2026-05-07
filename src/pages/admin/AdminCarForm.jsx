@@ -65,30 +65,39 @@ export default function AdminCarForm() {
     e.preventDefault();
     setSaving(true);
     try {
+      console.log('=== Frontend Debug ===');
+      console.log('Form data:', form);
+      console.log('Image files:', imageFiles);
+      
       const formData = new FormData();
       
-      // Add all form fields
-      formData.append('make', form.make);
-      formData.append('model', form.model);
-      formData.append('year', form.year);
-      formData.append('price', form.price);
-      formData.append('stock', form.stock);
-      formData.append('description', form.description || '');
-      formData.append('fuelType', form.fuelType);
-      formData.append('transmission', form.transmission);
-      formData.append('mileage', form.mileage || 0);
-      formData.append('color', form.color || '');
-      formData.append('power', form.power || '');
-      formData.append('category', form.category);
-      formData.append('minSalary', form.minSalary || '');
+      // Add all form fields with explicit checks
+      if (form.make) formData.append('make', form.make);
+      if (form.model) formData.append('model', form.model);
+      if (form.year) formData.append('year', form.year);
+      if (form.price) formData.append('price', form.price);
+      if (form.stock) formData.append('stock', form.stock);
+      if (form.description) formData.append('description', form.description);
+      if (form.fuelType) formData.append('fuelType', form.fuelType);
+      if (form.transmission) formData.append('transmission', form.transmission);
+      if (form.mileage) formData.append('mileage', form.mileage);
+      if (form.color) formData.append('color', form.color);
+      if (form.power) formData.append('power', form.power);
+      if (form.category) formData.append('category', form.category);
+      if (form.minSalary) formData.append('minSalary', form.minSalary);
       formData.append('featured', form.featured);
       formData.append('isActive', form.isActive);
-      formData.append('imageUrl', form.imageUrl || '');
+      if (form.imageUrl) formData.append('imageUrl', form.imageUrl);
       
       // Add image files
       imageFiles.forEach((file, index) => {
         formData.append(`image${index + 1}`, file);
       });
+      
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
       
       if (isEdit) { 
         await carAPI.update(id, formData); 
@@ -98,7 +107,10 @@ export default function AdminCarForm() {
         addToast('Véhicule créé', 'success'); 
       }
       navigate('/admin/cars');
-    } catch (err) { addToast(err.response?.data?.error || 'Erreur', 'error'); }
+    } catch (err) { 
+      console.error('Submit error:', err);
+      addToast(err.response?.data?.error || 'Erreur', 'error'); 
+    }
     finally { setSaving(false); }
   };
 
