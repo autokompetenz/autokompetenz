@@ -2,10 +2,26 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 import { prisma } from '../lib/prisma.js';
 
 // Initialize Express app
 const app = express();
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit per file
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Seuls les fichiers image sont autorisés'), false);
+    }
+  }
+});
 
 // CORS configuration
 const corsOptions = {
@@ -254,12 +270,13 @@ app.get('/api/cars/categories', async (req, res) => {
 });
 
 // Car Routes
-app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
+app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3), async (req, res) => {
   try {
     console.log('Creating car with data:', Object.keys(req.body));
+    console.log('Files uploaded:', req.files?.length || 0);
     
     // Handle FormData for file uploads
-    if (req.headers['content-type']?.includes('multipart/form-data')) {
+    if (req.files && req.files.length > 0) {
       const data = req.body;
       const files = req.files;
       
@@ -283,11 +300,10 @@ app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
       };
       
       // Handle uploaded files
-      if (files.images && Array.isArray(files.images)) {
-        files.images.forEach((file, index) => {
-          carData[`imageUrl${index === 0 ? '' : index + 1}`] = `/uploads/cars/${Date.now()}-${file.name}`;
-        });
-      }
+      files.forEach((file, index) => {
+        const fieldName = index === 0 ? 'imageUrl' : `imageUrl${index + 1}`;
+        carData[fieldName] = `/uploads/cars/${Date.now()}-${file.originalname}`;
+      });
       
       const car = await prisma.car.create({ data: carData });
       console.log('Car created:', car);
@@ -325,13 +341,14 @@ app.post('/api/cars', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-app.put('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
+app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images', 3), async (req, res) => {
   try {
     const { id } = req.params;
     console.log('Updating car:', id, 'with data:', Object.keys(req.body));
+    console.log('Files uploaded:', req.files?.length || 0);
     
     // Handle FormData for file uploads
-    if (req.headers['content-type']?.includes('multipart/form-data')) {
+    if (req.files && req.files.length > 0) {
       const data = req.body;
       const files = req.files;
       
@@ -354,10 +371,11 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
         imageUrl: data.imageUrl || null,
       };
       
-      // Handle uploaded file
-      if (files.image) {
-        carData.imageUrl = `/uploads/cars/${Date.now()}-${files.image.name}`;
-      }
+      // Handle uploaded files
+      files.forEach((file, index) => {
+        const fieldName = index === 0 ? 'imageUrl' : `imageUrl${index + 1}`;
+        carData[fieldName] = `/uploads/cars/${Date.now()}-${file.originalname}`;
+      });
       
       const car = await prisma.car.update({
         where: { id: parseInt(id) },
