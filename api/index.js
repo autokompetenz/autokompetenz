@@ -519,14 +519,27 @@ app.get('/api/orders/:id', authenticateToken, async (req, res) => {
 
 app.get('/api/orders/my', authenticateToken, async (req, res) => {
   try {
+    console.log('Fetching orders for user:', req.user?.id);
+    
+    if (!req.user || !req.user.id) {
+      console.error('No user found in request');
+      return res.status(401).json({ error: 'Utilisateur non authentifié' });
+    }
+    
     const orders = await prisma.order.findMany({
       where: { userId: req.user.id },
       include: { items: { include: { car: true } } },
       orderBy: { createdAt: 'desc' },
     });
+    
+    console.log('Found orders:', orders.length);
     res.json(orders);
-  } catch (e) {
-    res.status(500).json({ error: 'Erreur serveur' });
+  } catch (error) {
+    console.error('Orders/my error:', error);
+    res.status(500).json({ 
+      error: 'Erreur serveur',
+      orders: [] 
+    });
   }
 });
 
@@ -612,12 +625,18 @@ app.put('/api/user/password', authenticateToken, async (req, res) => {
 // Admin Routes
 app.get('/api/admin/stats', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const [users, cars, orders, revenue] = await Promise.all([
-      prisma.user.count(),
-      prisma.car.count({ where: { isActive: true } }),
-      prisma.order.count(),
-      prisma.order.aggregate({ _sum: { totalPrice: true } }),
-    ]);
+    const totalClients = await prisma.user.count();
+    const totalCars = await prisma.car.count({ where: { isActive: true } });
+    const totalOrders = await prisma.order.count();
+    
+    const revenueResult = await prisma.order.aggregate({ 
+      _sum: { totalPrice: true } 
+    });
+    const totalRevenue = revenueResult._sum.totalPrice || 0;
+    
+    const pendingOrders = await prisma.order.count({ 
+      where: { status: 'pending' } 
+    });
 
     const recentOrders = await prisma.order.findMany({
       take: 5,
@@ -629,15 +648,24 @@ app.get('/api/admin/stats', authenticateToken, requireAdmin, async (req, res) =>
     });
 
     res.json({
-      totalClients: users,
-      totalCars: cars,
-      totalOrders: orders,
-      totalRevenue: revenue._sum.totalPrice || 0,
-      pendingOrders: await prisma.order.count({ where: { status: 'pending' } }),
+      totalClients,
+      totalCars,
+      totalOrders,
+      totalRevenue,
+      pendingOrders,
       recentOrders,
     });
-  } catch (e) {
-    res.status(500).json({ error: 'Erreur serveur' });
+  } catch (error) {
+    console.error('Admin stats error:', error);
+    res.status(500).json({
+      totalClients: 0,
+      totalCars: 0,
+      totalOrders: 0,
+      totalRevenue: 0,
+      pendingOrders: 0,
+      recentOrders: [],
+      error: 'Erreur récupération statistiques'
+    });
   }
 });
 

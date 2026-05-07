@@ -22,11 +22,11 @@ export default function AdminDashboard() {
   const { stats, recentOrders } = data;
 
   const statCards = [
-    { icon:'👥', label:'Clients', value:stats.totalClients, color:'#60A5FA', sub:'Total inscrits' },
-    { icon:'📦', label:'Commandes', value:stats.totalOrders, color:'#C084FC', sub:'Total des commandes' },
-    { icon:'💶', label:'Chiffre d\'affaires', value:formatEuro(stats.totalRevenue), color:'#C8102E', sub:'Hors annulées', wide:true },
-    { icon:'⏳', label:'En attente', value:stats.pendingOrders, color:stats.pendingOrders > 0 ? '#FFAA00' : '#22C55E', sub:stats.pendingOrders > 0 ? 'Action requise' : 'Aucune en attente' },
-    { icon:'🚗', label:'Véhicules actifs', value:stats.totalCars, color:'#22C55E', sub:'En catalogue' },
+    { icon:'👥', label:'Clients', value:stats?.totalClients || 0, color:'#60A5FA', sub:'Total inscrits' },
+    { icon:'📦', label:'Commandes', value:stats?.totalOrders || 0, color:'#C084FC', sub:'Total des commandes' },
+    { icon:'💶', label:'Chiffre d\'affaires', value:formatEuro(stats?.totalRevenue || 0), color:'#C8102E', sub:'Hors annulées', wide:true },
+    { icon:'⏳', label:'En attente', value:stats?.pendingOrders || 0, color:(stats?.pendingOrders || 0) > 0 ? '#FFAA00' : '#22C55E', sub:(stats?.pendingOrders || 0) > 0 ? 'Action requise' : 'Aucune en attente' },
+    { icon:'🚗', label:'Véhicules actifs', value:stats?.totalCars || 0, color:'#22C55E', sub:'En catalogue' },
   ];
 
   const TABLE_COLS = ['N° Commande','Client','Date','Montant','Paiement','Statut',''];
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
             onMouseOut={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:14 }}>
               <span style={{ fontSize:26 }}>{icon}</span>
-              {label==='En attente' && stats.pendingOrders > 0 && (
+              {label==='En attente' && (stats?.pendingOrders || 0) > 0 && (
                 <span style={{ fontSize:10, background:'rgba(255,170,0,0.15)', color:'#FFAA00', padding:'3px 10px', borderRadius:12, fontWeight:800, letterSpacing:'0.1em' }}>ACTION</span>
               )}
             </div>
