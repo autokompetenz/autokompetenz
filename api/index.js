@@ -3,14 +3,30 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 import { prisma } from '../lib/prisma.js';
 
 // Initialize Express app
 const app = express();
 
+// Ensure uploads directory exists
+const uploadsDir = path.join(process.cwd(), 'uploads', 'cars');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 // Configure multer for file uploads
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + '-' + file.originalname);
+    }
+  }),
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit per file
   },
@@ -38,6 +54,9 @@ const corsOptions = {
 // Middlewares
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Helper functions
 function generateOrderNumber() {
@@ -314,7 +333,7 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
       // Handle uploaded files
       files.forEach((file, index) => {
         const fieldName = index === 0 ? 'imageUrl' : `imageUrl${index + 1}`;
-        carData[fieldName] = `/uploads/cars/${Date.now()}-${file.originalname}`;
+        carData[fieldName] = `/uploads/cars/${file.filename}`;
       });
       
       console.log('Final carData:', carData);
@@ -403,7 +422,7 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
       // Handle uploaded files
       files.forEach((file, index) => {
         const fieldName = index === 0 ? 'imageUrl' : `imageUrl${index + 1}`;
-        carData[fieldName] = `/uploads/cars/${Date.now()}-${file.originalname}`;
+        carData[fieldName] = `/uploads/cars/${file.filename}`;
       });
       
       console.log('Final carData:', carData);
