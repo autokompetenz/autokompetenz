@@ -5,6 +5,54 @@ import { useToastStore } from '../../store';
 
 const EMPTY = { make:'', model:'', year:new Date().getFullYear(), price:'', stock:1, description:'', fuelType:'Essence', transmission:'Automatique', mileage:0, color:'', power:'', category:'Berline', imageUrl:'', imageUrl2:'', imageUrl3:'', minSalary:'', featured:false, isActive:true };
 
+function Section({ title, children }) {
+  return (
+    <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, marginBottom:20 }}>
+      <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:22 }}>{title}</p>
+      {children}
+    </div>
+  );
+}
+
+function Field({ label, field, type='text', placeholder, opts, rows, value, onChange }) {
+  return (
+    <div>
+      <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{label}</label>
+      {opts ? (
+        <select 
+          name={field}
+          value={value} 
+          onChange={onChange} 
+          className="input-luxury" 
+          style={{ fontSize:15 }}
+        >
+          {opts.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+      ) : rows ? (
+        <textarea 
+          name={field}
+          value={value} 
+          onChange={onChange} 
+          rows={rows} 
+          placeholder={placeholder} 
+          className="input-luxury" 
+          style={{ resize:'none', fontSize:15 }}
+        />
+      ) : (
+        <input 
+          name={field}
+          type={type} 
+          value={value} 
+          onChange={onChange} 
+          placeholder={placeholder} 
+          className="input-luxury" 
+          style={{ fontSize:15 }}
+        />
+      )}
+    </div>
+  );
+}
+
 export default function AdminCarForm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -59,7 +107,7 @@ export default function AdminCarForm() {
           setPreviews(prev => [...prev, { 
             file: file,
             url: reader.result,
-            id: Date.now() + Math.random()
+            id: crypto.randomUUID()
           }]);
         };
         reader.readAsDataURL(file);
@@ -134,49 +182,6 @@ export default function AdminCarForm() {
     finally { setSaving(false); }
   };
 
-  const Section = ({ title, children }) => (
-    <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, marginBottom:20 }}>
-      <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:22 }}>{title}</p>
-      {children}
-    </div>
-  );
-
-  const Field = ({ label, field, type='text', placeholder, opts, half, rows }) => (
-    <div>
-      <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{label}</label>
-      {opts ? (
-        <select 
-          name={field}
-          value={form[field]} 
-          onChange={set(field)} 
-          className="input-luxury" 
-          style={{ fontSize:15 }}
-        >
-          {opts.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
-      ) : rows ? (
-        <textarea 
-          name={field}
-          value={form[field]} 
-          onChange={set(field)} 
-          rows={rows} 
-          placeholder={placeholder} 
-          className="input-luxury" 
-          style={{ resize:'none', fontSize:15 }}
-        />
-      ) : (
-        <input 
-          name={field}
-          type={type} 
-          value={form[field]} 
-          onChange={set(field)} 
-          placeholder={placeholder} 
-          className="input-luxury" 
-          style={{ fontSize:15 }}
-        />
-      )}
-    </div>
-  );
 
   return (
     <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--black)' }}>
@@ -190,23 +195,23 @@ export default function AdminCarForm() {
       <form onSubmit={handleSubmit} style={{ maxWidth:780 }}>
         <Section title="Informations principales">
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:16 }}>
-            <Field label="Marque *" field="make" placeholder="Toyota" />
-            <Field label="Modèle *" field="model" placeholder="Camry" />
-            <Field label="Année *" field="year" type="number" placeholder="2024" />
-            <Field label="Prix (€) *" field="price" type="number" placeholder="25000" />
-            <Field label="Stock *" field="stock" type="number" placeholder="3" />
+            <Field label="Marque *" field="make" placeholder="Toyota" value={form.make} onChange={set("make")} />
+            <Field label="Modèle *" field="model" placeholder="Camry" value={form.model} onChange={set("model")} />
+            <Field label="Année *" field="year" type="number" placeholder="2024" value={form.year} onChange={set("year")} />
+            <Field label="Prix (€) *" field="price" type="number" placeholder="25000" value={form.price} onChange={set("price")} />
+            <Field label="Stock *" field="stock" type="number" placeholder="3" value={form.stock} onChange={set("stock")} />
           </div>
-          <Field label="Description" field="description" rows={4} placeholder="Description détaillée du véhicule..." />
+          <Field label="Description" field="description" rows={4} placeholder="Description détaillée du véhicule..." value={form.description} onChange={set("description")} />
         </Section>
 
         <Section title="Caractéristiques techniques">
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
-            <Field label="Carburant" field="fuelType" opts={['Essence','Diesel','Electrique','Hybride']} />
-            <Field label="Transmission" field="transmission" opts={['Automatique','Manuelle']} />
-            <Field label="Catégorie" field="category" opts={['Berline','SUV','Citadine','Break','Coupe','Cabriolet','Utilitaire']} />
-            <Field label="Kilométrage" field="mileage" type="number" placeholder="0" />
-            <Field label="Puissance (hp)" field="power" type="number" placeholder="150" />
-            <Field label="Couleur" field="color" placeholder="Blanc Nacré" />
+            <Field label="Carburant" field="fuelType" opts={['Essence','Diesel','Electrique','Hybride']} value={form.fuelType} onChange={set("fuelType")} />
+            <Field label="Transmission" field="transmission" opts={['Automatique','Manuelle']} value={form.transmission} onChange={set("transmission")} />
+            <Field label="Catégorie" field="category" opts={['Berline','SUV','Citadine','Break','Coupe','Cabriolet','Utilitaire']} value={form.category} onChange={set("category")} />
+            <Field label="Kilométrage" field="mileage" type="number" placeholder="0" value={form.mileage} onChange={set("mileage")} />
+            <Field label="Puissance (hp)" field="power" type="number" placeholder="150" value={form.power} onChange={set("power")} />
+            <Field label="Couleur" field="color" placeholder="Blanc Nacré" value={form.color} onChange={set("color")} />
           </div>
         </Section>
 
