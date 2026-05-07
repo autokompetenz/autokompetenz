@@ -92,7 +92,7 @@ export default function Cart() {
       </div>
 
       <div style={{ maxWidth:1200, margin:'0 auto', padding:'48px 6%' }}>
-        {(!cartItems || cartItems.length === 0) ? (
+        {(!Array.isArray(cartItems) || cartItems.length === 0) ? (
           <EmptyState icon="🛒" title={L.empty[lang]} subtitle={L.emptySub[lang]}
             action={<Link to="/catalog" className="btn-primary" style={{ fontSize:14 }}>{L.discover[lang]}</Link>} />
         ) : (
@@ -102,29 +102,29 @@ export default function Cart() {
             <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
               <AnimatePresence>
                 {cartItems.map(item => (
-                  <motion.div key={item.id} layout initial={{ opacity:0, x:-20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20, height:0 }}
+                  <motion.div key={item?.id || item.carId} layout initial={{ opacity:0, x:-20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20, height:0 }}
                     style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:20, display:'flex', gap:18 }}>
-                    <Link to={`/cars/${item.carId}`} style={{ width:140, flexShrink:0, borderRadius:8, overflow:'hidden', display:'block' }}>
-                      <img src={item.car.imageUrl} alt={`${item.car.make} ${item.car.model}`}
+                    <Link to={`/cars/${item?.carId}`} style={{ width:140, flexShrink:0, borderRadius:8, overflow:'hidden', display:'block' }}>
+                      <img src={item?.car?.imageUrl || '/placeholder-car.jpg'} alt={`${item?.car?.make || ''} ${item?.car?.model || ''}`}
                         style={{ width:'100%', height:100, objectFit:'cover', transition:'transform 0.4s', display:'block' }}
                         onMouseOver={e => e.target.style.transform='scale(1.06)'}
                         onMouseOut={e => e.target.style.transform='scale(1)'} />
                     </Link>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <Link to={`/cars/${item.carId}`} style={{ textDecoration:'none' }}>
+                      <Link to={`/cars/${item?.carId}`} style={{ textDecoration:'none' }}>
                         <h3 style={{ fontFamily:"'Outfit', sans-serif", fontWeight:800, fontSize:22, color:'#fff', marginBottom:4, letterSpacing:'-0.01em', transition:'color 0.2s' }}
-                          onMouseOver={e => e.target.style.color='#C8102E'} onMouseOut={e => e.target.style.color='#fff'}>
-                          {item.car.make} {item.car.model}
+                          onMouseOver={e => e.target.style.color='#C8102E'} onMouseOut={e => e.target.style.color='#fff' }>
+                          {item?.car?.make || ''} {item?.car?.model || ''}
                         </h3>
                       </Link>
-                      <p style={{ fontSize:14, color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{item.car.year} · {item.car.fuelType} · {item.car.transmission}</p>
+                      <p style={{ fontSize:14, color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{item?.car?.year || ''} · {item?.car?.fuelType || ''} · {item?.car?.transmission || ''}</p>
                       <span style={{ display:'inline-block', fontSize:11, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', background:'rgba(200,16,46,0.1)', color:'#C8102E', border:'1px solid rgba(200,16,46,0.2)', padding:'4px 12px', borderRadius:20 }}>
-                        {t('payment_'+item.paymentType, lang)}
+                        {t('payment_'+(item?.paymentType || 'full'), lang)}
                       </span>
                     </div>
                     <div style={{ textAlign:'right', display:'flex', flexDirection:'column', justifyContent:'space-between', flexShrink:0 }}>
-                      <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:24, color:'#fff', letterSpacing:'-0.01em' }}>{formatEuro(item.car.price)}</p>
-                      <button onClick={() => handleRemove(item.carId, `${item.car.make} ${item.car.model}`)}
+                      <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:24, color:'#fff', letterSpacing:'-0.01em' }}>{formatEuro(item?.car?.price || 0)}</p>
+                      <button onClick={() => handleRemove(item?.carId, `${item?.car?.make || ''} ${item?.car?.model || ''}`)}
                         style={{ fontSize:13, color:'rgba(239,68,68,0.7)', background:'none', border:'none', cursor:'pointer', fontFamily:"'Outfit', sans-serif", fontWeight:600, transition:'color 0.2s', textAlign:'right' }}
                         onMouseOver={e => e.target.style.color='#EF4444'} onMouseOut={e => e.target.style.color='rgba(239,68,68,0.7)'}>
                         ✕ {L.remove[lang]}
