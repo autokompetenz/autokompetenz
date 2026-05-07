@@ -809,26 +809,57 @@ app.get('/api/orders/:id', authenticateToken, async (req, res) => {
 
 app.get('/api/orders/my', authenticateToken, async (req, res) => {
   try {
-    console.log('Fetching orders for user:', req.user?.id);
+    console.log('=== GET /api/orders/my ===');
+    console.log('User:', req.user);
+    console.log('Headers:', req.headers);
+    console.log('User ID:', req.user?.id);
     
     if (!req.user || !req.user.id) {
       console.error('No user found in request');
-      return res.status(401).json({ error: 'Utilisateur non authentifié' });
+      return res.status(401).json({ 
+        error: 'Utilisateur non authentifié',
+        orders: []
+      });
     }
+    
+    console.log('Fetching orders for user ID:', req.user.id);
     
     const orders = await prisma.order.findMany({
       where: { userId: req.user.id },
-      include: { items: { include: { car: true } } },
+      include: { 
+        items: { 
+          include: { 
+            car: true 
+          } 
+        },
+        tracking: true
+      },
       orderBy: { createdAt: 'desc' },
     });
     
-    console.log('Found orders:', orders.length);
-    res.json(orders);
+    console.log('Orders found:', orders);
+    console.log('Orders count:', orders.length);
+    
+    // Transform data to ensure consistent format
+    const transformedOrders = orders.map(order => ({
+      ...order,
+      items: order.items || [],
+      tracking: order.tracking || []
+    }));
+    
+    console.log('Transformed orders:', transformedOrders);
+    
+    res.json(transformedOrders);
   } catch (error) {
-    console.error('Orders/my error:', error);
+    console.error('=== GET /api/orders/my ERROR ===');
+    console.error('Error details:', error);
+    console.error('Error stack:', error.stack);
+    
+    // Return safe fallback response
     res.status(500).json({ 
-      error: 'Erreur serveur',
-      orders: [] 
+      error: error.message || 'Erreur serveur inconnue',
+      stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined,
+      orders: []
     });
   }
 });
