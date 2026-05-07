@@ -159,8 +159,8 @@ export default function AdminCarForm() {
       if (form.imageUrl) formData.append('imageUrl', form.imageUrl);
       
       // Add image files
-      imageFiles.forEach((file, index) => {
-        formData.append(`image${index + 1}`, file);
+      imageFiles.forEach((file) => {
+        formData.append('images', file);
       });
       
       console.log('FormData contents:');

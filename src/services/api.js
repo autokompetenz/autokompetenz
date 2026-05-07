@@ -35,40 +35,12 @@ export const carAPI = {
   getAll:        (p)    => api.get('/cars', { params: p }),
   getById:       (id)   => api.get(`/cars/${id}`),
   getCategories: ()     => api.get('/cars/categories'),
-  create:        (d)    => {
-    const formData = new FormData();
-    Object.keys(d).forEach(key => {
-      if (key === 'images' && Array.isArray(d[key])) {
-        d[key].forEach((file, index) => {
-          formData.append(`image${index + 1}`, file);
-        });
-      } else if (key === 'image' && d[key] instanceof File) {
-        formData.append('image', d[key]);
-      } else if (key === 'image' && typeof d[key] === 'string') {
-        formData.append('imageUrl', d[key]);
-      } else if (key !== 'imageUrl' && key !== 'imageUrl2' && key !== 'imageUrl3') {
-        formData.append(key, d[key]);
-      }
-    });
+  create:        (formData) => {
     return api.post('/cars', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
   },
-  update:        (id,d) => {
-    const formData = new FormData();
-    Object.keys(d).forEach(key => {
-      if (key === 'images' && Array.isArray(d[key])) {
-        d[key].forEach((file, index) => {
-          formData.append(`image${index + 1}`, file);
-        });
-      } else if (key === 'image' && d[key] instanceof File) {
-        formData.append('image', d[key]);
-      } else if (key === 'image' && typeof d[key] === 'string') {
-        formData.append('imageUrl', d[key]);
-      } else if (key !== 'imageUrl' && key !== 'imageUrl2' && key !== 'imageUrl3') {
-        formData.append(key, d[key]);
-      }
-    });
+  update:        (id, formData) => {
     return api.put(`/cars/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
