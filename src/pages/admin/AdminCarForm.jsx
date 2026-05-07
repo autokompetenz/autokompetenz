@@ -25,8 +25,7 @@ export default function AdminCarForm() {
   }, [id, isEdit]);
 
   const set = (f) => (e) => {
-    const val = e.target.type==='checkbox' ? e.target.checked : e.target.value;
-    setForm(p => ({ ...p, [f]:val }));
+    setForm(p => ({ ...p, [f]: e.target.value }));
   };
 
   const handleImageChange = (e) => {
