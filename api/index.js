@@ -3,30 +3,21 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+import { createClient } from '@supabase/supabase-js';
 import { prisma } from '../lib/prisma.js';
 
 // Initialize Express app
 const app = express();
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(process.cwd(), 'uploads', 'cars');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
-// Configure multer for file uploads
+// Configure multer for file uploads (memory storage for Vercel compatibility)
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, uploadsDir);
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-  }),
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit per file
   },
@@ -54,9 +45,6 @@ const corsOptions = {
 // Middlewares
 app.use(cors(corsOptions));
 app.use(express.json());
-
-// Serve static files from uploads directory
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Helper functions
 function generateOrderNumber() {
@@ -330,11 +318,35 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
         imageUrl: data.imageUrl || null,
       };
       
-      // Handle uploaded files
-      files.forEach((file, index) => {
-        const fieldName = index === 0 ? 'imageUrl' : `imageUrl${index + 1}`;
-        carData[fieldName] = `/uploads/cars/${file.filename}`;
-      });
+      // Handle uploaded files - Upload to Supabase Storage
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileName = `${Date.now()}-${file.originalname}`;
+        
+        console.log(`Uploading file ${i + 1}:`, fileName);
+        
+        // Upload to Supabase Storage
+        const { data, error } = await supabase.storage
+          .from('cars')
+          .upload(fileName, file.buffer, {
+            contentType: file.mimetype
+          });
+        
+        if (error) {
+          console.error('Supabase upload error:', error);
+          return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
+        }
+        
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from('cars')
+          .getPublicUrl(fileName);
+        
+        const fieldName = i === 0 ? 'imageUrl' : `imageUrl${i + 1}`;
+        carData[fieldName] = publicUrlData.publicUrl;
+        
+        console.log(`File ${i + 1} uploaded successfully:`, publicUrlData.publicUrl);
+      }
       
       console.log('Final carData:', carData);
       
@@ -419,11 +431,35 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
         imageUrl: data.imageUrl || null,
       };
       
-      // Handle uploaded files
-      files.forEach((file, index) => {
-        const fieldName = index === 0 ? 'imageUrl' : `imageUrl${index + 1}`;
-        carData[fieldName] = `/uploads/cars/${file.filename}`;
-      });
+      // Handle uploaded files - Upload to Supabase Storage
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileName = `${Date.now()}-${file.originalname}`;
+        
+        console.log(`Uploading file ${i + 1}:`, fileName);
+        
+        // Upload to Supabase Storage
+        const { data, error } = await supabase.storage
+          .from('cars')
+          .upload(fileName, file.buffer, {
+            contentType: file.mimetype
+          });
+        
+        if (error) {
+          console.error('Supabase upload error:', error);
+          return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
+        }
+        
+        // Get public URL
+        const { data: publicUrlData } = supabase.storage
+          .from('cars')
+          .getPublicUrl(fileName);
+        
+        const fieldName = i === 0 ? 'imageUrl' : `imageUrl${i + 1}`;
+        carData[fieldName] = publicUrlData.publicUrl;
+        
+        console.log(`File ${i + 1} uploaded successfully:`, publicUrlData.publicUrl);
+      }
       
       console.log('Final carData:', carData);
       
