@@ -357,6 +357,7 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
         carData[fieldName] = publicUrlData.publicUrl;
         
         console.log(`File ${i + 1} uploaded successfully:`, publicUrlData.publicUrl);
+        console.log(`File ${i + 1} publicUrlData:`, publicUrlData);
       }
       
       console.log('Final carData:', carData);
@@ -470,6 +471,7 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
         carData[fieldName] = publicUrlData.publicUrl;
         
         console.log(`File ${i + 1} uploaded successfully:`, publicUrlData.publicUrl);
+        console.log(`File ${i + 1} publicUrlData:`, publicUrlData);
       }
       
       console.log('Final carData:', carData);
