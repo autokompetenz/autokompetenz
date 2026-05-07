@@ -36,7 +36,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => { logout(); navigate('/'); };
-  const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+  const currentLang = Array.isArray(LANGUAGES) ? LANGUAGES.find(l => l.code === lang) || LANGUAGES[0] : LANGUAGES[0];
 
   const S = {
     nav: {

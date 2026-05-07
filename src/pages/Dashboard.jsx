@@ -16,7 +16,15 @@ export default function Dashboard() {
   const isWelcome = params.get('welcome') === '1';
 
   useEffect(() => {
-    orderAPI.getMy().then(r => { setOrders(r.data.orders.slice(0,5)); setLoading(false); }).catch(() => setLoading(false));
+    orderAPI.getMy().then(r => { 
+      console.log('=== Dashboard API Response ===');
+      console.log('Orders data:', r.data);
+      setOrders(Array.isArray(r.data.orders) ? r.data.orders.slice(0,5) : []); 
+      setLoading(false); 
+    }).catch(error => { 
+      console.error('Dashboard API error:', error);
+      setLoading(false); 
+    });
   }, []);
 
   const maxMonthly = user?.monthlySalary ? Math.round(user.monthlySalary * 0.33) : null;

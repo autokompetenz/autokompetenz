@@ -120,7 +120,7 @@ export default function AdminCarForm() {
   const removeImage = (imageId) => {
     if (!previews || !Array.isArray(previews)) return;
     
-    const previewToRemove = previews.find(p => p.id === imageId);
+    const previewToRemove = Array.isArray(previews) ? previews.find(p => p.id === imageId) : null;
 
     if (!previewToRemove) return;
 

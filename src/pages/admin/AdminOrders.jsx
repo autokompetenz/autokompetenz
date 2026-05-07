@@ -25,7 +25,7 @@ export default function AdminOrders() {
 
   useEffect(() => { fetchOrders(); }, []);
 
-  const countFor = (id) => statusCounts.find(s => s.status === id)?._count?.status || 0;
+  const countFor = (id) => Array.isArray(statusCounts) ? statusCounts.find(s => s.status === id)?._count?.status || 0 : 0;
   const tabs = [{ id:'', label:'Toutes' }, ...Object.entries(STATUS_LABELS).map(([id,label]) => ({ id, label }))];
 
   const handleTab = (id) => { setActiveTab(id); fetchOrders(id); };

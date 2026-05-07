@@ -79,7 +79,7 @@ export default function Catalog() {
               <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#C8102E', padding: '12px 18px 8px' }}>
                 {lang === 'fr' ? 'Catégorie' : lang === 'en' ? 'Category' : lang === 'de' ? 'Kategorie' : 'الفئة'}
               </p>
-              {[{ id: 'all', label: allLabel[lang] || 'Tous', count: total }, ...ALL_CATEGORIES.map(cat => ({ id: cat, label: (CAT_LABELS[lang] || CAT_LABELS.fr)[cat], count: categories.find(c => c.name === cat)?.count || 0 }))].map(({ id, label, count }) => (
+              {[{ id: 'all', label: allLabel[lang] || 'Tous', count: total }, ...ALL_CATEGORIES.map(cat => ({ id: cat, label: (CAT_LABELS[lang] || CAT_LABELS.fr)[cat], count: Array.isArray(categories) ? categories.find(c => c.name === cat)?.count || 0 : 0 }))].map(({ id, label, count }) => (
                 <button key={id} onClick={() => setFilter('category', id === 'all' ? '' : id)}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',

@@ -13,7 +13,18 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { orderAPI.getMy().then(r => { setOrders(r.data.orders); setLoading(false); }).catch(() => setLoading(false)); }, []);
+  useEffect(() => { 
+    orderAPI.getMy().then(r => { 
+      console.log('=== Orders API Response ===');
+      console.log('Orders data:', r.data);
+      setOrders(Array.isArray(r.data.orders) ? r.data.orders : []); 
+      setLoading(false); 
+    }).catch(error => { 
+      console.error('Orders API error:', error);
+      setOrders([]);
+      setLoading(false); 
+    });
+  }, []);
 
   const L = {
     label:   { fr:'Mon historique', en:'My history', de:'Mein Verlauf', ar:'سجلي' },
