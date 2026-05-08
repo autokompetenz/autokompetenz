@@ -96,7 +96,19 @@ export default function Cart() {
           <EmptyState icon="🛒" title={L.empty[lang]} subtitle={L.emptySub[lang]}
             action={<Link to="/catalog" className="btn-primary" style={{ fontSize:14 }}>{L.discover[lang]}</Link>} />
         ) : (
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 400px', gap:36 }}>
+          <div style={{ 
+                display:'grid', 
+                gridTemplateColumns: '1fr',
+                gap: 24,
+                '@media (min-width: 769px)': {
+                  gridTemplateColumns: '1fr 380px',
+                  gap: 36
+                },
+                '@media (min-width: 1025px)': {
+                  gridTemplateColumns: '1fr 400px',
+                  gap: 36
+                }
+              }}>
 
             {/* ── Items ── */}
             <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
@@ -195,11 +207,24 @@ export default function Cart() {
                 <div>
                   <label style={{ display:'block', fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:8 }}>{L.address[lang]}</label>
                   <textarea value={shippingAddress} onChange={e => setShippingAddress(e.target.value)} required rows={3}
-                    placeholder={L.addrPH[lang]} className="input-luxury" style={{ resize:'none', fontSize:15 }} />
+                    placeholder={L.addrPH[lang]} className="input-luxury" style={{ 
+                      resize:'none', 
+                      fontSize:15,
+                      '@media (max-width: 480px)': {
+                        fontSize: 16,
+                        padding: '14px 12px'
+                      }
+                    }} />
                 </div>
                 <div>
                   <label style={{ display:'block', fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:8 }}>{L.notesL[lang]}</label>
-                  <input value={notes} onChange={e => setNotes(e.target.value)} placeholder={L.notesPH[lang]} className="input-luxury" style={{ fontSize:15 }} />
+                  <input value={notes} onChange={e => setNotes(e.target.value)} placeholder={L.notesPH[lang]} className="input-luxury" style={{ 
+                    fontSize:15,
+                    '@media (max-width: 480px)': {
+                      fontSize: 16,
+                      padding: '14px 12px'
+                    }
+                  }} />
                 </div>
                 <button type="submit" disabled={placing} className="btn-primary" style={{ justifyContent:'center', padding:16, fontSize:14 }}>
                   {placing?'⏳ ...' : '✓ '+L.validate[lang]}

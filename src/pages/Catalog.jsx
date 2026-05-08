@@ -120,7 +120,23 @@ export default function Catalog() {
                 <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)' }}>{tryOther[lang] || tryOther.fr}</p>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+                gap: 20,
+                '@media (max-width: 480px)': {
+                  gridTemplateColumns: '1fr',
+                  gap: 16
+                },
+                '@media (min-width: 481px) and (max-width: 768px)': {
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: 18
+                },
+                '@media (min-width: 769px)': {
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                  gap: 24
+                }
+              }}>
                 <AnimatePresence>
                   {cars.map((car, i) => <CarCard key={car.id} car={car} index={i} />)}
                 </AnimatePresence>

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const { createClient } = require('@supabase/supabase-js');
 const { prisma } = require('../lib/prisma.js');
+const { sendWelcomeEmail, sendOrderConfirmationEmail } = require('../lib/mailer.js');
 
 // Initialize Express app
 const app = express();
@@ -216,6 +217,11 @@ app.post('/api/auth/register', async (req, res) => {
     });
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail({ email: user.email, firstName: user.firstName, lastName: user.lastName })
+      .catch(err => console.error('Welcome email error:', err));
+
     res.status(201).json({ message: 'Compte créé avec succès', token, user });
   } catch (e) {
     console.error('Register error:', e);
@@ -281,7 +287,7 @@ app.get('/api/cars/categories', async (req, res) => {
     ];
     
     console.log('Returning categories:', categories);
-    res.json(categories);
+    res.json({ categories });
   } catch (error) {
     console.error('=== GET /api/cars/categories ERROR ===');
     console.error('Error details:', error);
@@ -586,6 +592,23 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images',
   }
 });
 
+// Toggle car active status
+app.patch('/api/cars/:id/toggle', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const carId = parseInt(req.params.id);
+    if (isNaN(carId)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.car.findUnique({ where: { id: carId } });
+    if (!existing) return res.status(404).json({ error: 'Voiture non trouvée' });
+    const car = await prisma.car.update({
+      where: { id: carId },
+      data: { isActive: !existing.isActive },
+    });
+    res.json({ car });
+  } catch (e) {
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
 // Cart Routes
 app.get('/api/cart', authenticateToken, async (req, res) => {
   try {
@@ -878,6 +901,14 @@ app.post('/api/orders', authenticateToken, async (req, res) => {
     });
 
     res.status(201).json({ success: true, orderNumber: order.orderNumber, order });
+
+    // Send order confirmation email (non-blocking)
+    sendOrderConfirmationEmail({
+      email: req.user.email,
+      firstName: req.user.firstName,
+      order: { ...order, createdAt: order.createdAt || new Date() },
+      items: cartItems.map(i => ({ car: i.car, unitPrice: i.car.price, quantity: i.quantity })),
+    }).catch(err => console.error('Order confirmation email error:', err));
   } catch (e) {
     console.error('Create order error:', e);
     res.status(500).json({ error: 'Erreur serveur' });

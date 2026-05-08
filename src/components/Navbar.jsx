@@ -83,12 +83,32 @@ export default function Navbar() {
       <nav style={S.nav}>
         {/* Logo */}
         <Link to="/" style={S.logo}>
-          <span style={S.logoMain}>AUTO KOMPETENZ</span>
-          <span style={S.logoSub}>GmbH · Emsdetten</span>
+          <div style={S.logoMain}>AUTO KOMPETENZ</div>
+          <div style={S.logoSub}>GmbH</div>
         </Link>
 
+        {/* Mobile menu button */}
+        <button 
+          onClick={() => setMobileOpen(!mobileOpen)}
+          style={{
+            display: 'none',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#fff',
+            fontSize: 24,
+            padding: 8,
+            '@media (max-width: 768px)': {
+              display: 'block'
+            }
+          }}
+          className="nav-mobile-menu"
+        >
+          {mobileOpen ? '✕' : '☰'}
+        </button>
+
         {/* Desktop nav */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 36 }} className="nav-desktop">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24 }} className="nav-desktop">
           <NavLink to="/catalog" label={t('nav_vehicles', lang)} />
           <NavLink to="/simulation" label={t('nav_financing', lang)} />
           <NavLink to="/track" label={t('nav_track', lang)} />

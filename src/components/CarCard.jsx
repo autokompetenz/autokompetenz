@@ -47,10 +47,24 @@ export default function CarCard({ car, index = 0 }) {
       {/* Image */}
       <Link to={`/cars/${car.id}`} style={{ display: 'block', position: 'relative', overflow: 'hidden', aspectRatio: '16/10' }}>
         <img
-          src={car.imageUrl || 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&q=80'}
+          src={car.imageUrl}
           alt={`${car.make} ${car.model}`}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.7s cubic-bezier(0.16,1,0.3,1)', transform: hovered ? 'scale(1.08)' : 'scale(1)' }}
-          loading="lazy"
+          style={{
+            width: '100%',
+            height: 200,
+            objectFit: 'cover',
+            transition: 'transform 0.7s',
+            display: 'block',
+            '@media (max-width: 480px)': {
+              height: 160
+            },
+            '@media (min-width: 769px)': {
+              height: 220
+            }
+          }}
+          className="car-img-zoom"
+          onMouseOver={e => e.target.style.transform = 'scale(1.06)'}
+          onMouseOut={e => e.target.style.transform = 'scale(1)'}
         />
         {/* Overlay gradient */}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)' }} />
