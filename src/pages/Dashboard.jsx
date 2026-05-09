@@ -1,200 +1,201 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { orderAPI } from '../services/api';
-import { useAuthStore, useCartStore, useLangStore } from '../store';
-import { formatEuro, formatDate, getInitials } from '../utils/helpers';
-import { StatusBadge, Loader } from '../components/UI';
+import { useCartStore, useToastStore, useLangStore } from '../store';
+import { formatEuro, calculateOrderTotals } from '../utils/helpers';
+import { Loader, EmptyState } from '../components/UI';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
-export default function Dashboard() {
-  const { user } = useAuthStore();
-  const { cartCount } = useCartStore();
+export default function Cart() {
+  const { cartItems, total, loading, fetchCart, removeItem } = useCartStore();
+  const { addToast } = useToastStore();
   const { lang } = useLangStore();
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [params] = useSearchParams();
-  const isWelcome = params.get('welcome') === '1';
+  const { isMobile } = useBreakpoint();
+  const navigate = useNavigate();
+  const [selectedPayment, setSelectedPayment] = useState('full');
+  const [shippingAddress, setShippingAddress] = useState('');
+  const [notes, setNotes] = useState('');
+  const [placing, setPlacing] = useState(false);
 
-  useEffect(() => {
-    orderAPI.getMy().then(r => { 
-      console.log('=== Dashboard API Response ===');
-      console.log('Orders data:', r.data);
-      setOrders(Array.isArray(r.data) ? r.data.slice(0,5) : []); 
-      setLoading(false); 
-    }).catch(error => { 
-      console.error('Dashboard API error:', error);
-      setLoading(false); 
-    });
-  }, []);
+  useEffect(() => { fetchCart(); }, []);
 
-  const maxMonthly = user?.monthlySalary ? Math.round(user.monthlySalary * 0.33) : null;
-
-  const L = {
-    welcome:    { fr:'Bienvenu(e) chez Auto Kompetenz !',   en:'Welcome to Auto Kompetenz!',    de:'Willkommen bei Auto Kompetenz!',   ar:'أهلاً بك في Auto Kompetenz!' },
-    mySpace:    { fr:'Mon Espace',                           en:'My Account',                     de:'Mein Bereich',                     ar:'حسابي' },
-    hello:      { fr:'Bonjour,',                             en:'Hello,',                         de:'Guten Tag,',                        ar:'مرحباً،' },
-    orders:     { fr:'Commandes',                            en:'Orders',                         de:'Bestellungen',                     ar:'الطلبات' },
-    cart:       { fr:'Panier',                               en:'Cart',                           de:'Warenkorb',                        ar:'السلة' },
-    maxRate:    { fr:'Mensualité max.',                      en:'Max. monthly',                   de:'Max. Rate',                        ar:'الحد الأقصى الشهري' },
-    financing:  { fr:'Capacité de financement',             en:'Financing capacity',             de:'Finanzierungskapazität',           ar:'القدرة التمويلية' },
-    salary:     { fr:'Salaire',                              en:'Salary',                         de:'Gehalt',                           ar:'الراتب' },
-    recent:     { fr:'Dernières commandes',                  en:'Recent orders',                  de:'Letzte Bestellungen',              ar:'آخر الطلبات' },
-    seeAll:     { fr:'Voir tout',                            en:'See all',                        de:'Alle anzeigen',                    ar:'عرض الكل' },
-    noOrders:   { fr:"Vous n'avez pas encore de commande.", en:"You don't have any orders yet.", de:'Noch keine Bestellungen.',         ar:'ليس لديك طلبات حتى الآن.' },
-    discover:   { fr:'Découvrir nos véhicules',             en:'Discover our vehicles',          de:'Fahrzeuge entdecken',              ar:'اكتشف سياراتنا' },
-    track:      { fr:'Suivre →',                             en:'Track →',                        de:'Verfolgen →',                      ar:'تتبع →' },
-    whatsapp:   { fr:'Une question ? Contactez-nous sur WhatsApp — réponse rapide !', en:'A question? Contact us on WhatsApp — fast reply!', de:'Fragen? WhatsApp — schnelle Antwort!', ar:'سؤال؟ تواصل معنا عبر واتساب — رد سريع!' },
-    nav: {
-      dashboard:  { fr:'Mon Espace',           en:'My Account',         de:'Mein Bereich',       ar:'حسابي' },
-      orders:     { fr:'Mes Commandes',         en:'My Orders',          de:'Bestellungen',       ar:'طلباتي' },
-      cart:       { fr:'Mon Panier',            en:'My Cart',            de:'Warenkorb',          ar:'سلتي' },
-      profile:    { fr:'Mon Profil',            en:'My Profile',         de:'Mein Profil',        ar:'ملفي' },
-      simulation: { fr:'Simuler financement',  en:'Financing Simulator', de:'Finanzierung',       ar:'محاكاة التمويل' },
-    },
+  const handleRemove = async (carId, carName) => {
+    try { await removeItem(carId); addToast(`${carName} ${lang==='fr'?'retiré du panier':lang==='en'?'removed from cart':lang==='de'?'entfernt':'تم الإزالة'}`, 'info'); }
+    catch { addToast('Erreur', 'error'); }
   };
 
-  const navItems = [
-    { to:'/dashboard',  icon:'⊞', labelKey:'dashboard' },
-    { to:'/orders',     icon:'📦', labelKey:'orders' },
-    { to:'/cart',       icon:'🛒', labelKey:'cart' },
-    { to:'/profile',    icon:'👤', labelKey:'profile' },
-    { to:'/simulation', icon:'🧮', labelKey:'simulation' },
-  ];
+  const totals = calculateOrderTotals(total, selectedPayment);
 
-  return (
-    <div style={{ minHeight:'100vh', paddingTop:76, background:'var(--black)' }}>
-      {isWelcome && (
-        <motion.div initial={{ opacity:0, y:-20 }} animate={{ opacity:1, y:0 }}
-          style={{ background:'rgba(200,16,46,0.08)', borderBottom:'1px solid rgba(200,16,46,0.2)', padding:'14px 6%', textAlign:'center' }}>
-          <p style={{ fontSize:15, color:'#C8102E', fontWeight:600 }}>🎉 {L.welcome[lang] || L.welcome.fr}</p>
-        </motion.div>
-      )}
+  const handleOrder = async (e) => {
+    e.preventDefault();
+    if (!shippingAddress.trim()) {
+      addToast(lang==='fr'?'Veuillez saisir votre adresse':lang==='en'?'Please enter your address':lang==='de'?'Bitte Adresse eingeben':'أدخل عنوانك', 'warning');
+      return;
+    }
+    try {
+      setPlacing(true);
+      const { data } = await orderAPI.create({ paymentType: selectedPayment, shippingAddress, notes });
+      fetchCart();
+      navigate(`/order-confirm/${data.orderNumber}`);
+    } catch (err) { addToast(err.response?.data?.error || 'Erreur', 'error'); }
+    finally { setPlacing(false); }
+  };
 
-      <div style={{ maxWidth:1200, margin:'0 auto', padding:'48px 6%' }}>
-        <div style={{ display:'grid', gridTemplateColumns:'260px 1fr', gap:36 }}>
+  const L = {
+    title:    { fr:'Mon Panier',                en:'My Cart',                de:'Warenkorb',              ar:'سلتي' },
+    empty:    { fr:'Votre panier est vide',      en:'Your cart is empty',     de:'Warenkorb leer',         ar:'سلتك فارغة' },
+    emptySub: { fr:'Découvrez nos véhicules et ajoutez-les à votre panier.', en:'Discover our vehicles.', de:'Entdecken Sie unsere Fahrzeuge.', ar:'اكتشف سياراتنا.' },
+    discover: { fr:'Découvrir nos véhicules',   en:'Discover vehicles',       de:'Fahrzeuge entdecken',    ar:'اكتشف سياراتنا' },
+    remove:   { fr:'Retirer',                   en:'Remove',                  de:'Entfernen',              ar:'إزالة' },
+    payment:  { fr:'Mode de paiement',          en:'Payment method',          de:'Zahlungsart',            ar:'طريقة الدفع' },
+    summary:  { fr:'Récapitulatif',             en:'Summary',                 de:'Zusammenfassung',        ar:'ملخص' },
+    subtotal: { fr:'Sous-total',                en:'Subtotal',                de:'Zwischensumme',          ar:'المجموع الفرعي' },
+    discount: { fr:'Remise (-5%)',              en:'Discount (-5%)',          de:'Rabatt (-5%)',           ar:'خصم (-5%)' },
+    monthly:  { fr:'Mensualité',                en:'Monthly rate',            de:'Monatsrate',             ar:'القسط الشهري' },
+    contract: { fr:'Total contrat',             en:'Contract total',          de:'Gesamtbetrag',           ar:'إجمالي العقد' },
+    deposit:  { fr:'Acompte à régler',          en:'Deposit to pay',          de:'Anzahlung',              ar:'الدفعة الأولى' },
+    total:    { fr:'Total',                     en:'Total',                   de:'Gesamt',                 ar:'الإجمالي' },
+    delivery: { fr:'Livraison',                 en:'Delivery',                de:'Lieferung',              ar:'التوصيل' },
+    address:  { fr:'Adresse de livraison *',    en:'Delivery address *',      de:'Lieferadresse *',        ar:'عنوان التسليم *' },
+    addrPH:   { fr:'Rue, code postal, ville...', en:'Street, postcode, city...', de:'Straße, PLZ, Stadt...', ar:'الشارع، الرمز البريدي، المدينة...' },
+    notesL:   { fr:'Notes (optionnel)',          en:'Notes (optional)',        de:'Anmerkungen (optional)', ar:'ملاحظات (اختياري)' },
+    notesPH:  { fr:'Instructions particulières...', en:'Special instructions...', de:'Besondere Hinweise...', ar:'تعليمات خاصة...' },
+    validate: { fr:'Valider ma commande',        en:'Place my order',          de:'Bestellung aufgeben',    ar:'تأكيد الطلب' },
+    confirm:  { fr:'Un email de confirmation vous sera envoyé', en:'A confirmation email will be sent', de:'Bestätigungs-E-Mail wird gesendet', ar:'سيتم إرسال بريد تأكيد' },
+    full:     { fr:'Paiement intégral',         en:'Full payment',             de:'Vollzahlung',            ar:'الدفع الكامل' },
+    fullSub:  { fr:'5% de remise immédiate',    en:'5% immediate discount',   de:'5% Sofortrabatt',        ar:'خصم فوري 5%' },
+    dep:      { fr:'Acompte 25%',               en:'25% Deposit',             de:'Anzahlung 25%',          ar:'دفعة أولى 25%' },
+    depSub:   { fr:'25% maintenant, solde à livraison', en:'25% now, balance on delivery', de:'25% jetzt, Rest bei Lieferung', ar:'25% الآن، الباقي عند التسليم' },
+    month:    { fr:'Mensualités 60 mois',       en:'60 monthly payments',     de:'60 Raten',               ar:'60 دفعة شهرية' },
+    monthSub: { fr:'Taux 6%/an',                en:'Rate 6%/year',            de:'6% p.a.',                ar:'معدل 6% سنوياً' },
+  };
+  const l = lang || 'fr';
 
-          {/* ── Sidebar ── */}
-          <aside>
-            {/* Profile card */}
-            <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:24, marginBottom:16, textAlign:'center' }}>
-              <div style={{ width:64, height:64, borderRadius:'50%', background:'linear-gradient(135deg, #9B0B22, #C8102E)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:22, color:'#fff', margin:'0 auto 16px', letterSpacing:'-0.01em' }}>
-                {getInitials(user?.firstName, user?.lastName)}
+  if (loading) return <div style={{ paddingTop:100, background:'var(--black)', minHeight:'100vh' }}><Loader /></div>;
+
+  const CheckoutPanel = () => (
+    <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+      {/* Payment type */}
+      <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:22 }}>
+        <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:16 }}>{L.payment[l]}</p>
+        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+          {[
+            { id:'full',    icon:'💎', label:L.full[l],  sub:L.fullSub[l] },
+            { id:'deposit', icon:'🔑', label:L.dep[l],   sub:L.depSub[l] },
+            { id:'monthly', icon:'📅', label:L.month[l], sub:L.monthSub[l] },
+          ].map(opt => (
+            <label key={opt.id} style={{ display:'flex', alignItems:'center', gap:14, padding:'14px 16px', borderRadius:8, cursor:'pointer', transition:'all 0.2s', border:`1.5px solid ${selectedPayment===opt.id?'#C8102E':'rgba(255,255,255,0.07)'}`, background:selectedPayment===opt.id?'rgba(200,16,46,0.06)':'transparent' }}>
+              <input type="radio" name="payment" value={opt.id} checked={selectedPayment===opt.id} onChange={() => setSelectedPayment(opt.id)} style={{ accentColor:'#C8102E', width:16, height:16, flexShrink:0 }} />
+              <span style={{ fontSize:22 }}>{opt.icon}</span>
+              <div>
+                <p style={{ fontSize:14, fontWeight:700, color:'#fff' }}>{opt.label}</p>
+                <p style={{ fontSize:12, color:'rgba(255,255,255,0.35)', marginTop:2 }}>{opt.sub}</p>
               </div>
-              <h2 style={{ fontFamily:"'Outfit', sans-serif", fontWeight:800, fontSize:20, color:'#fff', marginBottom:4 }}>{user?.firstName} {user?.lastName}</h2>
-              <p style={{ fontSize:13, color:'rgba(255,255,255,0.35)' }}>{user?.email}</p>
+            </label>
+          ))}
+        </div>
+      </div>
 
-              <div style={{ height:1, background:'rgba(255,255,255,0.06)', margin:'18px 0' }} />
-
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-                {[{ label:L.orders[lang], value:orders.length }, { label:L.cart[lang], value:cartCount }].map(({ label, value }) => (
-                  <div key={label} style={{ background:'var(--dark)', borderRadius:8, padding:'12px 8px' }}>
-                    <div style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:28, color:'#C8102E' }}>{value}</div>
-                    <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', marginTop:2, fontWeight:600, letterSpacing:'0.05em' }}>{label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {user?.monthlySalary && (
-                <div style={{ marginTop:16, padding:'14px 16px', background:'rgba(200,16,46,0.06)', border:'1px solid rgba(200,16,46,0.15)', borderRadius:8, textAlign:'left' }}>
-                  <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.2em', textTransform:'uppercase', color:'#C8102E', marginBottom:10 }}>{L.financing[lang]}</p>
-                  <div style={{ display:'flex', justifyContent:'space-between', fontSize:14, marginBottom:4 }}>
-                    <span style={{ color:'rgba(255,255,255,0.4)' }}>{L.salary[lang]}</span>
-                    <span style={{ color:'#fff', fontWeight:700 }}>{formatEuro(user.monthlySalary)}</span>
-                  </div>
-                  {maxMonthly && (
-                    <div style={{ display:'flex', justifyContent:'space-between', fontSize:14 }}>
-                      <span style={{ color:'rgba(255,255,255,0.4)' }}>{L.maxRate[lang]}</span>
-                      <span style={{ color:'#C8102E', fontWeight:700 }}>{formatEuro(maxMonthly)}</span>
-                    </div>
-                  )}
-                </div>
-              )}
+      {/* Summary */}
+      <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:22 }}>
+        <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:16 }}>{L.summary[l]}</p>
+        <div style={{ display:'flex', flexDirection:'column', gap:10, fontSize:15 }}>
+          <div style={{ display:'flex', justifyContent:'space-between' }}>
+            <span style={{ color:'rgba(255,255,255,0.4)' }}>{L.subtotal[l]}</span>
+            <span style={{ color:'#fff', fontWeight:600 }}>{formatEuro(total)}</span>
+          </div>
+          {selectedPayment==='full' && totals.discount && (
+            <div style={{ display:'flex', justifyContent:'space-between', color:'#22C55E' }}>
+              <span>{L.discount[l]}</span><span>- {formatEuro(totals.discount)}</span>
             </div>
-
-            {/* Navigation */}
-            <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:8 }}>
-              {navItems.map(({ to, icon, labelKey }) => (
-                <Link key={to} to={to} style={{ display:'flex', alignItems:'center', gap:12, padding:'11px 16px', borderRadius:8, fontSize:14, fontWeight:600, color:'rgba(255,255,255,0.45)', textDecoration:'none', transition:'all 0.2s', marginBottom:2 }}
-                  onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#fff'; }}
-                  onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}>
-                  <span style={{ fontSize:18 }}>{icon}</span>
-                  {L.nav[labelKey]?.[lang] || L.nav[labelKey]?.fr}
-                </Link>
-              ))}
+          )}
+          {selectedPayment==='monthly' && totals.monthly && (
+            <div style={{ display:'flex', justifyContent:'space-between' }}>
+              <span style={{ color:'rgba(255,255,255,0.4)' }}>{L.monthly[l]}</span>
+              <span style={{ color:'#C8102E', fontWeight:700 }}>{formatEuro(totals.monthly)}/mo</span>
             </div>
-          </aside>
-
-          {/* ── Content ── */}
-          <div>
-            <div style={{ marginBottom:36 }}>
-              <p style={{ fontSize:12, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:8 }}>{L.mySpace[lang]}</p>
-              <h1 style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:'clamp(36px,5vw,56px)', color:'#fff', letterSpacing:'-0.02em' }}>
-                {L.hello[lang]} {user?.firstName}
-              </h1>
-            </div>
-
-            {/* Stats */}
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, marginBottom:32 }}>
-              {[
-                { icon:'📦', label:L.orders[lang], value:orders.length },
-                { icon:'🛒', label:L.cart[lang], value:cartCount },
-                { icon:'💶', label:L.maxRate[lang], value:maxMonthly ? formatEuro(maxMonthly) : '—' },
-              ].map(({ icon, label, value }) => (
-                <motion.div key={label} whileHover={{ y:-3 }}
-                  style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:'22px 20px', transition:'border-color 0.3s' }}
-                  onMouseOver={e => e.currentTarget.style.borderColor = 'rgba(200,16,46,0.25)'}
-                  onMouseOut={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'}>
-                  <div style={{ fontSize:26, marginBottom:10 }}>{icon}</div>
-                  <div style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:30, color:'#C8102E', lineHeight:1 }}>{value}</div>
-                  <div style={{ fontSize:13, color:'rgba(255,255,255,0.35)', marginTop:6, fontWeight:600 }}>{label}</div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Recent orders */}
-            <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }}>
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'20px 24px', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
-                <p style={{ fontSize:12, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'#C8102E' }}>{L.recent[lang]}</p>
-                <Link to="/orders" style={{ fontSize:13, color:'rgba(255,255,255,0.4)', textDecoration:'none', fontWeight:600, transition:'color 0.2s' }}
-                  onMouseOver={e => e.target.style.color = '#C8102E'} onMouseOut={e => e.target.style.color = 'rgba(255,255,255,0.4)'}>
-                  {L.seeAll[lang]} →
-                </Link>
-              </div>
-              <div style={{ padding:'8px 16px 16px' }}>
-                {loading ? <Loader size="sm" /> : orders.length === 0 ? (
-                  <div style={{ textAlign:'center', padding:'40px 0' }}>
-                    <p style={{ fontSize:40, marginBottom:12 }}>📦</p>
-                    <p style={{ color:'rgba(255,255,255,0.35)', fontSize:15, marginBottom:20 }}>{L.noOrders[lang]}</p>
-                    <Link to="/catalog" className="btn-gold" style={{ fontSize:13 }}>{L.discover[lang]}</Link>
-                  </div>
-                ) : orders.map(order => (
-                  <div key={order.id} style={{ display:'flex', alignItems:'center', gap:16, padding:'14px 8px', borderBottom:'1px solid rgba(255,255,255,0.04)', transition:'background 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
-                    <div style={{ flex:1 }}>
-                      <p style={{ fontFamily:'monospace', fontSize:14, color:'#C8102E', fontWeight:700, letterSpacing:'0.05em' }}>{order.orderNumber}</p>
-                      <p style={{ fontSize:12, color:'rgba(255,255,255,0.3)', marginTop:3 }}>{formatDate(order.createdAt)}</p>
-                    </div>
-                    <StatusBadge status={order.status} />
-                    <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:800, fontSize:18, color:'#fff' }}>{formatEuro(order.totalPrice)}</p>
-                    <Link to={`/track/${order.orderNumber}`} style={{ fontSize:13, color:'#C8102E', textDecoration:'none', fontWeight:700, whiteSpace:'nowrap' }}>{L.track[lang]}</Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* WhatsApp CTA */}
-            <div style={{ marginTop:20, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12, padding:'20px 24px', background:'rgba(37,211,102,0.05)', border:'1px solid rgba(37,211,102,0.15)', borderRadius:12 }}>
-              <p style={{ fontSize:15, color:'rgba(255,255,255,0.5)', flex:1 }}>{L.whatsapp[lang]}</p>
-              <a href="https://wa.me/4915788823274" target="_blank" rel="noopener noreferrer"
-                style={{ background:'#25D366', color:'#fff', padding:'11px 22px', borderRadius:6, textDecoration:'none', fontFamily:"'Outfit', sans-serif", fontWeight:700, fontSize:14, display:'flex', alignItems:'center', gap:8, flexShrink:0, transition:'all 0.25s' }}
-                onMouseOver={e => e.currentTarget.style.background = '#1da851'}
-                onMouseOut={e => e.currentTarget.style.background = '#25D366'}>
-                💬 WhatsApp
-              </a>
-            </div>
+          )}
+          <div style={{ height:1, background:'rgba(255,255,255,0.06)', margin:'4px 0' }} />
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
+            <span style={{ fontSize:14, color:'rgba(255,255,255,0.4)' }}>
+              {selectedPayment==='deposit'?L.deposit[l]:selectedPayment==='monthly'?L.contract[l]:L.total[l]}
+            </span>
+            <span style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:28, color:'#fff', letterSpacing:'-0.02em' }}>
+              {selectedPayment==='deposit'?formatEuro(totals.deposit):formatEuro(totals.total)}
+            </span>
           </div>
         </div>
+      </div>
+
+      {/* Delivery form */}
+      <form onSubmit={handleOrder} style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:22, display:'flex', flexDirection:'column', gap:16 }}>
+        <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E' }}>{L.delivery[l]}</p>
+        <div>
+          <label style={{ display:'block', fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:8 }}>{L.address[l]}</label>
+          <textarea value={shippingAddress} onChange={e => setShippingAddress(e.target.value)} required rows={3}
+            placeholder={L.addrPH[l]} className="input-luxury" style={{ resize:'none', fontSize:15 }} />
+        </div>
+        <div>
+          <label style={{ display:'block', fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:8 }}>{L.notesL[l]}</label>
+          <input value={notes} onChange={e => setNotes(e.target.value)} placeholder={L.notesPH[l]} className="input-luxury" style={{ fontSize:15 }} />
+        </div>
+        <button type="submit" disabled={placing} className="btn-primary" style={{ justifyContent:'center', padding:16, fontSize:14 }}>
+          {placing ? '⏳ ...' : '✓ ' + L.validate[l]}
+        </button>
+        <p style={{ fontSize:12, textAlign:'center', color:'rgba(255,255,255,0.2)' }}>{L.confirm[l]}</p>
+      </form>
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight:'100vh', background:'var(--black)', paddingTop:76 }}>
+      <div style={{ padding: isMobile ? '40px 4% 20px' : '64px 6% 32px', background:'var(--dark)', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+        <div className="section-eyebrow">{L.title[l]}</div>
+        <h1 style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:'clamp(36px,6vw,76px)', color:'#fff', letterSpacing:'-0.02em' }}>
+          {L.title[l]}
+        </h1>
+      </div>
+
+      <div style={{ maxWidth:1200, margin:'0 auto', padding: isMobile ? '24px 4%' : '48px 6%' }}>
+        {(!Array.isArray(cartItems) || cartItems.length === 0) ? (
+          <EmptyState icon="🛒" title={L.empty[l]} subtitle={L.emptySub[l]}
+            action={<Link to="/catalog" className="btn-primary" style={{ fontSize:14 }}>{L.discover[l]}</Link>} />
+        ) : (
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 380px', gap: isMobile ? 24 : 36 }}>
+
+            {/* ── Items ── */}
+            <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+              <AnimatePresence>
+                {cartItems.map(item => (
+                  <motion.div key={item?.id || item.carId} layout initial={{ opacity:0, x:-20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20, height:0 }}
+                    style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding: isMobile ? 14 : 20, display:'flex', gap: isMobile ? 12 : 18, flexDirection: isMobile ? 'row' : 'row', alignItems: isMobile ? 'flex-start' : 'center' }}>
+                    <Link to={`/cars/${item?.carId}`} style={{ width: isMobile ? 90 : 140, flexShrink:0, borderRadius:8, overflow:'hidden', display:'block' }}>
+                      <img src={item?.car?.imageUrl || '/placeholder-car.jpg'} alt={`${item?.car?.make} ${item?.car?.model}`}
+                        style={{ width:'100%', height: isMobile ? 65 : 100, objectFit:'cover', display:'block' }} />
+                    </Link>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <Link to={`/cars/${item?.carId}`} style={{ textDecoration:'none' }}>
+                        <h3 style={{ fontFamily:"'Outfit', sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 22, color:'#fff', marginBottom:4, letterSpacing:'-0.01em' }}>
+                          {item?.car?.make} {item?.car?.model}
+                        </h3>
+                      </Link>
+                      <p style={{ fontSize:12, color:'rgba(255,255,255,0.35)', marginBottom:8 }}>{item?.car?.year} · {item?.car?.fuelType}</p>
+                      <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize: isMobile ? 18 : 22, color:'#fff' }}>{formatEuro(item?.car?.price || 0)}</p>
+                      <button onClick={() => handleRemove(item?.carId, `${item?.car?.make} ${item?.car?.model}`)}
+                        style={{ marginTop:8, fontSize:13, color:'rgba(239,68,68,0.7)', background:'none', border:'none', cursor:'pointer', fontFamily:"'Outfit', sans-serif", fontWeight:600 }}>
+                        ✕ {L.remove[l]}
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {/* ── Checkout ── */}
+            <CheckoutPanel />
+          </div>
+        )}
       </div>
     </div>
   );

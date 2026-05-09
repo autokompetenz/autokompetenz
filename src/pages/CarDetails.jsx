@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { carAPI } from '../services/api';
@@ -35,6 +36,7 @@ export default function CarDetails() {
   const [adding, setAdding] = useState(false);
 
   const SL = SPEC_LABELS[lang] || SPEC_LABELS.fr;
+  const { isMobile } = useBreakpoint();
 
   useEffect(() => {
     setLoading(true);
@@ -101,8 +103,8 @@ export default function CarDetails() {
         </p>
       </div>
 
-      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '52px 6%' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: isMobile ? '28px 4%' : '52px 6%' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 32 : 64 }}>
 
           {/* ── Gallery ── */}
           <div>
@@ -152,7 +154,7 @@ export default function CarDetails() {
             </div>
 
             {/* Specs grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 28 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
               {[
                 { label: SL.power, value: car.power ? `${car.power} hp` : 'N/A' },
                 { label: SL.fuel, value: car.fuelType },
