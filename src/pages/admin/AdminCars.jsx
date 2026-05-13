@@ -26,7 +26,7 @@ export default function AdminCars() {
   if (loading) return <div style={{ padding:40 }}><Loader text="Chargement des véhicules..." /></div>;
 
   return (
-    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--black)' }}>
+    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--bg)' }}>
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:20, marginBottom:40 }}>
         <div>
           <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:10 }}>Inventaire</p>
@@ -39,7 +39,7 @@ export default function AdminCars() {
         </Link>
       </div>
 
-      <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }}>
+      <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }}>
         <div style={{ overflowX:'auto' }}>
           <table style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
             <thead>

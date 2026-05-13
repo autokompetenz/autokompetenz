@@ -9,7 +9,7 @@ export default function AdminLayout() {
   if (!isAdmin())       return <Navigate to="/dashboard" replace />;
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <AdminSidebar />
       <main style={{ marginLeft: 268, minHeight: '100vh' }}>
         <Outlet />

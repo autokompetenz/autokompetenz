@@ -1,3 +1,4 @@
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -16,7 +17,7 @@ export default function OrderConfirm() {
     orderAPI.getByNumber(orderNumber).then(r => { setOrder(r.data.order); setLoading(false); }).catch(() => setLoading(false));
   }, [orderNumber]);
 
-  const PL = { fr:{full:'Paiement intégral (-5%)',deposit:'Acompte 25%',monthly:'Mensualités 60 mois'}, en:{full:'Full payment (-5%)',deposit:'25% deposit',monthly:'60 monthly payments'}, de:{full:'Vollzahlung (-5%)',deposit:'Anzahlung 25%',monthly:'60 Raten'}, ar:{full:'دفع كامل (-5%)',deposit:'دفعة أولى 25%',monthly:'60 دفعة شهرية'} };
+  const PL = { fr:{full:'Paiement intégral (-5%)',deposit:'Acompte 25%',monthly:'Mensualités 60 mois'}, en:{full:'Full payment (-5%)',deposit:'25% deposit',monthly:'60 monthly payments'}, de:{full:'Vollzahlung (-5%)',deposit:'Anzahlung 25%',monthly:'60 Raten'}, ar:{full:'دفع كامل (-5%)',deposit:'دفعة أولى 25%',monthly:'60 دفعة شهرية'}, es:{full:'Pago completo (-5%)',deposit:'Señal 25%',monthly:'60 cuotas'}, it:{full:'Pagamento completo (-5%)',deposit:'Acconto 25%',monthly:'60 rate'}, pt:{full:'Pagamento integral (-5%)',deposit:'Entrada 25%',monthly:'60 parcelas'} };
   const L = {
     title:   { fr:'Commande confirmée !', en:'Order confirmed!', de:'Bestellung bestätigt!', ar:'تم تأكيد الطلب!' },
     email:   { fr:'Un email de confirmation a été envoyé à votre adresse.', en:'A confirmation email has been sent to your address.', de:'Eine Bestätigungs-E-Mail wurde gesendet.', ar:'تم إرسال بريد تأكيد إلى عنوانك.' },
@@ -33,13 +34,13 @@ export default function OrderConfirm() {
     continue:{ fr:'Continuer mes achats', en:'Continue shopping', de:'Weiter einkaufen', ar:'مواصلة التسوق' },
   };
 
-  if (loading) return <div style={{ paddingTop:100, background:'var(--black)', minHeight:'100vh' }}><Loader /></div>;
-  if (!order) return <div style={{ paddingTop:120, textAlign:'center', background:'var(--black)', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center' }}><div><p style={{ fontSize:80, fontWeight:900, color:'#C8102E', fontFamily:"'Outfit',sans-serif" }}>404</p><Link to="/" className="btn-primary" style={{ marginTop:20, display:'inline-flex' }}>Accueil</Link></div></div>;
+  if (loading) return <div style={{ paddingTop:100, background:'var(--bg)', minHeight:'100vh' }}><Loader /></div>;
+  if (!order) return <div style={{ paddingTop:120, textAlign:'center', background:'var(--bg)', minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center' }}><div><p style={{ fontSize:80, fontWeight:900, color:'#C8102E', fontFamily:"'Outfit',sans-serif" }}>404</p><Link to="/" className="btn-primary" style={{ marginTop:20, display:'inline-flex' }}>Accueil</Link></div></div>;
 
   const PLang = PL[lang] || PL.fr;
 
   return (
-    <div style={{ minHeight:'100vh', background:'var(--black)', paddingTop:76 }}>
+    <div style={{ minHeight:'100vh', background:'var(--bg)', paddingTop:76 }}>
       <div style={{ maxWidth:680, margin:'0 auto', padding:'72px 6%' }}>
         {/* Success icon */}
         <motion.div initial={{ scale:0 }} animate={{ scale:1 }} transition={{ type:'spring', damping:14, stiffness:200 }}
@@ -60,7 +61,7 @@ export default function OrderConfirm() {
         </div>
 
         {/* Vehicles */}
-        <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:24, marginBottom:16 }}>
+        <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:24, marginBottom:16 }}>
           <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.3)', marginBottom:18 }}>{L.vehicles[lang]}</p>
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
             {order.items?.map(item => (
@@ -77,7 +78,7 @@ export default function OrderConfirm() {
         </div>
 
         {/* Financial summary */}
-        <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:24, marginBottom:32 }}>
+        <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:24, marginBottom:32 }}>
           <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.3)', marginBottom:18 }}>{L.finance[lang]}</p>
           <div style={{ display:'flex', flexDirection:'column', gap:12, fontSize:15 }}>
             <div style={{ display:'flex', justifyContent:'space-between' }}>

@@ -1,13 +1,30 @@
 import { create } from 'zustand';
 import { cartAPI } from '../services/api';
 
+// ─── Theme Store ────────────────────────────────────────────────────────────
+const savedTheme = localStorage.getItem('ak_theme') || 'light';
+if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+else document.documentElement.removeAttribute('data-theme');
+
+export const useThemeStore = create((set) => ({
+  theme: savedTheme,
+  toggle: () => {
+    const next = savedTheme === 'dark' ? 'light' : 'dark';
+    set((s) => {
+      const newTheme = s.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('ak_theme', newTheme);
+      if (newTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.removeAttribute('data-theme');
+      return { theme: newTheme };
+    });
+  },
+}));
+
 // ─── Language Store ────────────────────────────────────────────────────────
-export const useLangStore = create((set, get) => ({
+export const useLangStore = create((set) => ({
   lang: localStorage.getItem('ak_lang') || 'fr',
   setLang: (lang) => {
     localStorage.setItem('ak_lang', lang);
-    // RTL support for Arabic
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
     set({ lang });
   },

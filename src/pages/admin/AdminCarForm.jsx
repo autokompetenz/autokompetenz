@@ -7,7 +7,7 @@ const EMPTY = { make:'', model:'', year:new Date().getFullYear(), price:'', stoc
 
 function Section({ title, children }) {
   return (
-    <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, marginBottom:20 }}>
+    <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, marginBottom:20 }}>
       <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:22 }}>{title}</p>
       {children}
     </div>
@@ -189,7 +189,7 @@ export default function AdminCarForm() {
 
 
   return (
-    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--black)' }}>
+    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--bg)' }}>
       <div style={{ marginBottom:36 }}>
         <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:10 }}>{isEdit?'Modifier':'Ajouter'}</p>
         <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:48, color:'#fff', letterSpacing:'-0.02em' }}>
@@ -237,7 +237,7 @@ export default function AdminCarForm() {
                 style={{ 
                   display:'block', 
                   padding:'12px 16px', 
-                  background:'var(--dark-2)', 
+                  background:'var(--bg-card)', 
                   border:'1px solid rgba(255,255,255,0.1)', 
                   borderRadius:8, 
                   cursor:'pointer', 

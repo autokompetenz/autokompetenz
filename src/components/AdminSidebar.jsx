@@ -14,7 +14,7 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
 
   return (
-    <aside style={{ width:268, minHeight:'100vh', background:'#0D0D0E', borderRight:'1px solid rgba(255,255,255,0.05)', position:'fixed', top:0, left:0, zIndex:100, display:'flex', flexDirection:'column' }}>
+    <aside style={{ width:268, minHeight:'100vh', background:'var(--bg-card2)', borderRight:'1px solid rgba(255,255,255,0.05)', position:'fixed', top:0, left:0, zIndex:100, display:'flex', flexDirection:'column' }}>
       {/* Logo */}
       <div style={{ padding:'24px 24px 20px', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:17, fontWeight:900, color:'#fff', letterSpacing:'0.04em' }}>

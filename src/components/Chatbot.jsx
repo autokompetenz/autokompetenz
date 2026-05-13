@@ -160,7 +160,7 @@ export default function Chatbot() {
         )}
 
         {/* Input */}
-        <div style={{ display: 'flex', gap: 8, padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', background: 'var(--dark)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 8, padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', background: 'var(--bg-card2)', flexShrink: 0 }}>
           <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
             placeholder={placeholders[lang] || placeholders.fr}
             style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: '#E8E8E8', borderRadius: 8, padding: '10px 14px', fontSize: 14, fontFamily: "'Outfit', sans-serif", outline: 'none', transition: 'border-color 0.2s' }}

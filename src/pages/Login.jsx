@@ -1,130 +1,74 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { authAPI } from '../services/api';
 import { useAuthStore, useCartStore, useToastStore, useLangStore } from '../store';
+import { t } from '../utils/i18n';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 export default function Login() {
   const { login } = useAuthStore();
-  const { fetchCount } = useCartStore();
+  const { fetchCart } = useCartStore();
   const { addToast } = useToastStore();
   const { lang } = useLangStore();
+  const { isMobile } = useBreakpoint();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email:'', password:'' });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const L = {
-    title:    { fr: 'Connexion',            en: 'Sign In',          de: 'Anmelden',        ar: 'تسجيل الدخول' },
-    sub:      { fr: 'Accédez à votre espace Auto Kompetenz', en: 'Access your Auto Kompetenz account', de: 'Zugang zu Ihrem Konto', ar: 'الوصول إلى حسابك' },
-    email:    { fr: 'Adresse e-mail',       en: 'Email address',    de: 'E-Mail-Adresse',  ar: 'البريد الإلكتروني' },
-    password: { fr: 'Mot de passe',         en: 'Password',         de: 'Passwort',        ar: 'كلمة المرور' },
-    btn:      { fr: 'Se connecter',         en: 'Sign in',          de: 'Anmelden',        ar: 'تسجيل الدخول' },
-    loading:  { fr: 'Connexion...',         en: 'Signing in...',    de: 'Anmeldung...',    ar: 'جارٍ الدخول...' },
-    noAccount:{ fr: 'Pas encore de compte ?', en: "Don't have an account?", de: 'Noch kein Konto?', ar: 'ليس لديك حساب؟' },
-    register: { fr: "S'inscrire gratuitement", en: 'Register for free', de: 'Kostenlos registrieren', ar: 'سجل مجاناً' },
-    demo:     { fr: 'Comptes de démonstration', en: 'Demo accounts', de: 'Demo-Zugänge', ar: 'حسابات تجريبية' },
-  };
+  const l = lang || 'fr';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
     try {
+      setLoading(true);
       const { data } = await authAPI.login(form);
       login(data.user, data.token);
-      fetchCount();
-      addToast(`${L.title[lang] === 'Connexion' ? 'Bienvenue' : 'Welcome'}, ${data.user.firstName} !`, 'success');
+      await fetchCart();
+      addToast(`${t('welcome_back', l)} ${data.user.firstName} !`, 'success');
       navigate(data.user.role === 'ADMIN' ? '/admin' : '/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || (lang === 'fr' ? 'Email ou mot de passe incorrect' : lang === 'en' ? 'Invalid email or password' : lang === 'de' ? 'E-Mail oder Passwort falsch' : 'بريد أو كلمة مرور خاطئة'));
+      addToast(err.response?.data?.error || 'Erreur de connexion', 'error');
     } finally { setLoading(false); }
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--black)' }}>
-      {/* Left — decorative */}
-      <div style={{ flex: 1, display: 'none', position: 'relative', overflow: 'hidden' }} className="login-bg">
-        <div style={{ position: 'absolute', inset: 0, background: "url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&q=80') center/cover no-repeat" }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(10,10,11,0.9), rgba(200,16,46,0.3))' }} />
-        <div style={{ position: 'absolute', bottom: 60, left: 60, right: 60 }}>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 42, fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: 16, fontStyle: 'italic' }}>
-            "L'excellence automobile, à votre service"
+    <div style={{ minHeight:'100vh', background:'var(--bg)', display:'flex', alignItems:'center', justifyContent:'center', padding: isMobile ? '100px 4% 40px' : '100px 6%' }}>
+      <div style={{ width:'100%', maxWidth:440 }}>
+        {/* Logo */}
+        <div style={{ textAlign:'center', marginBottom:36 }}>
+          <div style={{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg,#9B0B22,#C8102E)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, margin:'0 auto 16px', boxShadow:'0 8px 28px rgba(200,16,46,0.3)' }}>🚗</div>
+          <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:28, color:'var(--text)', marginBottom:8 }}>{t('login_title', l)}</h1>
+          <p style={{ fontSize:15, color:'var(--text-3)' }}>{t('login_sub', l)}</p>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 36, boxShadow:'var(--shadow-md)', display:'flex', flexDirection:'column', gap:18 }}>
+          <div>
+            <label style={{ display:'block', fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:8 }}>{t('email', l)}</label>
+            <input type="email" value={form.email} onChange={e => setForm({...form, email:e.target.value})}
+              placeholder="exemple@email.com" required className="input-luxury" style={{ fontSize:16 }} />
+          </div>
+          <div>
+            <label style={{ display:'block', fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:8 }}>{t('password', l)}</label>
+            <input type="password" value={form.password} onChange={e => setForm({...form, password:e.target.value})}
+              placeholder="••••••••" required className="input-luxury" style={{ fontSize:16 }} />
+          </div>
+          <button type="submit" disabled={loading} className="btn-primary" style={{ justifyContent:'center', padding:16, fontSize:15, width:'100%', marginTop:4 }}>
+            {loading ? t('loading', l) : t('login_title', l)}
+          </button>
+
+          <div style={{ height:1, background:'var(--border)' }} />
+          <p style={{ textAlign:'center', fontSize:14, color:'var(--text-3)' }}>
+            {t('no_account', l)}{' '}
+            <Link to="/register" style={{ color:'var(--red)', fontWeight:700, textDecoration:'none' }}>{t('nav_register', l)}</Link>
           </p>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)' }}>Auto Kompetenz GmbH · Emsdetten</p>
+        </form>
+
+        <div style={{ textAlign:'center', marginTop:24 }}>
+          <a href="https://wa.me/4915788823274" target="_blank" rel="noopener noreferrer"
+            style={{ display:'inline-flex', alignItems:'center', gap:8, color:'#25D366', textDecoration:'none', fontWeight:600, fontSize:14 }}>
+            💬 {lang==='fr'?'Besoin d\'aide ? WhatsApp':lang==='en'?'Need help? WhatsApp':lang==='de'?'Hilfe? WhatsApp':lang==='es'?'¿Necesita ayuda? WhatsApp':lang==='it'?'Aiuto? WhatsApp':'Precisa de ajuda? WhatsApp'}
+          </a>
         </div>
       </div>
-
-      {/* Right — form */}
-      <div style={{ width: '100%', maxWidth: 520, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 40px' }}>
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.16,1,0.3,1] }} style={{ width: '100%' }}>
-
-          {/* Logo */}
-          <Link to="/" style={{ display: 'inline-block', textDecoration: 'none', marginBottom: 48 }}>
-            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 20, fontWeight: 900, color: '#fff', letterSpacing: '0.04em' }}>
-              AUTO KOMPETENZ <span style={{ color: '#C8102E' }}>GmbH</span>
-            </div>
-            <div style={{ fontSize: 10, letterSpacing: '0.35em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginTop: 3 }}>Emsdetten · Deutschland</div>
-          </Link>
-
-          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 42, color: '#fff', letterSpacing: '-0.02em', marginBottom: 8 }}>
-            {L.title[lang] || L.title.fr}
-          </h1>
-          <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', marginBottom: 36 }}>{L.sub[lang] || L.sub.fr}</p>
-
-          {error && (
-            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-              style={{ marginBottom: 24, padding: '14px 18px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 8, fontSize: 14, color: '#EF4444' }}>
-              {error}
-            </motion.div>
-          )}
-
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 10 }}>
-                {L.email[lang] || L.email.fr}
-              </label>
-              <input type="email" required autoComplete="email" value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                placeholder="vous@example.com" className="input-luxury" style={{ fontSize: 16 }} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: 10 }}>
-                {L.password[lang] || L.password.fr}
-              </label>
-              <input type="password" required autoComplete="current-password" value={form.password}
-                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                placeholder="••••••••" className="input-luxury" style={{ fontSize: 16 }} />
-            </div>
-
-            <button type="submit" disabled={loading} className="btn-primary" style={{ justifyContent: 'center', padding: '18px', fontSize: 15, marginTop: 8 }}>
-              {loading ? L.loading[lang] : L.btn[lang] || L.btn.fr} {!loading && '→'}
-            </button>
-          </form>
-
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '28px 0' }} />
-
-          <p style={{ textAlign: 'center', fontSize: 15, color: 'rgba(255,255,255,0.4)' }}>
-            {L.noAccount[lang] || L.noAccount.fr}{' '}
-            <Link to="/register" style={{ color: '#C8102E', textDecoration: 'none', fontWeight: 700, transition: 'opacity 0.2s' }}
-              onMouseOver={e => e.target.style.opacity = '0.8'} onMouseOut={e => e.target.style.opacity = '1'}>
-              {L.register[lang] || L.register.fr}
-            </Link>
-          </p>
-
-          {/* Demo credentials */}
-          <div style={{ marginTop: 28, padding: '16px 18px', background: 'rgba(200,16,46,0.06)', border: '1px solid rgba(200,16,46,0.15)', borderRadius: 8 }}>
-            <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8102E', marginBottom: 10 }}>
-              {L.demo[lang] || L.demo.fr}
-            </p>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.8 }}>
-              Admin : autoKompetenz@gmail.com / <strong style={{ color: 'rgba(255,255,255,0.6)' }}>password</strong><br />
-              Client : client@autokompetenz.com / <strong style={{ color: 'rgba(255,255,255,0.6)' }}>password</strong>
-            </p>
-          </div>
-        </motion.div>
-      </div>
-
-      <style>{`@media(min-width:900px){ .login-bg { display:block !important; } }`}</style>
     </div>
   );
 }

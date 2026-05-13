@@ -3,169 +3,191 @@ import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { carAPI } from '../services/api';
 import CarCard from '../components/CarCard';
-import { PageHeader, Loader } from '../components/UI';
+import { Loader } from '../components/UI';
 import { useLangStore } from '../store';
+import { t } from '../utils/i18n';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
-const ALL_CATEGORIES = ['Berline','SUV','Citadine','Break','Coupe','Cabriolet','Utilitaire'];
-
+const CATEGORIES = ['Berline','SUV','Citadine','Break','Coupe','Cabriolet','Utilitaire'];
 const CAT_LABELS = {
-  fr: { Berline:'Berline',SUV:'SUV',Citadine:'Citadine',Break:'Break',Coupe:'Coupé',Cabriolet:'Cabriolet',Utilitaire:'Utilitaire' },
-  en: { Berline:'Saloon',SUV:'SUV',Citadine:'City Car',Break:'Estate',Coupe:'Coupé',Cabriolet:'Convertible',Utilitaire:'Van' },
-  de: { Berline:'Limousine',SUV:'SUV',Citadine:'Kleinwagen',Break:'Kombi',Coupe:'Coupé',Cabriolet:'Cabrio',Utilitaire:'Nutzfahrzeug' },
-  ar: { Berline:'سيدان',SUV:'SUV',Citadine:'سيارة المدينة',Break:'ستيشن واجن',Coupe:'كوبيه',Cabriolet:'مكشوفة',Utilitaire:'شاحنة صغيرة' },
+  fr:{Berline:'Berline',SUV:'SUV',Citadine:'Citadine',Break:'Break',Coupe:'Coupé',Cabriolet:'Cabriolet',Utilitaire:'Utilitaire'},
+  en:{Berline:'Saloon',SUV:'SUV',Citadine:'City Car',Break:'Estate',Coupe:'Coupé',Cabriolet:'Convertible',Utilitaire:'Van'},
+  de:{Berline:'Limousine',SUV:'SUV',Citadine:'Kleinwagen',Break:'Kombi',Coupe:'Coupé',Cabriolet:'Cabrio',Utilitaire:'Nutzfahrzeug'},
+  es:{Berline:'Berlina',SUV:'SUV',Citadine:'Utilitario',Break:'Familiar',Coupe:'Cupé',Cabriolet:'Descapotable',Utilitaire:'Furgoneta'},
+  it:{Berline:'Berlina',SUV:'SUV',Citadine:'Utilitaria',Break:'Station wagon',Coupe:'Coupé',Cabriolet:'Cabriolet',Utilitaire:'Furgone'},
+  pt:{Berline:'Sedan',SUV:'SUV',Citadine:'Utilitário',Break:'Perua',Coupe:'Coupé',Cabriolet:'Conversível',Utilitaire:'Furgão'},
 };
 
 export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [cars, setCars]               = useState([]);
-  const [categories, setCategories]   = useState([]);
-  const [total, setTotal]             = useState(0);
-  const [loading, setLoading]         = useState(true);
-  const [filterOpen, setFilterOpen]   = useState(false);
+  const [cars, setCars]             = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [total, setTotal]           = useState(0);
+  const [loading, setLoading]       = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const { lang } = useLangStore();
   const { isMobile, isTablet } = useBreakpoint();
+  const l = lang || 'fr';
 
-  const currentCategory = searchParams.get('category') || 'all';
-  const currentSearch   = searchParams.get('search') || '';
+  const category = searchParams.get('category') || 'all';
+  const search   = searchParams.get('search')   || '';
+  const sort     = searchParams.get('sort')     || '';
 
   const fetchCars = useCallback(async () => {
     setLoading(true);
     try {
       const params = {};
-      if (currentCategory !== 'all') params.category = currentCategory;
-      if (currentSearch) params.search = currentSearch;
+      if (category !== 'all') params.category = category;
+      if (search) params.search = search;
+      if (sort)   params.sort   = sort;
       const { data } = await carAPI.getAll(params);
-      setCars(data.cars);
-      setTotal(data.total);
-    } catch (e) { console.error(e); }
+      setCars(data.cars || []);
+      setTotal(data.total || 0);
+    } catch(e){ console.error(e); }
     finally { setLoading(false); }
-  }, [currentCategory, currentSearch]);
+  }, [category, search, sort]);
 
   useEffect(() => { fetchCars(); }, [fetchCars]);
-  useEffect(() => { carAPI.getCategories().then(r => setCategories(r.data.categories)).catch(console.error); }, []);
+  useEffect(() => {
+    carAPI.getCategories().then(r => setCategories(r.data.categories || [])).catch(console.error);
+  }, []);
 
   const setFilter = (key, val) => {
     const next = new URLSearchParams(searchParams);
     if (val) next.set(key, val); else next.delete(key);
     setSearchParams(next);
-    if (isMobile) setFilterOpen(false);
+    if (isMobile) setDrawerOpen(false);
   };
 
-  const L = {
-    title:      { fr:'Notre Catalogue',   en:'Our Catalogue',    de:'Unser Katalog',   ar:'كتالوجنا' },
-    sub:        { fr:'Berlines, SUV, électriques — découvrez notre sélection de véhicules premium.', en:'Saloons, SUVs, electrics — discover our selection of premium vehicles.', de:'Limousinen, SUVs, Elektro — entdecken Sie unser Fahrzeugsortiment.', ar:'سيدان، SUV، كهربائية — اكتشف مجموعة سياراتنا المتميزة.' },
-    category:   { fr:'Catégorie',         en:'Category',          de:'Kategorie',        ar:'الفئة' },
-    all:        { fr:'Tous',              en:'All',               de:'Alle',             ar:'الكل' },
-    reset:      { fr:'Réinitialiser',     en:'Reset',             de:'Zurücksetzen',     ar:'إعادة تعيين' },
-    noResults:  { fr:'Aucun véhicule trouvé', en:'No vehicles found', de:'Keine Fahrzeuge', ar:'لا توجد سيارات' },
-    tryOther:   { fr:'Essayez une autre catégorie.', en:'Try another category.', de:'Andere Kategorie.', ar:'جرب فئة أخرى.' },
-    found:      { fr:'véhicule(s)',       en:'vehicle(s)',         de:'Fahrzeug(e)',      ar:'سيارة' },
-    search:     { fr:'Rechercher...',     en:'Search...',          de:'Suchen...',        ar:'بحث...' },
-    filters:    { fr:'Filtres',           en:'Filters',            de:'Filter',           ar:'تصفية' },
-  };
-  const l = lang || 'fr';
+  const resetAll = () => { setSearchParams({}); setDrawerOpen(false); };
 
-  const Sidebar = () => (
-    <aside style={{ ...(isMobile && {
-      position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 200,
-      width: '80vw', maxWidth: 320, background: 'var(--dark)',
-      overflowY: 'auto', padding: '24px 16px',
-      transform: filterOpen ? 'translateX(0)' : 'translateX(-100%)',
-      transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)',
-      boxShadow: '8px 0 40px rgba(0,0,0,0.7)',
-    }) }}>
-      {isMobile && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <p style={{ fontWeight: 800, fontSize: 16, color: '#fff' }}>{L.filters[l]}</p>
-          <button onClick={() => setFilterOpen(false)} style={{ background: 'none', border: 'none', color: '#fff', fontSize: 22, cursor: 'pointer' }}>✕</button>
-        </div>
-      )}
-      <div style={{ marginBottom: 20 }}>
-        <input type="text" placeholder={L.search[l]} value={currentSearch}
-          onChange={e => setFilter('search', e.target.value)}
-          className="input-luxury" style={{ fontSize: 15 }} />
-      </div>
-      <div style={{ background: 'var(--dark-2)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 10, overflow: 'hidden', padding: '8px 0' }}>
-        <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#C8102E', padding: '12px 18px 8px' }}>
-          {L.category[l]}
+  const SortSelect = () => (
+    <select value={sort} onChange={e => setFilter('sort', e.target.value)}
+      className="input-luxury"
+      style={{ fontSize:13, padding:'9px 14px', width:'auto', cursor:'pointer' }}>
+      <option value="">{t('sort_by', l)}</option>
+      <option value="price_asc">{t('sort_price_asc', l)}</option>
+      <option value="price_desc">{t('sort_price_desc', l)}</option>
+      <option value="newest">{t('sort_newest', l)}</option>
+    </select>
+  );
+
+  const FilterSidebar = () => (
+    <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+      {/* Search */}
+      <input type="text" placeholder={t('search_ph', l)} value={search}
+        onChange={e => setFilter('search', e.target.value)}
+        className="input-luxury" style={{ fontSize:15, marginBottom:6 }} />
+
+      {/* Categories */}
+      <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:10, overflow:'hidden', boxShadow:'var(--shadow-sm)' }}>
+        <p style={{ fontSize:10, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--red)', padding:'14px 16px 8px' }}>
+          {t('filters', l)}
         </p>
-        {[{ id: 'all', label: L.all[l], count: total }, ...ALL_CATEGORIES.map(cat => ({
-          id: cat, label: (CAT_LABELS[l] || CAT_LABELS.fr)[cat],
-          count: Array.isArray(categories) ? categories.find(c => c.name === cat)?.count || 0 : 0
-        }))].map(({ id, label, count }) => (
-          <button key={id} onClick={() => setFilter('category', id === 'all' ? '' : id)}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '10px 18px', background: currentCategory === id ? 'rgba(200,16,46,0.1)' : 'transparent',
-              border: 'none', borderLeft: `3px solid ${currentCategory === id ? '#C8102E' : 'transparent'}`,
-              color: currentCategory === id ? '#C8102E' : 'rgba(255,255,255,0.5)',
-              fontFamily: "'Outfit', sans-serif", fontSize: 14, fontWeight: currentCategory === id ? 700 : 400,
-              cursor: 'pointer', transition: 'all 0.2s', textAlign: 'left',
-            }}>
+        {[{ id:'all', label:t('all_categories', l), count:total },
+          ...CATEGORIES.map(c => ({ id:c, label:(CAT_LABELS[l]||CAT_LABELS.fr)[c], count: categories.find?.(x=>x.name===c)?.count || 0 }))
+        ].map(({ id, label, count }) => (
+          <button key={id} onClick={() => setFilter('category', id==='all'?'':id)}
+            style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 16px', background:category===id?'var(--red-bg)':'transparent', border:'none', borderLeft:`3px solid ${category===id?'var(--red)':'transparent'}`, color:category===id?'var(--red)':'var(--text-3)', fontFamily:"'Outfit',sans-serif", fontSize:14, fontWeight:category===id?700:400, cursor:'pointer', transition:'all 0.15s', textAlign:'left' }}
+            onMouseOver={e=>{ if(category!==id){ e.currentTarget.style.background='var(--bg-card2)'; e.currentTarget.style.color='var(--text)'; } }}
+            onMouseOut={e=>{ if(category!==id){ e.currentTarget.style.background='transparent'; e.currentTarget.style.color='var(--text-3)'; } }}>
             <span>{label}</span>
-            {count > 0 && <span style={{ fontSize: 12, opacity: 0.5 }}>{count}</span>}
+            {count > 0 && <span style={{ fontSize:12, opacity:0.45 }}>{count}</span>}
           </button>
         ))}
       </div>
-    </aside>
+
+      {/* Reset */}
+      {(category !== 'all' || search || sort) && (
+        <button onClick={resetAll} style={{ width:'100%', padding:'10px', background:'rgba(200,16,46,0.06)', border:'1px solid var(--red-border)', borderRadius:8, color:'var(--red)', fontFamily:"'Outfit',sans-serif", fontSize:13, fontWeight:700, cursor:'pointer' }}>
+          ✕ {t('reset', l)}
+        </button>
+      )}
+    </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)' }}>
-      <PageHeader title={L.title[l]} subtitle={L.sub[l]} />
+    <div style={{ minHeight:'100vh', background:'var(--bg)', paddingTop:72 }}>
+      {/* Page header */}
+      <div style={{ background:'var(--bg-card2)', borderBottom:'1px solid var(--border)', padding: isMobile ? '36px 4% 28px' : '52px 6% 36px' }}>
+        <div style={{ maxWidth:1400, margin:'0 auto' }}>
+          <div className="section-eyebrow">{t('catalog_title', l)}</div>
+          <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(30px,5vw,64px)', color:'var(--text)', letterSpacing:'-0.02em', marginBottom:10 }}>
+            {t('catalog_title', l)}
+          </h1>
+          <p style={{ fontSize:16, color:'var(--text-3)', maxWidth:560 }}>
+            {t('catalog_sub', l)}
+          </p>
+        </div>
+      </div>
 
-      {/* Mobile overlay */}
-      {isMobile && filterOpen && (
-        <div onClick={() => setFilterOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 199 }} />
+      {/* Mobile drawer overlay */}
+      {isMobile && drawerOpen && (
+        <div onClick={() => setDrawerOpen(false)}
+          style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:199, backdropFilter:'blur(4px)' }} />
       )}
 
-      <Sidebar />
+      {/* Mobile drawer */}
+      {isMobile && (
+        <div style={{ position:'fixed', top:0, left:0, bottom:0, zIndex:200, width:'80vw', maxWidth:320, background:'var(--bg-card)', boxShadow:'var(--shadow-xl)', padding:'24px 16px', overflowY:'auto', transform:drawerOpen?'translateX(0)':'translateX(-100%)', transition:'transform 0.3s var(--ease)' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
+            <span style={{ fontWeight:800, fontSize:17, color:'var(--text)' }}>{t('filters', l)}</span>
+            <button onClick={() => setDrawerOpen(false)} style={{ background:'var(--bg-card2)', border:'1px solid var(--border)', borderRadius:8, width:34, height:34, cursor:'pointer', fontSize:16, color:'var(--text-2)', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+          </div>
+          <FilterSidebar />
+        </div>
+      )}
 
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: isMobile ? '32px 4%' : '48px 6%' }}>
-        {/* Mobile filter bar */}
+      <div style={{ maxWidth:1400, margin:'0 auto', padding: isMobile ? '20px 4%' : '40px 6%' }}>
+        {/* Mobile top bar */}
         {isMobile && (
-          <div style={{ display: 'flex', gap: 10, marginBottom: 20, alignItems: 'center' }}>
-            <button onClick={() => setFilterOpen(true)}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--dark-2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '10px 16px', color: '#fff', fontFamily: "'Outfit', sans-serif", fontSize: 14, fontWeight: 700, cursor: 'pointer', flex: 1, justifyContent: 'center' }}>
-              ⚙ {L.filters[l]} {currentCategory !== 'all' && `· ${(CAT_LABELS[l] || CAT_LABELS.fr)[currentCategory] || ''}`}
+          <div style={{ display:'flex', gap:10, marginBottom:16 }}>
+            <button onClick={() => setDrawerOpen(true)}
+              style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:8, background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:8, padding:'11px 14px', color:'var(--text)', fontFamily:"'Outfit',sans-serif", fontSize:14, fontWeight:700, cursor:'pointer', boxShadow:'var(--shadow-sm)' }}>
+              ⚙ {t('filters', l)} {category!=='all'&&`· ${(CAT_LABELS[l]||CAT_LABELS.fr)[category]||''}`}
             </button>
-            {(currentCategory !== 'all' || currentSearch) && (
-              <button onClick={() => setSearchParams({})}
-                style={{ background: 'rgba(200,16,46,0.1)', border: '1px solid rgba(200,16,46,0.2)', borderRadius: 8, padding: '10px 14px', color: '#C8102E', fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
-                ✕
-              </button>
-            )}
+            <SortSelect />
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '200px 1fr' : '240px 1fr', gap: isMobile ? 0 : 40 }}>
-          {!isMobile && <Sidebar />}
+        <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '200px 1fr' : '240px 1fr', gap: isMobile ? 0 : 36 }}>
 
+          {/* Sidebar — desktop/tablet only */}
+          {!isMobile && (
+            <div style={{ position:'sticky', top:88, alignSelf:'start' }}>
+              <FilterSidebar />
+              <div style={{ marginTop:12 }}>
+                <SortSelect />
+              </div>
+            </div>
+          )}
+
+          {/* Results */}
           <div>
-            {/* Results bar */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)' }}>
-                <span style={{ color: '#C8102E', fontWeight: 700 }}>{total}</span> {L.found[l]}
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
+              <p style={{ fontSize:14, color:'var(--text-3)' }}>
+                <span style={{ color:'var(--red)', fontWeight:700 }}>{total}</span> {t('found', l)}
               </p>
-              {!isMobile && (currentCategory !== 'all' || currentSearch) && (
-                <button onClick={() => setSearchParams({})} style={{ fontSize: 13, color: '#C8102E', background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontWeight: 600, textDecoration: 'underline' }}>
-                  {L.reset[l]}
+              {!isMobile && (category!=='all'||search||sort) && (
+                <button onClick={resetAll} style={{ fontSize:13, color:'var(--red)', background:'none', border:'none', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:600, textDecoration:'underline' }}>
+                  {t('reset', l)}
                 </button>
               )}
             </div>
 
             {loading ? (
-              <Loader />
+              <div style={{ display:'flex', justifyContent:'center', padding:'80px 0' }}><Loader /></div>
             ) : cars.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '80px 0' }}>
-                <p style={{ fontSize: 56, marginBottom: 16 }}>🔍</p>
-                <h3 style={{ fontWeight: 800, fontSize: 24, color: '#fff', marginBottom: 10 }}>{L.noResults[l]}</h3>
-                <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)' }}>{L.tryOther[l]}</p>
+              <div style={{ textAlign:'center', padding:'80px 0' }}>
+                <div style={{ fontSize:64, marginBottom:16 }}>🔍</div>
+                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:24, color:'var(--text)', marginBottom:10 }}>{t('no_results', l)}</h3>
+                <p style={{ fontSize:15, color:'var(--text-3)', marginBottom:24 }}>
+                  {lang==='fr'?'Essayez une autre catégorie.':lang==='en'?'Try another category.':lang==='de'?'Versuchen Sie eine andere Kategorie.':lang==='es'?'Pruebe otra categoría.':lang==='it'?'Prova un\'altra categoria.':'Tente outra categoria.'}
+                </p>
+                <button onClick={resetAll} className="btn-primary">{t('reset', l)}</button>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', gap: isMobile ? 16 : 24 }}>
+              <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(270px,1fr))', gap: isMobile ? 14 : 22 }}>
                 <AnimatePresence>
                   {cars.map((car, i) => <CarCard key={car.id} car={car} index={i} />)}
                 </AnimatePresence>

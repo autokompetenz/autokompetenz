@@ -1,3 +1,4 @@
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,6 +10,9 @@ import { useLangStore } from '../store';
 const STEP_ICONS = { pending:'📋', confirmed:'✅', processing:'🔧', shipped:'🚚', delivered:'🏠' };
 
 const STATUS_LABELS_ML = {
+  es:{ pending:'Pendiente', confirmed:'Confirmado', processing:'En proceso', shipped:'Enviado', delivered:'Entregado', cancelled:'Cancelado' },
+  it:{ pending:'In attesa', confirmed:'Confermato', processing:'In elaborazione', shipped:'Spedito', delivered:'Consegnato', cancelled:'Annullato' },
+  pt:{ pending:'Pendente', confirmed:'Confirmado', processing:'Em processamento', shipped:'Enviado', delivered:'Entregue', cancelled:'Cancelado' },
   fr:{ pending:'En attente', confirmed:'Confirmée', processing:'En traitement', shipped:'Expédiée', delivered:'Livrée', cancelled:'Annulée' },
   en:{ pending:'Pending', confirmed:'Confirmed', processing:'Processing', shipped:'Shipped', delivered:'Delivered', cancelled:'Cancelled' },
   de:{ pending:'Ausstehend', confirmed:'Bestätigt', processing:'In Bearbeitung', shipped:'Versandt', delivered:'Geliefert', cancelled:'Storniert' },
@@ -16,6 +20,9 @@ const STATUS_LABELS_ML = {
 };
 
 const PAYMENT_ML = {
+  es:{ full:'Pago completo (-5%)', deposit:'Señal 25%', monthly:'60 cuotas mensuales' },
+  it:{ full:'Pagamento completo (-5%)', deposit:'Acconto 25%', monthly:'60 rate mensili' },
+  pt:{ full:'Pagamento integral (-5%)', deposit:'Entrada 25%', monthly:'60 parcelas mensais' },
   fr:{ full:'Paiement intégral (-5%)', deposit:'Acompte 25%', monthly:'Mensualités 60 mois' },
   en:{ full:'Full payment (-5%)', deposit:'25% deposit', monthly:'60 monthly payments' },
   de:{ full:'Vollzahlung (-5%)', deposit:'Anzahlung 25%', monthly:'60 Raten' },
@@ -72,11 +79,11 @@ export default function Track() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:'var(--black)', paddingTop:76 }}>
+    <div style={{ minHeight:'100vh', background:'var(--bg)', paddingTop:76 }}>
       {/* Header */}
-      <div style={{ padding:'72px 6% 60px', background:'var(--dark)', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+      <div style={{ padding:'72px 6% 60px', background:'var(--bg-card2)', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
         <div className="section-eyebrow">{L.label[lang]}</div>
-        <h1 style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:'clamp(42px,6vw,80px)', color:'#fff', letterSpacing:'-0.02em', marginBottom:28 }}>
+        <h1 style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:'clamp(42px,6vw,80px)', color:'var(--text)', letterSpacing:'-0.02em', marginBottom:28 }}>
           {L.title[lang]}
         </h1>
         <form onSubmit={handleSearch} style={{ display:'flex', gap:14, maxWidth:520 }}>
@@ -102,7 +109,7 @@ export default function Track() {
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6, ease:[0.16,1,0.3,1] }} style={{ display:'flex', flexDirection:'column', gap:20 }}>
 
             {/* Header card */}
-            <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, display:'flex', flexWrap:'wrap', alignItems:'flex-start', justifyContent:'space-between', gap:20 }}>
+            <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, display:'flex', flexWrap:'wrap', alignItems:'flex-start', justifyContent:'space-between', gap:20 }}>
               <div>
                 <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.3)', marginBottom:8 }}>{L.order[lang]}</p>
                 <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:36, color:'#C8102E', letterSpacing:'0.05em' }}>{order.orderNumber}</p>
@@ -110,14 +117,14 @@ export default function Track() {
               </div>
               <div style={{ textAlign:'right' }}>
                 <StatusBadge status={order.status} />
-                <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:32, color:'#fff', marginTop:10, letterSpacing:'-0.02em' }}>{formatEuro(order.totalPrice)}</p>
+                <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:32, color:'var(--text)', marginTop:10, letterSpacing:'-0.02em' }}>{formatEuro(order.totalPrice)}</p>
                 <p style={{ fontSize:13, color:'rgba(255,255,255,0.35)', marginTop:4 }}>{PL[order.paymentType]}</p>
               </div>
             </div>
 
             {/* Progress */}
             {!isCancelled && (
-              <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:32 }}>
+              <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:32 }}>
                 <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.3)', marginBottom:40 }}>{L.progress[lang]}</p>
                 <div style={{ position:'relative', display:'flex', justifyContent:'space-between' }}>
                   {/* Background line */}
@@ -136,7 +143,7 @@ export default function Track() {
                           border: `2px solid ${done ? '#C8102E' : active ? '#C8102E' : 'rgba(255,255,255,0.08)'}`,
                           boxShadow: active ? '0 0 0 6px rgba(200,16,46,0.12)' : 'none',
                         }}>
-                          {done ? <span style={{ color:'#fff', fontWeight:900, fontSize:18 }}>✓</span> : STEP_ICONS[step]}
+                          {done ? <span style={{ color:'var(--text)', fontWeight:900, fontSize:18 }}>✓</span> : STEP_ICONS[step]}
                         </div>
                         <p style={{ fontSize:11, marginTop:10, textAlign:'center', fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color: active ? '#C8102E' : done ? '#22C55E' : 'rgba(255,255,255,0.2)', maxWidth:70, lineHeight:1.3 }}>
                           {SL[step]}
@@ -160,14 +167,14 @@ export default function Track() {
             )}
 
             {/* Vehicles */}
-            <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
+            <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
               <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.3)', marginBottom:20 }}>{L.vehicles[lang]}</p>
               <div style={{ display:'flex', flexDirection:'column', gap:18 }}>
                 {order.items?.map(item => (
                   <div key={item.id} style={{ display:'flex', gap:18, alignItems:'center' }}>
                     <img src={item.car.imageUrl} alt="" style={{ width:90, height:64, objectFit:'cover', borderRadius:8, flexShrink:0 }} />
                     <div style={{ flex:1 }}>
-                      <p style={{ fontWeight:700, color:'#fff', fontSize:17 }}>{item.car.make} {item.car.model} {item.car.year}</p>
+                      <p style={{ fontWeight:700, color:'var(--text)', fontSize:17 }}>{item.car.make} {item.car.model} {item.car.year}</p>
                       <p style={{ fontSize:13, color:'rgba(255,255,255,0.35)', marginTop:3 }}>{item.car.fuelType} · {item.car.transmission}</p>
                     </div>
                     <p style={{ fontFamily:"'Outfit', sans-serif", fontWeight:800, fontSize:22, color:'#C8102E', flexShrink:0 }}>{formatEuro(item.unitPrice)}</p>
@@ -177,7 +184,7 @@ export default function Track() {
             </div>
 
             {/* Payment summary */}
-            <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
+            <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
               <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.3)', marginBottom:20 }}>{L.payment[lang]}</p>
               <div style={{ display:'flex', flexDirection:'column', gap:12, fontSize:16 }}>
                 {order.discountAmount && (
@@ -200,15 +207,15 @@ export default function Track() {
                 )}
                 <div style={{ height:1, background:'rgba(255,255,255,0.06)', margin:'4px 0' }} />
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
-                  <span style={{ fontWeight:700, color:'#fff', fontSize:17 }}>{L.total[lang]}</span>
-                  <span style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:32, color:'#fff', letterSpacing:'-0.02em' }}>{formatEuro(order.totalPrice)}</span>
+                  <span style={{ fontWeight:700, color:'var(--text)', fontSize:17 }}>{L.total[lang]}</span>
+                  <span style={{ fontFamily:"'Outfit', sans-serif", fontWeight:900, fontSize:32, color:'var(--text)', letterSpacing:'-0.02em' }}>{formatEuro(order.totalPrice)}</span>
                 </div>
               </div>
             </div>
 
             {/* History timeline */}
             {order.tracking?.length > 0 && (
-              <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
+              <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
                 <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.3)', marginBottom:28 }}>{L.history[lang]}</p>
                 <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
                   {order.tracking.map(event => (

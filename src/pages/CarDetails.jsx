@@ -56,7 +56,7 @@ export default function CarDetails() {
     } finally { setAdding(false); }
   };
 
-  if (loading) return <div style={{ paddingTop: 100, background: 'var(--black)', minHeight: '100vh' }}><Loader text="Chargement..." /></div>;
+  if (loading) return <div style={{ paddingTop: 100, background: 'var(--bg)', minHeight: '100vh' }}><Loader text="Chargement..." /></div>;
   if (!car) return null;
 
   console.log('=== CarDetails Debug ===');
@@ -85,9 +85,9 @@ export default function CarDetails() {
   const totalContract = { fr: 'Total contrat', en: 'Total contract', de: 'Gesamtbetrag', ar: 'إجمالي العقد' };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)', paddingTop: 76 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 76 }}>
       {/* Breadcrumb */}
-      <div style={{ padding: '18px 6%', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'var(--dark)' }}>
+      <div style={{ padding: '18px 6%', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'var(--bg-card2)' }}>
         <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)' }}>
           <Link to="/" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'none', transition: 'color 0.2s' }}
             onMouseOver={e => e.target.style.color = '#C8102E'} onMouseOut={e => e.target.style.color = 'rgba(255,255,255,0.35)'}>
@@ -99,7 +99,7 @@ export default function CarDetails() {
             {catalogBc[lang]}
           </Link>
           <span style={{ margin: '0 10px', opacity: 0.3 }}>›</span>
-          <span style={{ color: 'rgba(255,255,255,0.6)' }}>{car.make} {car.model}</span>
+          <span style={{ color: 'var(--text-2)' }}>{car.make} {car.model}</span>
         </p>
       </div>
 
@@ -109,11 +109,11 @@ export default function CarDetails() {
           {/* ── Gallery ── */}
           <div>
             <motion.div key={activeImg} initial={{ opacity: 0.7, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
-              style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', aspectRatio: '4/3', background: 'var(--dark-2)' }}>
+              style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', aspectRatio: '4/3', background: 'var(--bg-card)' }}>
               <img src={images[activeImg] || 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80'}
                 alt={`${car.make} ${car.model}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               {car.featured && (
-                <div style={{ position: 'absolute', top: 18, left: 18, background: '#C8102E', color: '#fff', fontSize: 11, fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', padding: '6px 14px', borderRadius: 4 }}>
+                <div style={{ position: 'absolute', top: 18, left: 18, background: '#C8102E', color: 'var(--text)', fontSize: 11, fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', padding: '6px 14px', borderRadius: 4 }}>
                   ★ {lang === 'fr' ? 'Recommandé' : lang === 'en' ? 'Featured' : lang === 'de' ? 'Empfohlen' : 'مميز'}
                 </div>
               )}
@@ -137,13 +137,13 @@ export default function CarDetails() {
                 {car.category} · {car.year}
               </span>
             </div>
-            <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 52, color: '#fff', letterSpacing: '-0.02em', lineHeight: 1, marginBottom: 20 }}>
+            <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 52, color: 'var(--text)', letterSpacing: '-0.02em', lineHeight: 1, marginBottom: 20 }}>
               {car.make} {car.model}
             </h1>
 
             {/* Price */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 28 }}>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 40, color: '#fff', letterSpacing: '-0.02em' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 40, color: 'var(--text)', letterSpacing: '-0.02em' }}>
                 {formatEuro(car.price)}
               </span>
               {car.monthlyPayment && (
@@ -163,7 +163,7 @@ export default function CarDetails() {
                 { label: SL.color, value: car.color || 'N/A' },
                 { label: SL.stock, value: car.stock > 0 ? `${car.stock} ${SL.available}` : SL.unavailable, highlight: car.stock > 0 ? '#22C55E' : '#EF4444' },
               ].map(({ label, value, highlight }) => (
-                <div key={label} style={{ background: 'var(--dark-2)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div key={label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
                   <div>
                     <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 4 }}>{label}</p>
                     <p style={{ fontSize: 15, fontWeight: 700, color: highlight || '#fff' }}>{value}</p>
@@ -193,21 +193,21 @@ export default function CarDetails() {
                       <span style={{ fontSize: 26 }}>{opt.icon}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                          <span style={{ fontWeight: 700, fontSize: 15, color: '#fff' }}>{t(opt.titleKey, lang)}</span>
+                          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{t(opt.titleKey, lang)}</span>
                           <span style={{ fontSize: 10, background: 'rgba(200,16,46,0.15)', color: '#C8102E', border: '1px solid rgba(200,16,46,0.3)', padding: '2px 8px', borderRadius: 3, fontWeight: 700, letterSpacing: '0.1em' }}>
                             {t(opt.badgeKey, lang)}
                           </span>
                         </div>
-                        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>
+                        <p style={{ fontSize: 13, color: 'var(--text-3)' }}>
                           {opt.id === 'full' ? (lang === 'fr' ? 'Paiement immédiat, 5% de remise offerte' : lang === 'en' ? 'Immediate payment, 5% discount applied' : lang === 'de' ? 'Sofortzahlung, 5% Rabatt' : 'دفع فوري، خصم 5%')
                            : opt.id === 'deposit' ? (lang === 'fr' ? '25% maintenant, solde à la livraison' : lang === 'en' ? '25% now, balance on delivery' : lang === 'de' ? '25% jetzt, Rest bei Lieferung' : '25% الآن، الباقي عند التسليم')
                            : (lang === 'fr' ? '60 mensualités à 6%/an' : lang === 'en' ? '60 months at 6%/year' : lang === 'de' ? '60 Monate, 6% p.a.' : '60 شهراً بمعدل 6% سنوياً')}
                         </p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        {opt.id === 'full' && <><p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', textDecoration: 'line-through' }}>{formatEuro(car.price)}</p><p style={{ fontWeight: 800, fontSize: 18, color: '#fff' }}>{formatEuro(to.total)}</p></>}
-                        {opt.id === 'deposit' && <><p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{depositLabel[lang]}</p><p style={{ fontWeight: 800, fontSize: 18, color: '#fff' }}>{formatEuro(to.deposit)}</p></>}
-                        {opt.id === 'monthly' && <><p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{monthLabel[lang]}</p><p style={{ fontWeight: 800, fontSize: 18, color: '#fff' }}>{formatEuro(to.monthly)}</p></>}
+                        {opt.id === 'full' && <><p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', textDecoration: 'line-through' }}>{formatEuro(car.price)}</p><p style={{ fontWeight: 800, fontSize: 18, color: 'var(--text)' }}>{formatEuro(to.total)}</p></>}
+                        {opt.id === 'deposit' && <><p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{depositLabel[lang]}</p><p style={{ fontWeight: 800, fontSize: 18, color: 'var(--text)' }}>{formatEuro(to.deposit)}</p></>}
+                        {opt.id === 'monthly' && <><p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{monthLabel[lang]}</p><p style={{ fontWeight: 800, fontSize: 18, color: 'var(--text)' }}>{formatEuro(to.monthly)}</p></>}
                       </div>
                     </div>
                   </div>
@@ -218,13 +218,13 @@ export default function CarDetails() {
             {/* Total display */}
             <div style={{ background: 'rgba(200,16,46,0.06)', border: '1px solid rgba(200,16,46,0.2)', borderRadius: 10, padding: '16px 20px', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginBottom: 2 }}>
+                <p style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 2 }}>
                   {selectedPayment === 'full' ? (totalLabel[lang] + ' (après remise)') : selectedPayment === 'deposit' ? depositLabel[lang] : monthLabel[lang]}
                 </p>
                 {selectedPayment === 'full' && totals.discount && <p style={{ fontSize: 12, color: '#22C55E' }}>✓ {saving[lang]} : {formatEuro(totals.discount)}</p>}
                 {selectedPayment === 'monthly' && <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>{totalContract[lang]} : {formatEuro(totals.total)}</p>}
               </div>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 30, color: '#fff', letterSpacing: '-0.02em' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 30, color: 'var(--text)', letterSpacing: '-0.02em' }}>
                 {selectedPayment === 'full' ? formatEuro(totals.total)
                  : selectedPayment === 'deposit' ? formatEuro(totals.deposit)
                  : `${formatEuro(totals.monthly)}/mo`}

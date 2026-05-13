@@ -48,7 +48,7 @@ export default function AdminOrderDetail() {
   );
 
   return (
-    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--black)' }}>
+    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--bg)' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:40, flexWrap:'wrap' }}>
         <div>
           <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:8 }}>Commande</p>
@@ -61,7 +61,7 @@ export default function AdminOrderDetail() {
         {/* ── Left ── */}
         <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
           {/* Client info */}
-          <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
+          <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
             <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:20 }}>Informations client</p>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:18 }}>
               <InfoRow label="Nom" value={`${order.user?.firstName} ${order.user?.lastName}`} />
@@ -80,7 +80,7 @@ export default function AdminOrderDetail() {
           </div>
 
           {/* Vehicles */}
-          <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
+          <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
             <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:20 }}>Véhicules commandés</p>
             <div style={{ display:'flex', flexDirection:'column', gap:18 }}>
               {order.items?.map(item => (
@@ -98,7 +98,7 @@ export default function AdminOrderDetail() {
           </div>
 
           {/* Financial */}
-          <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
+          <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
             <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:20 }}>Récapitulatif financier</p>
             <div style={{ display:'flex', flexDirection:'column', gap:12, fontSize:15 }}>
               <div style={{ display:'flex', justifyContent:'space-between' }}>
@@ -132,7 +132,7 @@ export default function AdminOrderDetail() {
 
           {/* Tracking history */}
           {order.tracking?.length > 0 && (
-            <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
+            <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28 }}>
               <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:24 }}>Historique</p>
               <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
                 {order.tracking.map(event => (
@@ -155,7 +155,7 @@ export default function AdminOrderDetail() {
 
         {/* ── Right sticky ── */}
         <div>
-          <form onSubmit={handleUpdate} style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, position:'sticky', top:24 }}>
+          <form onSubmit={handleUpdate} style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, position:'sticky', top:24 }}>
             <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:24 }}>Mettre à jour le statut</p>
 
             <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:20 }}>

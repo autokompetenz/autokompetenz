@@ -32,7 +32,7 @@ export default function AdminDashboard() {
   const TABLE_COLS = ['N° Commande','Client','Date','Montant','Paiement','Statut',''];
 
   return (
-    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--black)' }}>
+    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--bg)' }}>
       <div style={{ marginBottom:40 }}>
         <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:10 }}>Administration</p>
         <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:52, color:'#fff', letterSpacing:'-0.02em' }}>Tableau de bord</h1>
@@ -42,7 +42,7 @@ export default function AdminDashboard() {
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, marginBottom:40 }}>
         {statCards.map(({ icon, label, value, color, sub, wide }, i) => (
           <motion.div key={label} initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.07 }}
-            style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:'22px 20px', gridColumn:wide?'span 2':'span 1', transition:'border-color 0.3s' }}
+            style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:'22px 20px', gridColumn:wide?'span 2':'span 1', transition:'border-color 0.3s' }}
             onMouseOver={e => e.currentTarget.style.borderColor=`rgba(200,16,46,0.2)`}
             onMouseOut={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:14 }}>
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent orders */}
-      <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }}>
+      <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }}>
         <div style={{ padding:'20px 28px', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E' }}>Dernières commandes</p>
           <Link to="/admin/orders" style={{ fontSize:13, color:'rgba(255,255,255,0.4)', textDecoration:'none', fontWeight:600, transition:'color 0.2s' }}

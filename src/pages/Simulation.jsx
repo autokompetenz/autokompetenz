@@ -1,3 +1,4 @@
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { simAPI } from '../services/api';
@@ -49,9 +50,9 @@ export default function Simulation() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:'var(--black)', paddingTop:76 }}>
+    <div style={{ minHeight:'100vh', background:'var(--bg)', paddingTop:76 }}>
       {/* Header */}
-      <div style={{ padding:'72px 6% 60px', background:'var(--dark)', borderBottom:'1px solid rgba(255,255,255,0.05)', position:'relative', overflow:'hidden' }}>
+      <div style={{ padding:'72px 6% 60px', background:'var(--bg-card2)', borderBottom:'1px solid rgba(255,255,255,0.05)', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:0, right:0, bottom:0, width:'40%', background:'radial-gradient(ellipse at right, rgba(200,16,46,0.06), transparent 70%)', pointerEvents:'none' }} />
         <div style={{ position:'relative', zIndex:1 }}>
           <div className="section-eyebrow">{L.label[lang]}</div>
@@ -66,7 +67,7 @@ export default function Simulation() {
 
       <div style={{ maxWidth:1100, margin:'0 auto', padding:'56px 6%' }}>
         {/* Simulator card */}
-        <div style={{ background:'var(--dark-2)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:16, padding:'44px 48px', marginBottom:52 }}>
+        <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:16, padding:'44px 48px', marginBottom:52 }}>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:56, alignItems:'center' }}>
             {/* Left — slider */}
             <div>
