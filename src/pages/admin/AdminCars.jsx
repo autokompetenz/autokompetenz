@@ -26,67 +26,79 @@ export default function AdminCars() {
   if (loading) return <div style={{ padding:40 }}><Loader text="Chargement des véhicules..." /></div>;
 
   return (
-    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--bg)' }}>
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:20, marginBottom:40 }}>
+    <div style={{ padding:'clamp(24px,5vw,48px) clamp(16px,4vw,44px) 60px', minHeight:'100vh', background:'var(--bg)' }}>
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:20, marginBottom:32 }}>
         <div>
-          <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:10 }}>Inventaire</p>
-          <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:52, color:'#fff', letterSpacing:'-0.02em' }}>
-            Véhicules <span style={{ color:'rgba(255,255,255,0.2)', fontSize:'0.6em' }}>({cars.length})</span>
+          <div className="section-eyebrow">Inventaire</div>
+          <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,48px)', color:'var(--text)', letterSpacing:'-0.02em' }}>
+            Véhicules <span style={{ color:'var(--text-3)', fontSize:'0.55em', fontWeight:600 }}>({cars.length})</span>
           </h1>
         </div>
-        <Link to="/admin/cars/new" className="btn-primary" style={{ fontSize:14, padding:'14px 28px', alignSelf:'flex-end' }}>
+        <Link to="/admin/cars/new" className="btn-primary" style={{ fontSize:14, padding:'14px 24px', alignSelf:'flex-end' }}>
           + Ajouter un véhicule
         </Link>
       </div>
 
-      <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }}>
+      <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, overflow:'hidden', boxShadow:'var(--shadow-sm)' }}>
         <div style={{ overflowX:'auto' }}>
           <table style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
             <thead>
-              <tr style={{ borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+              <tr style={{ borderBottom:'1px solid var(--border)' }}>
                 {['Photo','Véhicule','Année','Prix','Stock','Catégorie','Statut','Actions'].map(h => (
-                  <th key={h} style={{ textAlign:'left', fontSize:11, fontWeight:800, letterSpacing:'0.15em', textTransform:'uppercase', color:'rgba(255,255,255,0.2)', padding:'14px 20px' }}>{h}</th>
+                  <th key={h} style={{ textAlign:'left', fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--text-3)', padding:'14px 20px', background:'var(--bg-card2)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {cars.map(car => (
-                <tr key={car.id} style={{ borderBottom:'1px solid rgba(255,255,255,0.03)', transition:'background 0.15s' }}
-                  onMouseOver={e => e.currentTarget.style.background='rgba(255,255,255,0.02)'}
-                  onMouseOut={e => e.currentTarget.style.background='transparent'}>
-                  <td style={{ padding:'12px 20px' }}>
-                    <img src={car.imageUrl} alt="" style={{ width:72, height:52, objectFit:'cover', borderRadius:6 }} />
+                <tr key={car.id} style={{ borderBottom:'1px solid var(--border)', transition:'background 0.2s var(--ease)' }}
+                  onMouseOver={e => { e.currentTarget.style.background = 'var(--bg-card2)'; }}
+                  onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}>
+                  <td style={{ padding:'14px 20px' }}>
+                    <img src={car.imageUrl} alt="" style={{ width:88, height:64, objectFit:'cover', borderRadius:10, border:'1px solid var(--border)' }} />
                   </td>
-                  <td style={{ padding:'12px 20px' }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                      <p style={{ fontWeight:700, color:'#fff', fontSize:15 }}>{car.make} {car.model}</p>
-                      {car.featured && <span style={{ fontSize:9, fontWeight:800, background:'rgba(200,16,46,0.15)', color:'#C8102E', border:'1px solid rgba(200,16,46,0.25)', padding:'2px 8px', borderRadius:3, letterSpacing:'0.1em' }}>★ TOP</span>}
+                  <td style={{ padding:'14px 20px' }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
+                      <p style={{ fontWeight:800, color:'var(--text)', fontSize:16, letterSpacing:'0.01em' }}>{car.make} {car.model}</p>
+                      {car.featured && (
+                        <span style={{ fontSize:10, fontWeight:800, background:'var(--red-bg)', color:'var(--red)', border:'1px solid var(--red-border)', padding:'3px 10px', borderRadius:6, letterSpacing:'0.1em' }}>
+                          ★ TOP
+                        </span>
+                      )}
                     </div>
-                    <p style={{ fontSize:12, color:'rgba(255,255,255,0.3)', marginTop:2 }}>{car.fuelType} · {car.transmission}</p>
+                    <p style={{ fontSize:13, color:'var(--text-3)', marginTop:4, fontWeight:500 }}>{car.fuelType} · {car.transmission}</p>
                   </td>
-                  <td style={{ padding:'12px 20px', color:'rgba(255,255,255,0.45)', fontSize:14 }}>{car.year}</td>
-                  <td style={{ padding:'12px 20px', fontWeight:700, color:'#C8102E', fontSize:15 }}>{formatEuro(car.price)}</td>
-                  <td style={{ padding:'12px 20px' }}>
-                    <span style={{ fontSize:14, fontWeight:700, color:car.stock > 0 ? '#22C55E' : '#EF4444' }}>
+                  <td style={{ padding:'14px 20px', color:'var(--text-2)', fontSize:14, fontWeight:600 }}>{car.year}</td>
+                  <td style={{ padding:'14px 20px', fontWeight:800, color:'var(--red)', fontSize:17, letterSpacing:'-0.01em' }}>{formatEuro(car.price)}</td>
+                  <td style={{ padding:'14px 20px' }}>
+                    <span style={{ fontSize:14, fontWeight:800, color:car.stock > 0 ? 'var(--green)' : '#EF4444', letterSpacing:'0.02em' }}>
                       {car.stock > 0 ? `${car.stock} dispo.` : 'Épuisé'}
                     </span>
                   </td>
-                  <td style={{ padding:'12px 20px', color:'rgba(255,255,255,0.4)', fontSize:13 }}>{car.category}</td>
-                  <td style={{ padding:'12px 20px' }}>
-                    <span style={{ fontSize:11, fontWeight:700, padding:'4px 10px', borderRadius:12, background:car.isActive?'rgba(34,197,94,0.12)':'rgba(239,68,68,0.12)', color:car.isActive?'#22C55E':'#EF4444', border:`1px solid ${car.isActive?'rgba(34,197,94,0.25)':'rgba(239,68,68,0.25)'}` }}>
+                  <td style={{ padding:'14px 20px', color:'var(--text-2)', fontSize:13, fontWeight:600 }}>{car.category}</td>
+                  <td style={{ padding:'14px 20px' }}>
+                    <span style={{
+                      fontSize:11,
+                      fontWeight:800,
+                      padding:'6px 12px',
+                      borderRadius:12,
+                      background: car.isActive ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.1)',
+                      color: car.isActive ? 'var(--green)' : '#EF4444',
+                      border: `1px solid ${car.isActive ? 'rgba(34,197,94,0.28)' : 'rgba(239,68,68,0.25)'}`,
+                      letterSpacing:'0.04em',
+                    }}>
                       {car.isActive ? 'Actif' : 'Inactif'}
                     </span>
                   </td>
-                  <td style={{ padding:'12px 20px' }}>
-                    <div style={{ display:'flex', gap:12, alignItems:'center' }}>
-                      <Link to={`/admin/cars/${car.id}/edit`} style={{ fontSize:13, color:'#C8102E', textDecoration:'none', fontWeight:700, transition:'opacity 0.2s' }}
-                        onMouseOver={e => e.target.style.opacity='0.7'} onMouseOut={e => e.target.style.opacity='1'}>
+                  <td style={{ padding:'14px 20px' }}>
+                    <div style={{ display:'flex', gap:14, alignItems:'center', flexWrap:'wrap' }}>
+                      <Link to={`/admin/cars/${car.id}/edit`} style={{ fontSize:13, color:'var(--red)', textDecoration:'none', fontWeight:800 }}
+                        onMouseOver={e => { e.currentTarget.style.opacity = '0.85'; }}
+                        onMouseOut={e => { e.currentTarget.style.opacity = '1'; }}>
                         Modifier
                       </Link>
-                      <button onClick={() => { if (window.confirm(`${car.isActive?'Désactiver':'Activer'} ce véhicule ?`)) handleToggle(car); }}
-                        style={{ fontSize:13, color:car.isActive?'rgba(239,68,68,0.6)':'rgba(34,197,94,0.6)', background:'none', border:'none', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:600, transition:'color 0.2s' }}
-                        onMouseOver={e => e.target.style.color=car.isActive?'#EF4444':'#22C55E'}
-                        onMouseOut={e => e.target.style.color=car.isActive?'rgba(239,68,68,0.6)':'rgba(34,197,94,0.6)'}>
+                      <button type="button" onClick={() => { if (window.confirm(`${car.isActive?'Désactiver':'Activer'} ce véhicule ?`)) handleToggle(car); }}
+                        style={{ fontSize:13, color: car.isActive ? '#DC2626' : 'var(--green)', background:'none', border:'none', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:700 }}>
                         {car.isActive ? 'Désactiver' : 'Activer'}
                       </button>
                     </div>

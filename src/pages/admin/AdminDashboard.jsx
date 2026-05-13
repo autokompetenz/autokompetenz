@@ -32,72 +32,92 @@ export default function AdminDashboard() {
   const TABLE_COLS = ['N° Commande','Client','Date','Montant','Paiement','Statut',''];
 
   return (
-    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--bg)' }}>
-      <div style={{ marginBottom:40 }}>
-        <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:10 }}>Administration</p>
-        <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:52, color:'#fff', letterSpacing:'-0.02em' }}>Tableau de bord</h1>
+    <div style={{ padding:'clamp(24px,5vw,48px) clamp(16px,4vw,44px) 60px', minHeight:'100vh', background:'var(--bg)' }}>
+      <div style={{ marginBottom:36 }}>
+        <div className="section-eyebrow">Administration</div>
+        <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,48px)', color:'var(--text)', letterSpacing:'-0.02em' }}>
+          Tableau de bord
+        </h1>
       </div>
 
-      {/* Stats */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, marginBottom:40 }}>
+      <div className="admin-stats-grid">
         {statCards.map(({ icon, label, value, color, sub, wide }, i) => (
-          <motion.div key={label} initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.07 }}
-            style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:'22px 20px', gridColumn:wide?'span 2':'span 1', transition:'border-color 0.3s' }}
-            onMouseOver={e => e.currentTarget.style.borderColor=`rgba(200,16,46,0.2)`}
-            onMouseOut={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.06)'}>
-            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:14 }}>
+          <motion.div key={label} initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.08, duration:0.5, ease:[0.16,1,0.3,1] }}
+            className={wide ? 'admin-stat-wide' : undefined}
+            style={{
+              background:`linear-gradient(135deg, var(--bg-card) 0%, ${color}14 100%)`,
+              border:'1px solid var(--border)',
+              borderRadius:12,
+              padding:'22px 20px',
+              transition:'all 0.3s var(--ease)',
+              position:'relative',
+              overflow:'hidden',
+              boxShadow:'var(--shadow-sm)',
+            }}
+            onMouseOver={e => {
+              e.currentTarget.style.borderColor = 'var(--red)';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+            }}>
+            <div style={{ position:'absolute', top:-20, right:-20, width:80, height:80, background:color, opacity:0.06, borderRadius:'50%', filter:'blur(40px)' }} />
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:14, position:'relative', zIndex:1 }}>
               <span style={{ fontSize:26 }}>{icon}</span>
               {label==='En attente' && (stats?.pendingOrders || 0) > 0 && (
-                <span style={{ fontSize:10, background:'rgba(255,170,0,0.15)', color:'#FFAA00', padding:'3px 10px', borderRadius:12, fontWeight:800, letterSpacing:'0.1em' }}>ACTION</span>
+                <span style={{ fontSize:10, background:'rgba(255,170,0,0.15)', color:'#D97706', padding:'4px 10px', borderRadius:12, fontWeight:800, letterSpacing:'0.1em', border:'1px solid rgba(255,170,0,0.28)' }}>ACTION</span>
               )}
             </div>
-            <div style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:38, color, lineHeight:1, letterSpacing:'-0.02em' }}>{value}</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.35)', marginTop:6, fontWeight:600 }}>{label}</div>
-            <div style={{ fontSize:11, color:'rgba(255,255,255,0.2)', marginTop:2 }}>{sub}</div>
+            <div style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,3.5vw,40px)', color, lineHeight:1, letterSpacing:'-0.03em', position:'relative', zIndex:1 }}>{value}</div>
+            <div style={{ fontSize:13, color:'var(--text-2)', marginTop:8, fontWeight:700, position:'relative', zIndex:1 }}>{label}</div>
+            <div style={{ fontSize:11, color:'var(--text-3)', marginTop:4, position:'relative', zIndex:1 }}>{sub}</div>
           </motion.div>
         ))}
       </div>
 
-      {/* Recent orders */}
-      <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, overflow:'hidden' }}>
-        <div style={{ padding:'20px 28px', borderBottom:'1px solid rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E' }}>Dernières commandes</p>
-          <Link to="/admin/orders" style={{ fontSize:13, color:'rgba(255,255,255,0.4)', textDecoration:'none', fontWeight:600, transition:'color 0.2s' }}
-            onMouseOver={e => e.target.style.color='#C8102E'} onMouseOut={e => e.target.style.color='rgba(255,255,255,0.4)'}>
+      <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, overflow:'hidden', boxShadow:'var(--shadow-sm)' }}>
+        <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between', background:'var(--bg-card2)' }}>
+          <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)' }}>Dernières commandes</p>
+          <Link to="/admin/orders" style={{ fontSize:13, color:'var(--text-3)', textDecoration:'none', fontWeight:600 }}
+            onMouseOver={e => { e.currentTarget.style.color = 'var(--red)'; }}
+            onMouseOut={e => { e.currentTarget.style.color = 'var(--text-3)'; }}>
             Voir tout →
           </Link>
         </div>
         <div style={{ overflowX:'auto' }}>
           <table style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
             <thead>
-              <tr style={{ borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+              <tr style={{ borderBottom:'1px solid var(--border)' }}>
                 {TABLE_COLS.map(h => (
-                  <th key={h} style={{ textAlign:'left', fontSize:11, fontWeight:800, letterSpacing:'0.15em', textTransform:'uppercase', color:'rgba(255,255,255,0.2)', padding:'14px 20px' }}>{h}</th>
+                  <th key={h} style={{ textAlign:'left', fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--text-3)', padding:'14px 20px', background:'var(--bg-card2)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {recentOrders.map(order => (
-                <tr key={order.id} style={{ borderBottom:'1px solid rgba(255,255,255,0.03)', transition:'background 0.15s', cursor:'default' }}
-                  onMouseOver={e => e.currentTarget.style.background='rgba(255,255,255,0.02)'}
-                  onMouseOut={e => e.currentTarget.style.background='transparent'}>
+                <tr key={order.id} style={{ borderBottom:'1px solid var(--border)', transition:'background 0.2s var(--ease)' }}
+                  onMouseOver={e => { e.currentTarget.style.background = 'var(--bg-card2)'; }}
+                  onMouseOut={e => { e.currentTarget.style.background = 'transparent'; }}>
                   <td style={{ padding:'14px 20px' }}>
-                    <span style={{ fontFamily:'monospace', color:'#C8102E', fontSize:13, fontWeight:700, letterSpacing:'0.04em' }}>{order.orderNumber}</span>
+                    <span style={{ fontFamily:'monospace', color:'var(--red)', fontSize:13, fontWeight:800, letterSpacing:'0.05em', background:'var(--red-bg)', padding:'4px 10px', borderRadius:6, border:'1px solid var(--red-border)' }}>{order.orderNumber}</span>
                   </td>
                   <td style={{ padding:'14px 20px' }}>
-                    <p style={{ fontSize:14, color:'#fff', fontWeight:600 }}>{order.user?.firstName} {order.user?.lastName}</p>
-                    <p style={{ fontSize:12, color:'rgba(255,255,255,0.3)', marginTop:2 }}>{order.user?.email}</p>
+                    <p style={{ fontSize:14, color:'var(--text)', fontWeight:700 }}>{order.user?.firstName} {order.user?.lastName}</p>
+                    <p style={{ fontSize:12, color:'var(--text-3)', marginTop:3 }}>{order.user?.email}</p>
                   </td>
-                  <td style={{ padding:'14px 20px', color:'rgba(255,255,255,0.4)', fontSize:13 }}>{formatDate(order.createdAt)}</td>
-                  <td style={{ padding:'14px 20px', fontWeight:700, color:'#fff', fontSize:15 }}>{formatEuro(order.totalPrice)}</td>
+                  <td style={{ padding:'14px 20px', color:'var(--text-2)', fontSize:13, fontWeight:500 }}>{formatDate(order.createdAt)}</td>
+                  <td style={{ padding:'14px 20px', fontWeight:800, color:'var(--text)', fontSize:16, letterSpacing:'-0.01em' }}>{formatEuro(order.totalPrice)}</td>
                   <td style={{ padding:'14px 20px' }}>
-                    <span style={{ fontSize:11, background:'rgba(255,255,255,0.05)', color:'rgba(255,255,255,0.4)', padding:'4px 10px', borderRadius:4, fontWeight:600 }}>
+                    <span style={{ fontSize:11, background:'var(--bg-card2)', color:'var(--text-2)', padding:'5px 12px', borderRadius:6, fontWeight:700, letterSpacing:'0.04em', border:'1px solid var(--border)' }}>
                       {PAYMENT_FR[order.paymentType]}
                     </span>
                   </td>
                   <td style={{ padding:'14px 20px' }}><StatusBadge status={order.status} /></td>
                   <td style={{ padding:'14px 20px' }}>
-                    <Link to={`/admin/orders/${order.id}`} className="btn-gold" style={{ fontSize:12, padding:'8px 16px' }}>Gérer</Link>
+                    <Link to={`/admin/orders/${order.id}`} className="btn-gold" style={{ fontSize:12, padding:'10px 18px', letterSpacing:'0.05em' }}>Gérer</Link>
                   </td>
                 </tr>
               ))}

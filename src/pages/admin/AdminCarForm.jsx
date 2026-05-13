@@ -7,8 +7,8 @@ const EMPTY = { make:'', model:'', year:new Date().getFullYear(), price:'', stoc
 
 function Section({ title, children }) {
   return (
-    <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.06)', borderRadius:12, padding:28, marginBottom:20 }}>
-      <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:22 }}>{title}</p>
+    <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:28, marginBottom:22, boxShadow:'var(--shadow-sm)', transition:'all 0.25s var(--ease)' }}>
+      <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.28em', textTransform:'uppercase', color:'var(--red)', marginBottom:20 }}>{title}</p>
       {children}
     </div>
   );
@@ -17,14 +17,14 @@ function Section({ title, children }) {
 function Field({ label, field, type='text', placeholder, opts, rows, value, onChange }) {
   return (
     <div>
-      <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>{label}</label>
+      <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:10 }}>{label}</label>
       {opts ? (
         <select 
           name={field}
           value={value} 
           onChange={onChange} 
           className="input-luxury" 
-          style={{ fontSize:15 }}
+          style={{ fontSize:15, borderRadius:10, padding:'14px 18px' }}
         >
           {opts.map(o => <option key={o} value={o}>{o}</option>)}
         </select>
@@ -36,7 +36,7 @@ function Field({ label, field, type='text', placeholder, opts, rows, value, onCh
           rows={rows} 
           placeholder={placeholder} 
           className="input-luxury" 
-          style={{ resize:'none', fontSize:15 }}
+          style={{ resize:'none', fontSize:15, borderRadius:10, padding:'14px 18px', lineHeight:1.6 }}
         />
       ) : (
         <input 
@@ -46,7 +46,7 @@ function Field({ label, field, type='text', placeholder, opts, rows, value, onCh
           onChange={onChange} 
           placeholder={placeholder} 
           className="input-luxury" 
-          style={{ fontSize:15 }}
+          style={{ fontSize:15, borderRadius:10, padding:'14px 18px' }}
         />
       )}
     </div>
@@ -189,10 +189,10 @@ export default function AdminCarForm() {
 
 
   return (
-    <div style={{ padding:'48px 44px 60px', minHeight:'100vh', background:'var(--bg)' }}>
-      <div style={{ marginBottom:36 }}>
-        <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'#C8102E', marginBottom:10 }}>{isEdit?'Modifier':'Ajouter'}</p>
-        <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:48, color:'#fff', letterSpacing:'-0.02em' }}>
+    <div style={{ padding:'clamp(24px,5vw,48px) clamp(16px,4vw,44px) 60px', minHeight:'100vh', background:'var(--bg)' }}>
+      <div style={{ marginBottom:32 }}>
+        <div className="section-eyebrow">{isEdit ? 'Modifier' : 'Ajouter'}</div>
+        <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,44px)', color:'var(--text)', letterSpacing:'-0.02em' }}>
           {isEdit ? 'Modifier le véhicule' : 'Nouveau véhicule'}
         </h1>
       </div>
@@ -221,9 +221,9 @@ export default function AdminCarForm() {
         </Section>
 
         <Section title="Images">
-          <div style={{ display:'flex', flexDirection:'column', gap:14, marginBottom:20 }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:16, marginBottom:24 }}>
             <div>
-              <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:10 }}>Images *</label>
+              <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:10 }}>Images *</label>
               <input 
                 type="file" 
                 accept="image/*" 
@@ -235,18 +235,22 @@ export default function AdminCarForm() {
               <label 
                 htmlFor="images-input"
                 style={{ 
-                  display:'block', 
-                  padding:'12px 16px', 
-                  background:'var(--bg-card)', 
-                  border:'1px solid rgba(255,255,255,0.1)', 
-                  borderRadius:8, 
+                  display:'flex', 
+                  alignItems:'center', 
+                  justifyContent:'center',
+                  gap:12,
+                  padding:'16px 20px', 
+                  background:'var(--red-bg)', 
+                  border:'2px dashed var(--border-2)', 
+                  borderRadius:12, 
                   cursor:'pointer', 
                   fontSize:14, 
-                  color:'rgba(255,255,255,0.6)',
-                  transition:'all 0.3s'
+                  color:'var(--text-2)',
+                  fontWeight:600,
+                  transition:'all 0.25s var(--ease)'
                 }}
-                onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.color='rgba(255,255,255,0.8)'; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.1)'; e.currentTarget.style.color='rgba(255,255,255,0.6)'; }}
+                onMouseOver={e => { e.currentTarget.style.borderColor='var(--red)'; e.currentTarget.style.background='var(--bg-card2)'; e.currentTarget.style.color='var(--text)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor='var(--border-2)'; e.currentTarget.style.background='var(--red-bg)'; e.currentTarget.style.color='var(--text-2)'; }}
               >
                 📷 {imageFiles.length > 0 ? `${imageFiles.length} image(s) sélectionnée(s)` : 'Choisir des images'}
               </label>
@@ -255,36 +259,40 @@ export default function AdminCarForm() {
         </Section>
 
         {previews.length > 0 && (
-          <div style={{ marginBottom:20 }}>
-            <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.15em', textTransform:'uppercase', color:'rgba(255,255,255,0.25)', marginBottom:10 }}>Aperçu ({previews.length} image{previews.length > 1 ? 's' : ''})</p>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:12 }}>
+          <div style={{ marginBottom:24 }}>
+            <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:12 }}>Aperçu ({previews.length} image{previews.length > 1 ? 's' : ''})</p>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:16 }}>
               {previews.map((preview, index) => (
-                <div key={preview.id} style={{ position:'relative' }}>
-                  <img src={preview.url} alt={`Aperçu ${index + 1}`} style={{ width:'100%', height:150, objectFit:'cover', borderRadius:8, border:'1px solid rgba(255,255,255,0.1)' }} />
+                <div key={preview.id} style={{ position:'relative', borderRadius:12, overflow:'hidden', boxShadow:'var(--shadow-sm)' }}>
+                  <img src={preview.url} alt={`Aperçu ${index + 1}`} style={{ width:'100%', height:160, objectFit:'cover', borderRadius:12, border:'1px solid var(--border)' }} />
                   <button
                     type="button"
                     onClick={() => removeImage(preview.id)}
                     style={{
                       position:'absolute',
-                      top:4,
-                      right:4,
-                      background:'rgba(0,0,0,0.7)',
+                      top:8,
+                      right:8,
+                      background:'rgba(0,0,0,0.8)',
                       color:'#fff',
                       border:'none',
                       borderRadius:'50%',
-                      width:16,
-                      height:16,
+                      width:28,
+                      height:28,
                       cursor:'pointer',
                       display:'flex',
                       alignItems:'center',
                       justifyContent:'center',
-                      fontSize:10,
-                      fontWeight:'bold'
+                      fontSize:12,
+                      fontWeight:'bold',
+                      transition:'all 0.2s',
+                      boxShadow:'0 2px 8px rgba(0,0,0,0.3)'
                     }}
+                    onMouseOver={e => { e.currentTarget.style.background='#EF4444'; e.currentTarget.style.transform='scale(1.1)'; }}
+                    onMouseOut={e => { e.currentTarget.style.background='rgba(0,0,0,0.8)'; e.currentTarget.style.transform='scale(1)'; }}
                   >
                     ✕
                   </button>
-                  <div style={{ position:'absolute', top:4, left:4, background:'#C8102E', color:'#fff', borderRadius:'50%', width:20, height:20, display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:'bold' }}>
+                  <div style={{ position:'absolute', top:8, left:8, background:'linear-gradient(135deg,#C8102E,#9B0B22)', color:'#fff', borderRadius:'50%', width:28, height:28, display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:'bold', boxShadow:'0 2px 8px rgba(200,16,46,0.4)' }}>
                     {index === 0 ? '★' : index + 1}
                   </div>
                 </div>
@@ -294,24 +302,26 @@ export default function AdminCarForm() {
         )}
 
         <Section title="Options">
-          <div style={{ display:'flex', gap:24 }}>
+          <div style={{ display:'flex', gap:28, flexWrap:'wrap' }}>
             {[['featured','Véhicule vedette (★ Top)'],['isActive','Actif (visible en catalogue)']].map(([f,l]) => (
-              <label key={f} style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }}>
-                <input type="checkbox" checked={Boolean(form[f])} onChange={set(f)} style={{ accentColor:'#C8102E', width:18, height:18 }} />
-                <span style={{ fontSize:14, color:'rgba(255,255,255,0.6)', fontWeight:500 }}>{l}</span>
+              <label key={f} style={{ display:'flex', alignItems:'center', gap:12, cursor:'pointer', padding:'12px 16px', borderRadius:10, background:'var(--bg-card2)', border:'1px solid var(--border)', transition:'all 0.2s' }}
+                onMouseOver={e => { e.currentTarget.style.borderColor='var(--red-border)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor='var(--border)'; }}>
+                <input type="checkbox" checked={Boolean(form[f])} onChange={set(f)} style={{ accentColor:'var(--red)', width:20, height:20, cursor:'pointer' }} />
+                <span style={{ fontSize:14, color:'var(--text-2)', fontWeight:600 }}>{l}</span>
               </label>
             ))}
           </div>
-          <p style={{ fontSize:12, color:'rgba(255,255,255,0.2)', marginTop:14 }}>
+          <p style={{ fontSize:12, color:'var(--text-3)', marginTop:14, fontWeight:500, lineHeight:1.6 }}>
             💡 La mensualité est calculée automatiquement (6%/an, 60 mois).
           </p>
         </Section>
 
-        <div style={{ display:'flex', gap:14 }}>
-          <button type="submit" disabled={saving} className="btn-primary" style={{ fontSize:15, padding:'16px 32px' }}>
+        <div style={{ display:'flex', gap:16, marginTop:8 }}>
+          <button type="submit" disabled={saving} className="btn-primary" style={{ fontSize:15, padding:'18px 36px', borderRadius:10, letterSpacing:'0.05em' }}>
             {saving ? 'Enregistrement...' : isEdit ? '✓ Mettre à jour' : '+ Créer le véhicule'}
           </button>
-          <button type="button" onClick={() => navigate('/admin/cars')} className="btn-ghost" style={{ fontSize:15, padding:'16px 32px' }}>
+          <button type="button" onClick={() => navigate('/admin/cars')} className="btn-ghost" style={{ fontSize:15, padding:'18px 36px', borderRadius:10, letterSpacing:'0.05em' }}>
             Annuler
           </button>
         </div>
