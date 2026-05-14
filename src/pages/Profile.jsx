@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuthStore, useToastStore, useLangStore } from '../store';
-import { authAPI } from '../services/api';
+import { userAPI } from '../services/api';
 import { t } from '../utils/i18n';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { getInitials } from '../utils/helpers';
@@ -20,7 +20,7 @@ export default function Profile() {
 
   const saveProfile = async (e) => {
     e.preventDefault();
-    try { setSaving(true); const { data } = await authAPI.updateProfile(form); updateUser(data.user); addToast('✓ ' + t('save',l), 'success'); }
+    try { setSaving(true); const { data } = await userAPI.updateProfile(form); updateUser(data.user); addToast('✓ ' + t('save',l), 'success'); }
     catch (err) { addToast(err.response?.data?.error || 'Erreur', 'error'); }
     finally { setSaving(false); }
   };
@@ -28,7 +28,7 @@ export default function Profile() {
   const savePassword = async (e) => {
     e.preventDefault();
     if (pwd.next !== pwd.confirm) { addToast(l==='fr'?'Mots de passe différents':l==='en'?'Passwords don\'t match':l==='de'?'Passwörter stimmen nicht überein':l==='es'?'Las contraseñas no coinciden':l==='it'?'Le password non coincidono':'As senhas não coincidem', 'error'); return; }
-    try { setSaving(true); await authAPI.changePassword({ currentPassword:pwd.current, newPassword:pwd.next }); setPwd({current:'',next:'',confirm:''}); addToast('✓ ' + (l==='fr'?'Mot de passe mis à jour':l==='en'?'Password updated':l==='de'?'Passwort aktualisiert':l==='es'?'Contraseña actualizada':l==='it'?'Password aggiornata':'Senha atualizada'), 'success'); }
+    try { setSaving(true); await userAPI.changePassword({ currentPassword:pwd.current, newPassword:pwd.next }); setPwd({current:'',next:'',confirm:''}); addToast('✓ ' + (l==='fr'?'Mot de passe mis à jour':l==='en'?'Password updated':l==='de'?'Passwort aktualisiert':l==='es'?'Contraseña actualizada':l==='it'?'Password aggiornata':'Senha atualizada'), 'success'); }
     catch (err) { addToast(err.response?.data?.error || 'Erreur', 'error'); }
     finally { setSaving(false); }
   };
@@ -71,7 +71,7 @@ export default function Profile() {
         <form onSubmit={saveProfile} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:14, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
           <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--red)', marginBottom:22 }}>{labels.personal[l]}</p>
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
+            <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:14 }}>
               <Field label={t('first_name',l)} value={form.firstName} onChange={set('firstName')} />
               <Field label={t('last_name',l)}  value={form.lastName}  onChange={set('lastName')} />
             </div>

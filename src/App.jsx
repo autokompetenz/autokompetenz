@@ -4,6 +4,7 @@ import { useAuthStore, useLangStore } from './store/index';
 import Navbar from './components/Navbar';
 import Toast from './components/Toast';
 import Chatbot from './components/Chatbot';
+import ClientBottomNav, { useClientBottomNavPadding } from './components/ClientBottomNav';
 
 // Pages
 import Home         from './pages/Home';
@@ -38,10 +39,12 @@ function GuestOnly({ children }) {
   return !isAuthenticated ? children : <Navigate to="/dashboard" replace />;
 }
 function MainLayout({ children }) {
+  const paddingBottom = useClientBottomNavPadding();
   return (
     <>
       <Navbar />
-      {children}
+      <div style={paddingBottom ? { paddingBottom } : undefined}>{children}</div>
+      <ClientBottomNav />
       <Chatbot />
     </>
   );
@@ -71,7 +74,7 @@ export default function App() {
         {/* Legal pages */}
         <Route path="/mentions-legales"         element={<MainLayout><Legal /></MainLayout>} />
         <Route path="/politique-confidentialite" element={<MainLayout><Legal /></MainLayout>} />
-        <Route path="/cgv"                       element={<MainLayout><Legal /></MainLayout>} />
+        <Route path="/politique-de-vente"         element={<MainLayout><Legal /></MainLayout>} />
         <Route path="/cookies"                   element={<MainLayout><Legal /></MainLayout>} />
 
         {/* Auth */}

@@ -190,6 +190,26 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {/* Confiance & conformité */}
+            <div style={{ marginBottom:24, padding:'18px 20px', background:'var(--bg-card2)', border:'1px solid var(--border)', borderRadius:12 }}>
+              <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.22em', textTransform:'uppercase', color:'var(--red)', marginBottom:12 }}>
+                {lang==='fr'?'Pourquoi nous faire confiance ?':lang==='en'?'Why trust us?':lang==='de'?'Warum uns vertrauen?':lang==='es'?'¿Por qué confiar?':lang==='it'?'Perché fidarsi?':'Por que confiar?'}
+              </p>
+              <ul style={{ margin:0, paddingLeft:18, color:'var(--text-2)', fontSize:13, lineHeight:1.75 }}>
+                <li><strong style={{ color:'var(--text)' }}>Auto Kompetenz GmbH</strong> — {lang==='fr'?'société immatriculée en Allemagne (GmbH), siège à Emsdetten.':lang==='en'?'German GmbH based in Emsdetten.':lang==='de'?'Deutsche GmbH mit Sitz in Emsdetten.':lang==='es'?'Sociedad alemana con sede en Emsdetten.':lang==='it'?'Società tedesca con sede a Emsdetten.':'Empresa alemã sediada em Emsdetten.'}</li>
+                <li>{lang==='fr'?'Prix affichés en euros, commande et suivi en ligne.':lang==='en'?'Prices in EUR, online ordering and tracking.':lang==='de'?'Preise in EUR, Online-Bestellung & Tracking.':lang==='es'?'Precios en EUR, pedido y seguimiento online.':lang==='it'?'Prezzi in EUR, ordine e tracciamento online.':'Preços em EUR, pedido e acompanhamento online.'}</li>
+                <li>{lang==='fr'?'Documents : ':lang==='en'?'Policies: ':lang==='de'?'Dokumente: ':lang==='es'?'Documentos: ':lang==='it'?'Documenti: ':'Documentos: '}
+                  <Link to="/politique-de-vente" style={{ color:'var(--red)', fontWeight:700 }}>{lang==='fr'?'Politique de vente':lang==='en'?'Sales':lang==='de'?'Verkauf':'Vendas'}</Link>
+                  {' · '}
+                  <Link to="/politique-confidentialite" style={{ color:'var(--red)', fontWeight:700 }}>{lang==='fr'?'Confidentialité':lang==='en'?'Privacy':lang==='de'?'Datenschutz':'Privacidade'}</Link>
+                  {' · '}
+                  <Link to="/mentions-legales" style={{ color:'var(--red)', fontWeight:700 }}>
+                    {lang==='fr'?'Mentions légales':lang==='en'?'Legal notice':lang==='de'?'Impressum':lang==='es'?'Aviso legal':lang==='it'?'Note legali':'Aviso legal'}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
             {/* WhatsApp CTA */}
             <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12, padding:'16px 20px', background:'rgba(37,211,102,0.05)', border:'1px solid rgba(37,211,102,0.15)', borderRadius:12 }}>
               <p style={{ fontSize:14, color:'var(--text-3)', flex:1 }}>

@@ -46,6 +46,7 @@ export const carAPI = {
     });
   },
   toggle:        (id)   => api.patch(`/cars/${id}/toggle`),
+  remove:        (id)   => api.delete(`/cars/${id}`),
 };
 export const cartAPI = {
   get:    ()      => api.get('/cart'),

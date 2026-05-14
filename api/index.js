@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const { createClient } = require('@supabase/supabase-js');
 const { prisma } = require('../lib/prisma.js');
-const { sendWelcomeEmail, sendOrderConfirmationEmail } = require('../lib/mailer.js');
+const { sendWelcomeEmail, sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } = require('../lib/mailer.js');
 
 // Initialize Express app
 const app = express();
@@ -609,6 +609,30 @@ app.patch('/api/cars/:id/toggle', authenticateToken, requireAdmin, async (req, r
   }
 });
 
+// Admin: delete car (si aucune ligne de commande ne référence le véhicule)
+app.delete('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const carId = parseInt(req.params.id, 10);
+    if (isNaN(carId) || carId <= 0) {
+      return res.status(400).json({ error: 'ID invalide' });
+    }
+    const existing = await prisma.car.findUnique({ where: { id: carId } });
+    if (!existing) return res.status(404).json({ error: 'Voiture non trouvée' });
+    const orderLinks = await prisma.orderItem.count({ where: { carId } });
+    if (orderLinks > 0) {
+      return res.status(400).json({
+        error: `Ce véhicule figure dans ${orderLinks} commande(s). Désactivez-le plutôt pour conserver l'historique.`,
+      });
+    }
+    await prisma.cart.deleteMany({ where: { carId } });
+    await prisma.car.delete({ where: { id: carId } });
+    res.json({ success: true, message: 'Véhicule supprimé' });
+  } catch (e) {
+    console.error('DELETE /api/cars/:id', e);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
 // Cart Routes
 app.get('/api/cart', authenticateToken, async (req, res) => {
   try {
@@ -1057,14 +1081,50 @@ app.patch('/api/orders/:id', authenticateToken, requireAdmin, async (req, res) =
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Statut invalide' });
     }
+    const orderId = parseInt(id, 10);
+    const existing = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { user: { select: { email: true, firstName: true } } },
+    });
+    if (!existing) {
+      return res.status(404).json({ error: 'Commande introuvable' });
+    }
+    const previousStatus = existing.status;
     const order = await prisma.order.update({
-      where: { id: parseInt(id) },
+      where: { id: orderId },
       data: { status },
     });
     await prisma.orderTracking.create({
       data: { orderId: order.id, status, comment: comment || null, updatedBy: req.user.id },
     });
-    res.json({ success: true, order });
+    let emailSent = false;
+    if (status !== previousStatus && existing.user?.email) {
+      emailSent = true;
+      sendOrderStatusUpdateEmail({
+        email: existing.user.email,
+        firstName: existing.user.firstName || 'Client',
+        orderNumber: order.orderNumber,
+        status,
+        comment,
+        statusChanged: true,
+      }).catch((err) => console.error('Order status email error:', err));
+    } else if (
+      status === previousStatus &&
+      comment &&
+      String(comment).trim() &&
+      existing.user?.email
+    ) {
+      emailSent = true;
+      sendOrderStatusUpdateEmail({
+        email: existing.user.email,
+        firstName: existing.user.firstName || 'Client',
+        orderNumber: order.orderNumber,
+        status,
+        comment,
+        statusChanged: false,
+      }).catch((err) => console.error('Order status email error:', err));
+    }
+    res.json({ success: true, order, emailSent });
   } catch (e) {
     console.error('PATCH /api/orders/:id ERROR:', e);
     res.status(500).json({ error: 'Erreur serveur' });

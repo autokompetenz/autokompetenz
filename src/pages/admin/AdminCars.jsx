@@ -18,9 +18,22 @@ export default function AdminCars() {
   const handleToggle = async (car) => {
     try {
       const { data } = await carAPI.toggle(car.id);
-      setCars(prev => prev.map(c => c.id === car.id ? data.car : c));
+      setCars((prev) => prev.map((c) => (c.id === car.id ? data.car : c)));
       addToast(data.message || 'Statut mis à jour', 'success');
-    } catch { addToast('Erreur', 'error'); }
+    } catch {
+      addToast('Erreur', 'error');
+    }
+  };
+
+  const handleDelete = async (car) => {
+    if (!window.confirm(`Supprimer définitivement ${car.make} ${car.model} ? Cette action est irréversible.`)) return;
+    try {
+      await carAPI.remove(car.id);
+      setCars((prev) => prev.filter((c) => c.id !== car.id));
+      addToast('Véhicule supprimé', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.error || 'Suppression impossible', 'error');
+    }
   };
 
   if (loading) return <div style={{ padding:40 }}><Loader text="Chargement des véhicules..." /></div>;
@@ -97,9 +110,13 @@ export default function AdminCars() {
                         onMouseOut={e => { e.currentTarget.style.opacity = '1'; }}>
                         Modifier
                       </Link>
-                      <button type="button" onClick={() => { if (window.confirm(`${car.isActive?'Désactiver':'Activer'} ce véhicule ?`)) handleToggle(car); }}
+                      <button type="button" onClick={() => { if (window.confirm(`${car.isActive ? 'Désactiver' : 'Activer'} ce véhicule ?`)) handleToggle(car); }}
                         style={{ fontSize:13, color: car.isActive ? '#DC2626' : 'var(--green)', background:'none', border:'none', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:700 }}>
                         {car.isActive ? 'Désactiver' : 'Activer'}
+                      </button>
+                      <button type="button" onClick={() => handleDelete(car)}
+                        style={{ fontSize:13, color:'#991B1B', background:'none', border:'none', cursor:'pointer', fontFamily:"'Outfit',sans-serif", fontWeight:800 }}>
+                        Supprimer
                       </button>
                     </div>
                   </td>

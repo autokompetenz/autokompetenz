@@ -277,7 +277,7 @@ export default function Home() {
                 {l==='fr'?'Votre partenaire automobile de confiance en Allemagne.':l==='en'?'Your trusted car partner in Germany.':l==='de'?'Ihr vertrauenswürdiger Autopartner in Deutschland.':l==='es'?'Su socio de confianza en Alemania.':l==='it'?'Il vostro partner automobilistico di fiducia in Germania.':'Seu parceiro automobilístico de confiança na Alemanha.'}
               </p>
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, paddingLeft: isMobile ? 0 : 40 }}>
+            <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: isMobile ? 20 : 16, paddingLeft: isMobile ? 0 : 40 }}>
               <div>
                 <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)', marginBottom:12 }}>Navigation</p>
                 {[{to:'/catalog',label:t('nav_vehicles',l)},{to:'/simulation',label:t('nav_financing',l)},{to:'/track',label:t('nav_track',l)}].map(({to,label})=>(
@@ -292,6 +292,27 @@ export default function Home() {
                   ✉ autoKompetenz@gmail.com<br/>
                   💬 <a href="https://wa.me/4915788823274" style={{ color:'var(--red)', textDecoration:'none' }}>WhatsApp</a>
                 </p>
+              </div>
+              <div>
+                <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)', marginBottom:12 }}>
+                  {l==='fr'?'Informations légales':l==='en'?'Legal':l==='de'?'Rechtliches':l==='es'?'Legal':l==='it'?'Note legali':'Informações legais'}
+                </p>
+                {[
+                  { to:'/mentions-legales', fr:'Mentions légales', en:'Legal notice', de:'Impressum' },
+                  { to:'/politique-de-vente', fr:'Politique de vente', en:'Sales policy', de:'Verkaufspolitik' },
+                  { to:'/cgv', fr:'CGV', en:'Terms of sale', de:'AGB' },
+                  { to:'/politique-confidentialite', fr:'Confidentialité', en:'Privacy', de:'Datenschutz' },
+                  { to:'/cookies', fr:'Cookies', en:'Cookies', de:'Cookies' },
+                ].map(({ to, fr, en, de }) => {
+                  const label = l === 'fr' ? fr : l === 'en' ? en : l === 'de' ? de : l === 'es' ? fr : l === 'it' ? en : l === 'pt' ? en : fr;
+                  return (
+                  <Link key={to} to={to} style={{ display:'block', fontSize:14, color:'var(--text-3)', textDecoration:'none', marginBottom:8, transition:'color 0.2s' }}
+                    onMouseOver={e=>{ e.currentTarget.style.color='var(--red)'; }}
+                    onMouseOut={e=>{ e.currentTarget.style.color='var(--text-3)'; }}>
+                    {label}
+                  </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

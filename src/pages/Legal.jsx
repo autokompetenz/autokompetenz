@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLangStore } from '../store';
+import { useBreakpoint } from '../hooks/useBreakpoint';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const LEGAL_PAGES = {
   '/mentions-legales': {
@@ -277,6 +279,53 @@ Vous pouvez également vous plaindre auprès de l'autorité de contrôle alleman
 <p>تخضع هذه الشروط للقانون الألماني.</p>` },
   },
 
+  '/politique-de-vente': {
+    fr: { title: 'Politique de vente', content: `
+<p><em>Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</em></p>
+
+<h2>Qui sommes-nous ?</h2>
+<p><strong>Auto Kompetenz GmbH</strong>, Neuenkirchener Str. 127, 48282 Emsdetten (Allemagne) — société de droit allemand (GmbH), spécialisée dans la vente de véhicules neufs et d’occasion et l’accompagnement client (financement, suivi de commande).</p>
+
+<h2>Engagement qualité & transparence</h2>
+<ul>
+<li>Prix affichés en <strong>euros TTC</strong> sur le site au moment de la consultation.</li>
+<li>Descriptifs véhicules (kilométrage, carburant, boîte, catégorie) conformes aux informations communiquées lors de l’annonce.</li>
+<li>Processus de commande en ligne sécurisé : compte client, panier, confirmation par e-mail avec numéro de bon de commande.</li>
+<li>Suivi d’étapes : chaque évolution de commande peut faire l’objet d’une notification par e-mail.</li>
+</ul>
+
+<h2>Modalités de commande & paiement</h2>
+<p>Trois formules sont proposées : paiement intégral (avec remise affichée le cas échéant), acompte avec solde à la livraison, ou mensualités selon les conditions indiquées sur le site. Les détails contractuels complets figurent dans nos <a href="/cgv" style="color:#C8102E">Conditions générales de vente</a>.</p>
+
+<h2>Livraison & délais</h2>
+<p>Les délais communiqués sont indicatifs. En cas de retard, nous vous informons dans les meilleurs délais. La livraison s’effectue à l’adresse indiquée lors de la commande ou selon accord ultérieur.</p>
+
+<h2>Rétractation & réclamations</h2>
+<p>Les droits du consommateur (dont délai de rétractation lorsque la loi l’impose) sont rappelés dans les CGV. Pour toute réclamation : <strong>autoKompetenz@gmail.com</strong> ou WhatsApp +49 157 888 232 74. Plateforme européenne RLL : <a href="https://ec.europa.eu/consumers/odr" style="color:#C8102E" target="_blank" rel="noopener noreferrer">ec.europa.eu/consumers/odr</a>.</p>
+
+<h2>Données personnelles</h2>
+<p>Le traitement de vos données est décrit dans notre <a href="/politique-confidentialite" style="color:#C8102E">Politique de confidentialité</a> (RGPD).</p>` },
+    en: { title: 'Sales policy', content: `
+<p><em>Last updated: ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</em></p>
+<h2>Who we are</h2>
+<p><strong>Auto Kompetenz GmbH</strong>, Neuenkirchener Str. 127, 48282 Emsdetten, Germany — German limited company selling new and used vehicles with financing options and order tracking.</p>
+<h2>Transparency</h2>
+<ul><li>Prices in EUR including applicable taxes.</li><li>Clear vehicle descriptions.</li><li>Secure checkout and email confirmation.</li></ul>
+<h2>Full terms</h2>
+<p>See our <a href="/cgv" style="color:#C8102E">Terms and Conditions</a> and <a href="/politique-confidentialite" style="color:#C8102E">Privacy policy</a>.</p>` },
+    de: { title: 'Verkaufspolitik', content: `
+<p><em>Stand: ${new Date().toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })}</em></p>
+<h2>Unternehmen</h2>
+<p><strong>Auto Kompetenz GmbH</strong>, Neuenkirchener Str. 127, 48282 Emsdetten — Verkauf von Fahrzeugen mit transparenter Preisgestaltung und Bestellverfolgung.</p>
+<h2>AGB & Datenschutz</h2>
+<p>Details in den <a href="/cgv" style="color:#C8102E">AGB</a> und der <a href="/politique-confidentialite" style="color:#C8102E">Datenschutzerklärung</a>.</p>` },
+    ar: { title: 'سياسة البيع', content: `
+<h2>من نحن</h2>
+<p><strong>Auto Kompetenz GmbH</strong> — شركة ألمانية لبيع السيارات الجديدة والمستعملة مع تمويل وتتبع للطلبات.</p>
+<h2>الشفافية</h2>
+<p>الأسعار باليورو شاملة الضرائب. راجع <a href="/cgv" style="color:#C8102E">الشروط العامة</a> و <a href="/politique-confidentialite" style="color:#C8102E">سياسة الخصوصية</a>.</p>` },
+  },
+
   '/cookies': {
     fr: { title: 'Politique de Cookies', content: `
 <p><em>Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</em></p>
@@ -347,6 +396,7 @@ Vous pouvez également vous plaindre auprès de l'autorité de contrôle alleman
 export default function Legal() {
   const { lang } = useLangStore();
   const location = useLocation();
+  const { isMobile } = useBreakpoint();
   const page = LEGAL_PAGES[location.pathname];
 
   useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
@@ -363,9 +413,9 @@ export default function Legal() {
   const content = page[lang] || page['fr'];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)', paddingTop: 100 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--black)', paddingTop: isMobile ? 88 : 100 }}>
       {/* Header */}
-      <div style={{ padding: '60px 6% 50px', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'var(--dark)' }}>
+      <div style={{ padding: isMobile ? '28px 5% 32px' : '60px 6% 50px', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'var(--dark)' }}>
         <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#8A8A90', textDecoration: 'none', marginBottom: 24, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>
           ← {lang === 'fr' ? 'Retour' : lang === 'en' ? 'Back' : lang === 'de' ? 'Zurück' : 'رجوع'}
         </Link>
@@ -386,16 +436,16 @@ export default function Legal() {
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: 820, margin: '0 auto', padding: '60px 6%' }}>
+      <div style={{ maxWidth: 820, margin: '0 auto', padding: isMobile ? '32px 5% 48px' : '60px 6%' }}>
         <div dangerouslySetInnerHTML={{ __html: content.content }} style={{
-          color: 'rgba(255,255,255,0.6)', fontSize: 17, lineHeight: 1.8,
+          color: 'rgba(255,255,255,0.6)', fontSize: isMobile ? 15 : 17, lineHeight: 1.82,
         }} />
       </div>
 
       <style>{`
         .legal-content h1, .legal-content h2, .legal-content h3 { color: #fff; margin: 32px 0 16px; font-family: 'Outfit', sans-serif; }
-        div[dangerouslySetInnerHTML] h2 { color: #fff; font-size: 22px; font-weight: 800; margin: 36px 0 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
-        div[dangerouslySetInnerHTML] h3 { color: rgba(255,255,255,0.8); font-size: 18px; font-weight: 700; margin: 24px 0 10px; }
+        div[dangerouslySetInnerHTML] h2 { color: #fff; font-size: ${isMobile ? '18px' : '22px'}; font-weight: 800; margin: 36px 0 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        div[dangerouslySetInnerHTML] h3 { color: rgba(255,255,255,0.8); font-size: ${isMobile ? '16px' : '18px'}; font-weight: 700; margin: 24px 0 10px; }
         div[dangerouslySetInnerHTML] p { margin-bottom: 16px; }
         div[dangerouslySetInnerHTML] ul { padding-left: 24px; margin-bottom: 16px; }
         div[dangerouslySetInnerHTML] li { margin-bottom: 8px; }

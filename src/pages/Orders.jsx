@@ -51,17 +51,19 @@ export default function Orders() {
           <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
             {orders.map((order, i) => (
               <motion.div key={order.id} initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:i*0.06 }}
-                style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? '16px' : '20px 24px', boxShadow:'var(--shadow-sm)', display:'flex', flexWrap:'wrap', gap:14, alignItems:'center' }}>
-                <div style={{ flex:1, minWidth:160 }}>
+                style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? '16px 14px' : '20px 24px', boxShadow:'var(--shadow-sm)', display:'flex', flexDirection: isMobile ? 'column' : 'row', flexWrap:'wrap', gap: isMobile ? 12 : 14, alignItems: isMobile ? 'stretch' : 'center' }}>
+                <div style={{ flex:1, minWidth:0 }}>
                   <p style={{ fontFamily:'monospace', fontSize:14, color:'var(--red)', fontWeight:700, marginBottom:3 }}>{order.orderNumber}</p>
                   <p style={{ fontSize:12, color:'var(--text-3)' }}>{formatDate(order.createdAt)}</p>
                 </div>
-                <StatusBadge status={order.status} />
-                <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
-                  <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:22, color:'var(--text)' }}>{formatEuro(order.totalPrice)}</p>
-                  <p style={{ fontSize:12, color:'var(--text-3)' }}>{order.items?.length || 0} {l==='fr'?'véhicule(s)':l==='en'?'vehicle(s)':l==='de'?'Fahrzeug(e)':l==='es'?'vehículo(s)':l==='it'?'veicolo/i':'veículo(s)'}</p>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap', width: isMobile ? '100%' : 'auto' }}>
+                  <StatusBadge status={order.status} />
+                  <div style={{ textAlign: isMobile ? 'left' : 'right', marginLeft: isMobile ? 0 : 'auto' }}>
+                    <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:22, color:'var(--text)' }}>{formatEuro(order.totalPrice)}</p>
+                    <p style={{ fontSize:12, color:'var(--text-3)' }}>{order.items?.length || 0} {l==='fr'?'véhicule(s)':l==='en'?'vehicle(s)':l==='de'?'Fahrzeug(e)':l==='es'?'vehículo(s)':l==='it'?'veicolo/i':'veículo(s)'}</p>
+                  </div>
                 </div>
-                <Link to={`/track/${order.orderNumber}`} className="btn-outline" style={{ fontSize:12, padding:'10px 18px', flexShrink:0 }}>
+                <Link to={`/track/${order.orderNumber}`} className="btn-outline" style={{ fontSize:12, padding:'10px 18px', width: isMobile ? '100%' : 'auto', textAlign:'center', justifyContent:'center', display:'inline-flex', boxSizing:'border-box' }}>
                   {labels.track[l]} →
                 </Link>
               </motion.div>

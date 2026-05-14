@@ -28,8 +28,12 @@ export default function AdminOrderDetail() {
     e.preventDefault();
     setSaving(true);
     try {
-      await orderAPI.updateStatus(id, { status:newStatus, comment });
-      addToast('Statut mis à jour. Email envoyé au client.', 'success');
+      const { data } = await orderAPI.updateStatus(id, { status: newStatus, comment });
+      if (data.emailSent) {
+        addToast('Mise à jour enregistrée. Un e-mail a été envoyé au client.', 'success');
+      } else {
+        addToast('Mise à jour enregistrée (aucun e-mail : statut inchangé et pas de message).', 'info');
+      }
       setComment('');
       load();
     } catch (err) {
@@ -193,7 +197,7 @@ export default function AdminOrderDetail() {
               {saving ? '⏳ Envoi...' : '✉ Mettre à jour & Notifier'}
             </button>
             <p style={{ fontSize:12, textAlign:'center', color:'var(--text-3)', marginTop:10 }}>
-              Un email sera envoyé automatiquement au client
+              E-mail au client si le statut change ou si vous laissez un message (même statut).
             </p>
           </form>
         </div>
