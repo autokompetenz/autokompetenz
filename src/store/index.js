@@ -9,7 +9,6 @@ else document.documentElement.removeAttribute('data-theme');
 export const useThemeStore = create((set) => ({
   theme: savedTheme,
   toggle: () => {
-    const next = savedTheme === 'dark' ? 'light' : 'dark';
     set((s) => {
       const newTheme = s.theme === 'dark' ? 'light' : 'dark';
       localStorage.setItem('ak_theme', newTheme);
@@ -64,14 +63,11 @@ export const useCartStore = create((set, get) => ({
   fetchCart: async () => {
     try {
       set({ loading: true });
-      console.log('=== Cart Debug: Fetching cart ===');
       const { data } = await cartAPI.get();
-      console.log('Cart API response:', data);
       set({ cartItems: data.cartItems, total: data.total, cartCount: data.count, loading: false });
-      console.log('Cart state updated:', { cartItems: data.cartItems, total: data.total, count: data.count });
-    } catch (error) { 
+    } catch (error) {
       console.error('Cart fetch error:', error);
-      set({ loading: false }); 
+      set({ loading: false });
     }
   },
   fetchCount: async () => {
@@ -79,20 +75,8 @@ export const useCartStore = create((set, get) => ({
   },
   addItem: async (carId, paymentType = 'full') => {
     try {
-      console.log('=== Cart Debug: Adding item to cart ===');
-      console.log('Car ID:', carId, 'Payment Type:', paymentType);
-      
       const { data } = await cartAPI.add({ carId, paymentType });
-      console.log('Cart API add response:', data);
-      
-      // Use the full cart state returned by the server
-      set({ 
-        cartItems: data.cartItems, 
-        cartCount: data.count,
-        total: data.total,
-      });
-      
-      console.log('Cart state after add:', { cartItems: data.cartItems, cartCount: data.count });
+      set({ cartItems: data.cartItems, cartCount: data.count, total: data.total });
       return data;
     } catch (error) {
       console.error('Cart add error:', error);
