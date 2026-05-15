@@ -62,12 +62,20 @@ export default function AdminCarForm() {
   const [saving, setSaving] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const MAX_IMAGES = 20;
 
   useEffect(() => {
     if (isEdit) {
       carAPI.getById(id).then(r => {
         const c = r.data.car;
         setForm({ ...EMPTY, ...c, price:String(c.price), minSalary:String(c.minSalary||''), power:String(c.power||'') });
+        // Load existing images
+        const existing = [];
+        if (c.imageUrl) existing.push({ url: c.imageUrl, id: 'existing-1', isExisting: true });
+        if (c.imageUrl2) existing.push({ url: c.imageUrl2, id: 'existing-2', isExisting: true });
+        if (c.imageUrl3) existing.push({ url: c.imageUrl3, id: 'existing-3', isExisting: true });
+        setExistingImages(existing);
       });
     }
   }, [id, isEdit]);
@@ -92,6 +100,13 @@ export default function AdminCarForm() {
     if (!e.target || !e.target.files) return;
     
     const files = Array.from(e.target.files);
+    const currentTotal = previews.length + existingImages.length;
+    
+    if (currentTotal + files.length > MAX_IMAGES) {
+      addToast(`Maximum ${MAX_IMAGES} images autorisées (${currentTotal}/${MAX_IMAGES} déjà sélectionnées)`, 'error');
+      return;
+    }
+    
     if (files.length > 0) {
       const validFiles = files.filter(file => {
         if (file.size > 5 * 1024 * 1024) {
@@ -104,33 +119,38 @@ export default function AdminCarForm() {
       setImageFiles(prev => [...prev, ...validFiles]);
       
       validFiles.forEach(file => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreviews(prev => [...prev, { 
-            file: file,
-            url: reader.result,
-            id: crypto.randomUUID()
-          }]);
-        };
-        reader.readAsDataURL(file);
+        const url = URL.createObjectURL(file);
+        setPreviews(prev => [...prev, { 
+          file: file,
+          url: url,
+          id: crypto.randomUUID(),
+          isExisting: false
+        }]);
       });
     }
+    // Reset input to allow selecting the same files again
+    e.target.value = '';
   };
 
   const removeImage = (imageId) => {
-    if (!previews || !Array.isArray(previews)) return;
+    // Check if it's a new image preview
+    const previewToRemove = previews.find(p => p.id === imageId);
+    if (previewToRemove) {
+      URL.revokeObjectURL(previewToRemove.url);
+      setImageFiles(prev => prev.filter(file => file !== previewToRemove.file));
+      setPreviews(prev => prev.filter(p => p.id !== imageId));
+      return;
+    }
     
-    const previewToRemove = Array.isArray(previews) ? previews.find(p => p.id === imageId) : null;
-
-    if (!previewToRemove) return;
-
-    setImageFiles(prev =>
-      prev.filter(file => file !== previewToRemove.file)
-    );
-
-    setPreviews(prev =>
-      prev.filter(p => p.id !== imageId)
-    );
+    // Check if it's an existing image
+    const existingToRemove = existingImages.find(img => img.id === imageId);
+    if (existingToRemove) {
+      setExistingImages(prev => prev.filter(img => img.id !== imageId));
+      // Also clear the corresponding form field
+      if (existingToRemove.id === 'existing-1') setForm(prev => ({ ...prev, imageUrl: '' }));
+      if (existingToRemove.id === 'existing-2') setForm(prev => ({ ...prev, imageUrl2: '' }));
+      if (existingToRemove.id === 'existing-3') setForm(prev => ({ ...prev, imageUrl3: '' }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -165,6 +185,13 @@ export default function AdminCarForm() {
       // Add image files
       imageFiles.forEach((file) => {
         formData.append('images', file);
+      });
+      
+      // Add existing image URLs that weren't deleted
+      existingImages.forEach(img => {
+        if (img.id === 'existing-1' && form.imageUrl) formData.append('existingImages', form.imageUrl);
+        if (img.id === 'existing-2' && form.imageUrl2) formData.append('existingImages', form.imageUrl2);
+        if (img.id === 'existing-3' && form.imageUrl3) formData.append('existingImages', form.imageUrl3);
       });
       
       console.log('FormData contents:');
@@ -252,22 +279,22 @@ export default function AdminCarForm() {
                 onMouseOver={e => { e.currentTarget.style.borderColor='var(--red)'; e.currentTarget.style.background='var(--bg-card2)'; e.currentTarget.style.color='var(--text)'; }}
                 onMouseOut={e => { e.currentTarget.style.borderColor='var(--border-2)'; e.currentTarget.style.background='var(--red-bg)'; e.currentTarget.style.color='var(--text-2)'; }}
               >
-                📷 {imageFiles.length > 0 ? `${imageFiles.length} image(s) sélectionnée(s)` : 'Choisir des images'}
+                📷 {previews.length + existingImages.length > 0 ? `${previews.length + existingImages.length} / ${MAX_IMAGES} images` : 'Choisir des images'}
               </label>
             </div>
           </div>
         </Section>
 
-        {previews.length > 0 && (
+        {(previews.length > 0 || existingImages.length > 0) && (
           <div style={{ marginBottom:24 }}>
-            <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:12 }}>Aperçu ({previews.length} image{previews.length > 1 ? 's' : ''})</p>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:16 }}>
-              {previews.map((preview, index) => (
-                <div key={preview.id} style={{ position:'relative', borderRadius:12, overflow:'hidden', boxShadow:'var(--shadow-sm)' }}>
-                  <img src={preview.url} alt={`Aperçu ${index + 1}`} style={{ width:'100%', height:160, objectFit:'cover', borderRadius:12, border:'1px solid var(--border)' }} />
+            <p style={{ fontSize:11, fontWeight:700, letterSpacing:'0.16em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:12 }}>Aperçu ({previews.length + existingImages.length} / {MAX_IMAGES} image{previews.length + existingImages.length > 1 ? 's' : ''})</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[...existingImages, ...previews].map((img, index) => (
+                <div key={img.id} style={{ position:'relative', borderRadius:12, overflow:'hidden', boxShadow:'var(--shadow-sm)', aspectRatio:'4/3' }}>
+                  <img src={img.url} alt={`Aperçu ${index + 1}`} style={{ width:'100%', height:'100%', objectFit:'cover', borderRadius:12, border:'1px solid var(--border)' }} />
                   <button
                     type="button"
-                    onClick={() => removeImage(preview.id)}
+                    onClick={() => removeImage(img.id)}
                     style={{
                       position:'absolute',
                       top:8,
