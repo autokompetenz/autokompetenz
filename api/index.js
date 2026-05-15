@@ -346,7 +346,9 @@ app.get('/api/cars/:id', async (req, res) => {
 });
 
 // Car Routes
-app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3), async (req, res) => {
+app.post('/api/cars', authenticateToken, requireAdmin, upload.any(), async (req, res) => {
+  // Filter only image files from req.files
+  req.files = (req.files || []).filter(f => f.fieldname === 'images');
   try {
     console.log('=== POST /api/cars Debug ===');
     console.log('req.body:', req.body);
@@ -458,7 +460,9 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.array('images', 3)
   }
 });
 
-app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.array('images', 3), async (req, res) => {
+app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.any(), async (req, res) => {
+  // Filter only image files from req.files
+  req.files = (req.files || []).filter(f => f.fieldname === 'images');
   try {
     console.log('=== PUT /api/cars/:id ===');
     console.log('Car route param:', req.params.id);
