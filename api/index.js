@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const { createClient } = require('@supabase/supabase-js');
 const { prisma } = require('../lib/prisma.js');
-const { sendWelcomeEmail, sendOrderConfirmationEmail } = require('../lib/mailer.js');
+const { sendWelcomeEmail, sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } = require('../lib/mailer.js');
 
 // Initialize Express app
 const app = express();
@@ -1072,14 +1072,39 @@ app.patch('/api/orders/:id', authenticateToken, requireAdmin, async (req, res) =
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Statut invalide' });
     }
+    
+    // Get current order to check if status changed
+    const currentOrder = await prisma.order.findUnique({
+      where: { id: parseInt(id) },
+      include: { user: { select: { email: true, firstName: true } } }
+    });
+    
+    const statusChanged = currentOrder.status !== status;
+    
     const order = await prisma.order.update({
       where: { id: parseInt(id) },
       data: { status },
     });
+    
     await prisma.orderTracking.create({
       data: { orderId: order.id, status, comment: comment || null, updatedBy: req.user.id },
     });
-    res.json({ success: true, order });
+    
+    // Send email if status changed or if there's a comment
+    let emailSent = false;
+    if (statusChanged || comment) {
+      sendOrderStatusUpdateEmail({
+        email: currentOrder.user.email,
+        firstName: currentOrder.user.firstName,
+        orderNumber: order.orderNumber,
+        status,
+        comment,
+        statusChanged,
+      }).catch(err => console.error('Order status update email error:', err));
+      emailSent = true;
+    }
+    
+    res.json({ success: true, order, emailSent });
   } catch (e) {
     console.error('PATCH /api/orders/:id ERROR:', e);
     res.status(500).json({ error: 'Erreur serveur' });
@@ -1234,7 +1259,7 @@ app.get('/api/simulation', async (req, res) => {
     }
     const maxMonthly = salary * 0.3;
     // Find cars affordable via monthly payment (60 months, 6%/year)
-    const r = 0.06 / 12;
+    const r = 0.06 / 12;  
     const months = 60;
     // Max affordable price from monthly budget: price = maxMonthly * (((1+r)^n - 1) / (r*(1+r)^n))
     const factor = (Math.pow(1 + r, months) - 1) / (r * Math.pow(1 + r, months));
