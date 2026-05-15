@@ -70,11 +70,14 @@ export default function AdminCarForm() {
       carAPI.getById(id).then(r => {
         const c = r.data.car;
         setForm({ ...EMPTY, ...c, price:String(c.price), minSalary:String(c.minSalary||''), power:String(c.power||'') });
-        // Load existing images
+        // Load existing images (up to 20)
         const existing = [];
-        if (c.imageUrl) existing.push({ url: c.imageUrl, id: 'existing-1', isExisting: true });
-        if (c.imageUrl2) existing.push({ url: c.imageUrl2, id: 'existing-2', isExisting: true });
-        if (c.imageUrl3) existing.push({ url: c.imageUrl3, id: 'existing-3', isExisting: true });
+        const imageFields = ['imageUrl', 'imageUrl2', 'imageUrl3', 'imageUrl4', 'imageUrl5', 'imageUrl6', 'imageUrl7', 'imageUrl8', 'imageUrl9', 'imageUrl10', 'imageUrl11', 'imageUrl12', 'imageUrl13', 'imageUrl14', 'imageUrl15', 'imageUrl16', 'imageUrl17', 'imageUrl18', 'imageUrl19', 'imageUrl20'];
+        imageFields.forEach((field, idx) => {
+          if (c[field]) {
+            existing.push({ url: c[field], id: `existing-${idx + 1}`, isExisting: true, field });
+          }
+        });
         setExistingImages(existing);
       });
     }
@@ -146,10 +149,10 @@ export default function AdminCarForm() {
     const existingToRemove = existingImages.find(img => img.id === imageId);
     if (existingToRemove) {
       setExistingImages(prev => prev.filter(img => img.id !== imageId));
-      // Also clear the corresponding form field
-      if (existingToRemove.id === 'existing-1') setForm(prev => ({ ...prev, imageUrl: '' }));
-      if (existingToRemove.id === 'existing-2') setForm(prev => ({ ...prev, imageUrl2: '' }));
-      if (existingToRemove.id === 'existing-3') setForm(prev => ({ ...prev, imageUrl3: '' }));
+      // Clear the corresponding form field
+      if (existingToRemove.field) {
+        setForm(prev => ({ ...prev, [existingToRemove.field]: '' }));
+      }
     }
   };
 
@@ -189,9 +192,9 @@ export default function AdminCarForm() {
       
       // Add existing image URLs that weren't deleted
       existingImages.forEach(img => {
-        if (img.id === 'existing-1' && form.imageUrl) formData.append('existingImages', form.imageUrl);
-        if (img.id === 'existing-2' && form.imageUrl2) formData.append('existingImages', form.imageUrl2);
-        if (img.id === 'existing-3' && form.imageUrl3) formData.append('existingImages', form.imageUrl3);
+        if (img.field && form[img.field]) {
+          formData.append('existingImages', form[img.field]);
+        }
       });
       
       console.log('FormData contents:');

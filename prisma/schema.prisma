@@ -87,6 +87,23 @@ model Car {
   imageUrl       String?
   imageUrl2      String?
   imageUrl3      String?
+  imageUrl4      String?
+  imageUrl5      String?
+  imageUrl6      String?
+  imageUrl7      String?
+  imageUrl8      String?
+  imageUrl9      String?
+  imageUrl10     String?
+  imageUrl11     String?
+  imageUrl12     String?
+  imageUrl13     String?
+  imageUrl14     String?
+  imageUrl15     String?
+  imageUrl16     String?
+  imageUrl17     String?
+  imageUrl18     String?
+  imageUrl19     String?
+  imageUrl20     String?
   minSalary      Float?
   monthlyPayment Float?
   featured       Boolean      @default(false)

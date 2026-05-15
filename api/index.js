@@ -548,6 +548,17 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.any(), async (r
         console.log(`File ${i + 1} publicUrlData:`, publicUrlData);
       }
       
+      // Handle existing images that weren't deleted
+      if (req.body.existingImages) {
+        const existingImages = Array.isArray(req.body.existingImages) ? req.body.existingImages : [req.body.existingImages];
+        existingImages.forEach((url, idx) => {
+          const fieldName = idx === 0 ? 'imageUrl' : `imageUrl${idx + 1}`;
+          if (!carData[fieldName]) {
+            carData[fieldName] = url;
+          }
+        });
+      }
+      
       console.log('Final carData:', carData);
       
       const car = await prisma.car.update({
