@@ -29,10 +29,9 @@ const supabase = createClient(
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit per file
-    fieldSize: 2 * 1024 * 1024, // 2MB limit per field value
-    fields: 50,  // max non-file fields
-    files: 10,   // max file fields
+    fileSize: 10 * 1024 * 1024, // 10MB limit per file
+    fieldSize: 10 * 1024 * 1024, // 10MB limit per field
+    // No files or fields limit — handled in route logic
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype && file.mimetype.startsWith('image/')) {
