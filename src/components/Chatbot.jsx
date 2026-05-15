@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useLangStore } from '../store';
+import { motion } from 'framer-motion';
+import { useLangStore, useThemeStore } from '../store';
 
 const RESPONSES = {
   fr: {
@@ -11,7 +11,7 @@ const RESPONSES = {
     adresse:  "📍 Notre concessionnaire :\nNeuenkirchener Str. 127\n48282 Emsdetten, Allemagne\n\n🅿️ Parking gratuit disponible !",
     bonjour:  "Bonjour ! Bienvenue chez Auto Kompetenz GmbH 👋\n\nComment puis-je vous aider ?\n• Horaires d'ouverture\n• Prendre rendez-vous\n• Tarifs & devis\n• Notre adresse",
     garantie: "Oui ! Nous offrons une garantie sur :\n✅ Tous les véhicules vendus\n✅ Garantie constructeur et étendue\n✅ Service après-vente inclus\nVotre satisfaction est notre priorité !",
-    marques:  "Nous proposons TOUTES les marques :\n🚗 BMW, Mercedes, VW, Audi, Toyota...\n⚡ Véhicules électriques & hybrides\n🏎️ Toutes cylindrées\n\nContactez-nous : +49 157 888 232 74",
+    marques:  "Nous proposons TOUTES les marques :\n🚗 BMW, Mercedes, VW, Audi, Toyota...\n⚡ Véhicules électriques & hybrides\n\nContactez-nous : +49 157 888 232 74",
   },
   en: {
     default:  "Thanks for your message! Our team will reply shortly.\n📞 +49 157 888 232 74\n📧 autoKompetenz@gmail.com",
@@ -67,17 +67,39 @@ function detect(msg, lang) {
 
 export default function Chatbot() {
   const { lang } = useLangStore();
-  const R = RESPONSES[lang] || RESPONSES.fr;
+  const { theme } = useThemeStore();
+  const isDark = theme === 'dark';
+
+  const R  = RESPONSES[lang] || RESPONSES.fr;
   const QB = QUICK_BUTTONS[lang] || QUICK_BUTTONS.fr;
-  const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState([{ from: 'bot', text: R.bonjour }]);
-  const [input, setInput] = useState('');
+
+  const [open, setOpen]     = useState(false);
+  const [msgs, setMsgs]     = useState([{ from: 'bot', text: R.bonjour }]);
+  const [input, setInput]   = useState('');
   const [typing, setTyping] = useState(false);
-  const [notif, setNotif] = useState(true);
-  const endRef = useRef(null);
+  const [notif, setNotif]   = useState(true);
+  const endRef   = useRef(null);
   const inputRef = useRef(null);
 
-  // Reset messages when language changes
+  // Theme-aware colors — no more hardcoded dark values
+  const winBg      = isDark ? '#0f0f0f'                 : '#ffffff';
+  const winBorder  = isDark ? 'rgba(255,255,255,0.08)'  : 'rgba(0,0,0,0.1)';
+  const msgBotBg   = isDark ? '#1e1e1e'                 : '#f0f0f0';
+  const msgBotText = isDark ? '#e8e8e8'                 : '#111111';
+  const msgUserText= '#ffffff';
+  const inputBg    = isDark ? 'rgba(255,255,255,0.05)'  : 'rgba(0,0,0,0.04)';
+  const inputBorder= isDark ? 'rgba(255,255,255,0.08)'  : 'rgba(0,0,0,0.12)';
+  const inputText  = isDark ? '#e8e8e8'                 : '#111111';
+  const inputPh    = isDark ? 'rgba(255,255,255,0.35)'  : 'rgba(0,0,0,0.35)';
+  const footerBg   = isDark ? '#141414'                 : '#f8f8f8';
+  const footerBord = isDark ? 'rgba(255,255,255,0.06)'  : 'rgba(0,0,0,0.08)';
+  const dotBg      = isDark ? '#555'                    : '#bbb';
+  const quickBg    = isDark ? 'rgba(200,16,46,0.08)'    : 'rgba(200,16,46,0.06)';
+  const quickBd    = isDark ? 'rgba(200,16,46,0.2)'     : 'rgba(200,16,46,0.25)';
+  const quickText  = isDark ? 'rgba(255,255,255,0.7)'   : '#C8102E';
+  const quickHoverBg   = isDark ? 'rgba(200,16,46,0.18)' : 'rgba(200,16,46,0.14)';
+  const quickHoverText = '#C8102E';
+
   useEffect(() => {
     const R2 = RESPONSES[lang] || RESPONSES.fr;
     setMsgs([{ from: 'bot', text: R2.bonjour }]);
@@ -98,8 +120,8 @@ export default function Chatbot() {
     }, 800 + Math.random() * 600);
   };
 
-  const placeholders = { fr: 'Votre question...', en: 'Your question...', de: 'Ihre Frage...', ar: 'سؤالك...' };
-  const headerStatus = { fr: 'En ligne · Répond rapidement', en: 'Online · Replies quickly', de: 'Online · Antwortet schnell', ar: 'متصل · يرد بسرعة' };
+  const placeholders  = { fr: 'Votre question...', en: 'Your question...', de: 'Ihre Frage...', ar: 'سؤالك...' };
+  const headerStatus  = { fr: 'En ligne · Répond rapidement', en: 'Online · Replies quickly', de: 'Online · Antwortet schnell', ar: 'متصل · يرد بسرعة' };
 
   return (
     <>
@@ -110,36 +132,68 @@ export default function Chatbot() {
       </button>
 
       {/* Window */}
-      <div className={`chat-window ${open ? 'open' : 'closed'}`}>
-        {/* Header */}
+      <div
+        className={`chat-window ${open ? 'open' : 'closed'}`}
+        style={{
+          background: winBg,
+          border: `1px solid ${winBorder}`,
+          boxShadow: isDark
+            ? '0 20px 60px rgba(0,0,0,0.6)'
+            : '0 20px 60px rgba(0,0,0,0.15)',
+        }}
+      >
+        {/* Header — always red gradient, always readable */}
         <div style={{ background: 'linear-gradient(135deg, #9B0B22, #C8102E)', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
-          <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🔧</div>
+          <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>
+            🔧
+          </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 15, color: '#fff', letterSpacing: '0.02em' }}>Auto Kompetenz GmbH</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+            <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 15, color: '#fff', letterSpacing: '0.02em' }}>
+              Auto Kompetenz GmbH
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
               <span style={{ width: 7, height: 7, background: '#4ade80', borderRadius: '50%', display: 'inline-block' }} />
               {headerStatus[lang] || headerStatus.fr}
             </div>
           </div>
-          <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', fontSize: 20, cursor: 'pointer', lineHeight: 1, padding: 4 }}>✕</button>
+          <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', fontSize: 20, cursor: 'pointer', lineHeight: 1, padding: 4 }}>
+            ✕
+          </button>
         </div>
 
         {/* Messages */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 10, background: winBg }}>
           {msgs.map((m, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              style={{ maxWidth: '88%', padding: '12px 16px', borderRadius: 12, fontSize: 14, lineHeight: 1.6, whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontFamily: "'Outfit', sans-serif",
-                background: m.from === 'bot' ? 'var(--dark-3)' : '#C8102E',
-                color: '#E8E8E8', alignSelf: m.from === 'bot' ? 'flex-start' : 'flex-end',
-                borderBottomLeftRadius: m.from === 'bot' ? 3 : 12,
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                maxWidth: '88%',
+                padding: '12px 16px',
+                borderRadius: 12,
+                fontSize: 14,
+                lineHeight: 1.6,
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                fontFamily: "'Outfit', sans-serif",
+                background: m.from === 'bot' ? msgBotBg : '#C8102E',
+                color:      m.from === 'bot' ? msgBotText : msgUserText,
+                alignSelf:  m.from === 'bot' ? 'flex-start' : 'flex-end',
+                borderBottomLeftRadius:  m.from === 'bot'  ? 3 : 12,
                 borderBottomRightRadius: m.from === 'user' ? 3 : 12,
-              }}>
+              }}
+            >
               {m.text}
             </motion.div>
           ))}
+
+          {/* Typing indicator */}
           {typing && (
-            <div style={{ display: 'flex', gap: 5, padding: '12px 16px', background: 'var(--dark-3)', borderRadius: 12, alignSelf: 'flex-start', borderBottomLeftRadius: 3 }}>
-              {[0,1,2].map(i => <span key={i} style={{ width: 7, height: 7, background: '#8A8A90', borderRadius: '50%', display: 'block', animation: 'bounce 1.2s ease infinite', animationDelay: `${i * 0.2}s` }} />)}
+            <div style={{ display: 'flex', gap: 5, padding: '12px 16px', background: msgBotBg, borderRadius: 12, alignSelf: 'flex-start', borderBottomLeftRadius: 3 }}>
+              {[0,1,2].map(i => (
+                <span key={i} style={{ width: 7, height: 7, background: dotBg, borderRadius: '50%', display: 'block', animation: 'bounce 1.2s ease infinite', animationDelay: `${i * 0.2}s` }} />
+              ))}
             </div>
           )}
           <div ref={endRef} />
@@ -147,32 +201,71 @@ export default function Chatbot() {
 
         {/* Quick replies */}
         {msgs.length <= 2 && (
-          <div style={{ padding: '0 14px 12px', display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          <div style={{ padding: '0 14px 12px', display: 'flex', flexWrap: 'wrap', gap: 6, background: winBg }}>
             {QB.map(q => (
               <button key={q} onClick={() => send(q)}
-                style={{ background: 'rgba(200,16,46,0.08)', border: '1px solid rgba(200,16,46,0.2)', color: 'rgba(255,255,255,0.7)', fontSize: 12, fontWeight: 600, padding: '6px 12px', borderRadius: 20, cursor: 'pointer', fontFamily: "'Outfit', sans-serif", transition: 'all 0.2s' }}
-                onMouseOver={e => { e.target.style.background = 'rgba(200,16,46,0.18)'; e.target.style.color = '#fff'; }}
-                onMouseOut={e => { e.target.style.background = 'rgba(200,16,46,0.08)'; e.target.style.color = 'rgba(255,255,255,0.7)'; }}>
+                style={{
+                  background: quickBg,
+                  border: `1px solid ${quickBd}`,
+                  color: quickText,
+                  fontSize: 12, fontWeight: 600,
+                  padding: '6px 12px', borderRadius: 20,
+                  cursor: 'pointer',
+                  fontFamily: "'Outfit', sans-serif",
+                  transition: 'all 0.2s',
+                }}
+                onMouseOver={e => { e.currentTarget.style.background = quickHoverBg; e.currentTarget.style.color = quickHoverText; }}
+                onMouseOut={e => { e.currentTarget.style.background = quickBg; e.currentTarget.style.color = quickText; }}>
                 {q}
               </button>
             ))}
           </div>
         )}
 
-        {/* Input */}
-        <div style={{ display: 'flex', gap: 8, padding: '12px 14px', borderTop: '1px solid rgba(255,255,255,0.06)', background: 'var(--bg-card2)', flexShrink: 0 }}>
-          <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
+        {/* Input area */}
+        <div style={{ display: 'flex', gap: 8, padding: '12px 14px', borderTop: `1px solid ${footerBord}`, background: footerBg, flexShrink: 0 }}>
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && send()}
             placeholder={placeholders[lang] || placeholders.fr}
-            style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: '#E8E8E8', borderRadius: 8, padding: '10px 14px', fontSize: 14, fontFamily: "'Outfit', sans-serif", outline: 'none', transition: 'border-color 0.2s' }}
+            style={{
+              flex: 1,
+              background: inputBg,
+              border: `1px solid ${inputBorder}`,
+              color: inputText,
+              borderRadius: 8,
+              padding: '10px 14px',
+              fontSize: 14,
+              fontFamily: "'Outfit', sans-serif",
+              outline: 'none',
+              transition: 'border-color 0.2s',
+            }}
             onFocus={e => e.target.style.borderColor = '#C8102E'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'} />
-          <button onClick={() => send()} disabled={!input.trim()}
-            style={{ background: input.trim() ? '#C8102E' : 'rgba(200,16,46,0.3)', border: 'none', borderRadius: 8, cursor: input.trim() ? 'pointer' : 'not-allowed', width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 18, flexShrink: 0, transition: 'background 0.2s' }}>
+            onBlur={e => e.target.style.borderColor = inputBorder}
+          />
+          {/* Placeholder color via CSS var trick */}
+          <style>{`
+            .chat-window input::placeholder { color: ${inputPh}; }
+            @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-7px)} }
+          `}</style>
+          <button
+            onClick={() => send()}
+            disabled={!input.trim()}
+            style={{
+              background: input.trim() ? '#C8102E' : (isDark ? 'rgba(200,16,46,0.3)' : 'rgba(200,16,46,0.2)'),
+              border: 'none', borderRadius: 8,
+              cursor: input.trim() ? 'pointer' : 'not-allowed',
+              width: 42, height: 42,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', fontSize: 18, flexShrink: 0,
+              transition: 'background 0.2s',
+            }}>
             ➤
           </button>
         </div>
       </div>
-      <style>{`@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}`}</style>
     </>
   );
 }
