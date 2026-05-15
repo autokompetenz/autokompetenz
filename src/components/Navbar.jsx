@@ -107,35 +107,71 @@ export default function Navbar() {
           {/* Unified menu button — replaces theme + lang + user separately */}
           <div style={{ position: 'relative' }} ref={menuRef}>
             <button onClick={() => setMenuOpen(!menuOpen)}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, background: isHero ? 'rgba(255,255,255,0.1)' : 'var(--bg-card2)', border: `1.5px solid ${menuOpen ? 'var(--red)' : isHero ? 'rgba(255,255,255,0.15)' : 'var(--border)'}`, borderRadius: 8, padding: '7px 12px', cursor: 'pointer', transition: 'all 0.2s', height: 38 }}>
-              {isAuthenticated ? (
+              style={{ display: 'flex', alignItems: 'center', gap: 8, background: isHero ? 'rgba(255,255,255,0.1)' : 'var(--bg-card2)', border: `1.5px solid ${menuOpen ? 'var(--red)' : isHero ? 'rgba(255,255,255,0.15)' : 'var(--border)'}`, borderRadius: 8, padding: isMobile ? '8px' : '7px 12px', cursor: 'pointer', transition: 'all 0.2s', height: 38, width: isMobile ? 38 : 'auto', justifyContent: 'center' }}>
+              {isAuthenticated && !isMobile ? (
                 <>
                   <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg,#9B0B22,#C8102E)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 800, color: '#fff', flexShrink: 0 }}>
                     {user?.firstName?.[0]}{user?.lastName?.[0]}
                   </div>
-                  {!isMobile && <span style={{ fontSize: 13, fontWeight: 600, color: isHero ? '#fff' : 'var(--text-2)', maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.firstName}</span>}
+                  <span style={{ fontSize: 13, fontWeight: 600, color: isHero ? '#fff' : 'var(--text-2)', maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.firstName}</span>
+                  <span style={{ fontSize: 10, color: isHero ? 'rgba(255,255,255,0.5)' : 'var(--text-3)' }}>▾</span>
                 </>
               ) : (
-                <span style={{ fontSize: 16, lineHeight: 1 }}>☰</span>
+                <>
+                  <span style={{ fontSize: 20, lineHeight: 1, color: isHero ? '#fff' : 'var(--text-2)' }}>{menuOpen ? '✕' : '☰'}</span>
+                </>
               )}
-              <span style={{ fontSize: 10, color: isHero ? 'rgba(255,255,255,0.5)' : 'var(--text-3)' }}>▾</span>
             </button>
 
             <AnimatePresence>
               {menuOpen && (
                 <motion.div initial={{ opacity: 0, y: 8, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                  style={{ position: 'absolute', right: 0, top: 'calc(100% + 10px)', background: 'var(--bg-dropdown)', border: '1px solid var(--border-2)', borderRadius: 12, boxShadow: 'var(--shadow-xl)', overflow: 'hidden', minWidth: 230, zIndex: 200 }}>
+                  style={{ 
+                    position: isMobile ? 'fixed' : 'absolute',
+                    right: isMobile ? 0 : 0,
+                    top: isMobile ? 68 : 'calc(100% + 10px)',
+                    left: isMobile ? 0 : 'auto',
+                    bottom: isMobile ? 0 : 'auto',
+                    background: isMobile ? (isDark ? 'rgba(10,10,11,0.98)' : 'rgba(255,255,255,0.98)') : 'var(--bg-dropdown)',
+                    border: isMobile ? 'none' : '1px solid var(--border-2)',
+                    borderRadius: isMobile ? 0 : 12,
+                    boxShadow: isMobile ? 'none' : 'var(--shadow-xl)',
+                    overflow: 'auto',
+                    minWidth: isMobile ? '100%' : 230,
+                    maxWidth: isMobile ? '100%' : 280,
+                    zIndex: 200,
+                    padding: isMobile ? '20px 5%' : 0
+                  }}>
+
+                  {/* Mobile: Main navigation links */}
+                  {isMobile && (
+                    <div style={{ marginBottom: 20 }}>
+                      <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-3)', marginBottom: 12 }}>
+                        {lang === 'fr' ? 'Navigation' : lang === 'en' ? 'Navigation' : lang === 'de' ? 'Navigation' : 'Navegación'}
+                      </p>
+                      {[
+                        { to: '/catalog',    icon: '🚗', label: t('nav_vehicles', lang) },
+                        { to: '/simulation', icon: '💳', label: t('nav_financing', lang) },
+                        { to: '/track',      icon: '📦', label: t('nav_track', lang) },
+                      ].map(({ to, icon, label }) => (
+                        <Link key={to} to={to} onClick={() => setMenuOpen(false)}
+                          style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 0', fontSize: 16, color: 'var(--text)', textDecoration: 'none', borderBottom: '1px solid var(--border)', fontWeight: 600, fontFamily: "'Outfit',sans-serif" }}>
+                          <span style={{ fontSize: 22 }}>{icon}</span> {label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
 
                   {/* User info */}
                   {isAuthenticated && (
-                    <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border)', background: 'var(--bg-card2)' }}>
-                      <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{user?.firstName} {user?.lastName}</p>
-                      <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>{user?.email}</p>
+                    <div style={{ padding: isMobile ? '0 0 16px' : '14px 18px', borderBottom: isMobile ? '1px solid var(--border)' : '1px solid var(--border)', background: isMobile ? 'transparent' : 'var(--bg-card2)' }}>
+                      <p style={{ fontSize: isMobile ? 18 : 14, fontWeight: 700, color: 'var(--text)', fontFamily: "'Outfit',sans-serif" }}>{user?.firstName} {user?.lastName}</p>
+                      <p style={{ fontSize: isMobile ? 14 : 12, color: 'var(--text-3)', marginTop: 2 }}>{user?.email}</p>
                     </div>
                   )}
 
                   {/* Navigation links */}
-                  <div style={{ padding: '6px 0' }}>
+                  <div style={{ padding: isMobile ? '16px 0' : '6px 0' }}>
                     {isAuthenticated ? (
                       <>
                         {[
@@ -143,63 +179,63 @@ export default function Navbar() {
                           { to: '/orders',    icon: '📦', label: t('nav_orders', lang) },
                           { to: '/profile',   icon: '👤', label: t('nav_profile', lang) },
                         ].map(({ to, icon, label }) => (
-                          <Link key={to} to={to} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', fontSize: 14, color: 'var(--text-2)', textDecoration: 'none', transition: 'background 0.15s' }}
-                            onMouseOver={e => e.currentTarget.style.background = 'var(--bg-card2)'}
+                          <Link key={to} to={to} onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: isMobile ? '14px 0' : '10px 18px', fontSize: isMobile ? 16 : 14, color: 'var(--text-2)', textDecoration: 'none', transition: 'background 0.15s', fontWeight: isMobile ? 600 : 400, fontFamily: "'Outfit',sans-serif" }}
+                            onMouseOver={e => e.currentTarget.style.background = isMobile ? 'transparent' : 'var(--bg-card2)'}
                             onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
-                            <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>{icon}</span> {label}
+                            <span style={{ fontSize: isMobile ? 22 : 16, width: isMobile ? 28 : 20, textAlign: 'center' }}>{icon}</span> {label}
                           </Link>
                         ))}
                         {isAdmin() && (
-                          <Link to="/admin" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', fontSize: 14, color: 'var(--red)', textDecoration: 'none', transition: 'background 0.15s' }}
-                            onMouseOver={e => e.currentTarget.style.background = 'var(--red-bg)'}
+                          <Link to="/admin" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: isMobile ? '14px 0' : '10px 18px', fontSize: isMobile ? 16 : 14, color: 'var(--red)', textDecoration: 'none', transition: 'background 0.15s', fontWeight: isMobile ? 600 : 400, fontFamily: "'Outfit',sans-serif" }}
+                            onMouseOver={e => e.currentTarget.style.background = isMobile ? 'transparent' : 'var(--red-bg)'}
                             onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
-                            <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>⚙</span> {t('nav_admin', lang)}
+                            <span style={{ fontSize: isMobile ? 22 : 16, width: isMobile ? 28 : 20, textAlign: 'center' }}>⚙</span> {t('nav_admin', lang)}
                           </Link>
                         )}
                       </>
                     ) : (
                       <>
-                        <Link to="/login" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 18px', fontSize: 14, color: 'var(--text-2)', textDecoration: 'none', transition: 'background 0.15s' }}
-                          onMouseOver={e => e.currentTarget.style.background = 'var(--bg-card2)'}
+                        <Link to="/login" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: isMobile ? '14px 0' : '11px 18px', fontSize: isMobile ? 16 : 14, color: 'var(--text-2)', textDecoration: 'none', transition: 'background 0.15s', fontWeight: isMobile ? 600 : 400, fontFamily: "'Outfit',sans-serif' }}
+                          onMouseOver={e => e.currentTarget.style.background = isMobile ? 'transparent' : 'var(--bg-card2)'}
                           onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
-                          <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>→</span> {t('nav_login', lang)}
+                          <span style={{ fontSize: isMobile ? 22 : 16, width: isMobile ? 28 : 20, textAlign: 'center' }}>→</span> {t('nav_login', lang)}
                         </Link>
-                        <Link to="/register" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 18px', fontSize: 14, color: 'var(--red)', textDecoration: 'none', fontWeight: 700, transition: 'background 0.15s' }}
-                          onMouseOver={e => e.currentTarget.style.background = 'var(--red-bg)'}
+                        <Link to="/register" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: isMobile ? '14px 0' : '11px 18px', fontSize: isMobile ? 16 : 14, color: 'var(--red)', textDecoration: 'none', fontWeight: 700, transition: 'background 0.15s', fontFamily: "'Outfit',sans-serif' }}
+                          onMouseOver={e => e.currentTarget.style.background = isMobile ? 'transparent' : 'var(--red-bg)'}
                           onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
-                          <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>✦</span> {t('nav_register', lang)}
+                          <span style={{ fontSize: isMobile ? 22 : 16, width: isMobile ? 28 : 20, textAlign: 'center' }}>✦</span> {t('nav_register', lang)}
                         </Link>
                       </>
                     )}
                   </div>
 
-                  <div style={{ height: 1, background: 'var(--border)' }} />
+                  <div style={{ height: 1, background: 'var(--border)', margin: isMobile ? '16px 0' : 0 }} />
 
                   {/* Theme toggle */}
-                  <div style={{ padding: '6px 0' }}>
+                  <div style={{ padding: isMobile ? '16px 0' : '6px 0' }}>
                     <button onClick={toggle}
-                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', fontSize: 14, color: 'var(--text-2)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", transition: 'background 0.15s', textAlign: 'left' }}
-                      onMouseOver={e => e.currentTarget.style.background = 'var(--bg-card2)'}
+                      style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: isMobile ? '14px 0' : '10px 18px', fontSize: isMobile ? 16 : 14, color: 'var(--text-2)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", transition: 'background 0.15s', textAlign: 'left', fontWeight: isMobile ? 600 : 400 }}
+                      onMouseOver={e => e.currentTarget.style.background = isMobile ? 'transparent' : 'var(--bg-card2)'}
                       onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
-                      <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>{isDark ? '☀️' : '🌙'}</span>
+                      <span style={{ fontSize: isMobile ? 22 : 16, width: isMobile ? 28 : 20, textAlign: 'center' }}>{isDark ? '☀️' : '🌙'}</span>
                       {isDark ? t('light_mode', lang) : t('dark_mode', lang)}
                     </button>
                   </div>
 
-                  <div style={{ height: 1, background: 'var(--border)' }} />
+                  <div style={{ height: 1, background: 'var(--border)', margin: isMobile ? '16px 0' : 0 }} />
 
                   {/* Language selector */}
-                  <div style={{ padding: '8px 0' }}>
-                    <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-3)', padding: '4px 18px 8px' }}>
+                  <div style={{ padding: isMobile ? '16px 0' : '8px 0' }}>
+                    <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-3)', padding: isMobile ? '0 0 12px' : '4px 18px 8px' }}>
                       {lang === 'fr' ? 'Langue' : lang === 'en' ? 'Language' : lang === 'de' ? 'Sprache' : lang === 'es' ? 'Idioma' : lang === 'it' ? 'Lingua' : 'Idioma'}
                     </p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, padding: '0 10px 6px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 8 : 4, padding: isMobile ? 0 : '0 10px 6px' }}>
                       {LANGUAGES.map(l => (
                         <button key={l.code} onClick={() => { setLang(l.code); setMenuOpen(false); }}
-                          style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '8px 10px', background: l.code === lang ? 'var(--red-bg)' : 'transparent', border: `1px solid ${l.code === lang ? 'var(--red-border)' : 'transparent'}`, borderRadius: 6, cursor: 'pointer', fontSize: 13, color: l.code === lang ? 'var(--red)' : 'var(--text-2)', fontFamily: "'Outfit',sans-serif", fontWeight: l.code === lang ? 700 : 400, transition: 'all 0.15s' }}
-                          onMouseOver={e => { if (l.code !== lang) e.currentTarget.style.background = 'var(--bg-card2)'; }}
+                          style={{ display: 'flex', alignItems: 'center', gap: 7, padding: isMobile ? '12px 0' : '8px 10px', background: l.code === lang ? 'var(--red-bg)' : 'transparent', border: `1px solid ${l.code === lang ? 'var(--red-border)' : 'transparent'}`, borderRadius: 6, cursor: 'pointer', fontSize: isMobile ? 15 : 13, color: l.code === lang ? 'var(--red)' : 'var(--text-2)', fontFamily: "'Outfit',sans-serif", fontWeight: l.code === lang ? 700 : 400, transition: 'all 0.15s' }}
+                          onMouseOver={e => { if (l.code !== lang) e.currentTarget.style.background = isMobile ? 'transparent' : 'var(--bg-card2)'; }}
                           onMouseOut={e => { if (l.code !== lang) e.currentTarget.style.background = 'transparent'; }}>
-                          <span style={{ fontSize: 16 }}>{l.flag}</span> {l.label}
+                          <span style={{ fontSize: isMobile ? 20 : 16 }}>{l.flag}</span> {l.label}
                         </button>
                       ))}
                     </div>
@@ -208,13 +244,13 @@ export default function Navbar() {
                   {/* Logout */}
                   {isAuthenticated && (
                     <>
-                      <div style={{ height: 1, background: 'var(--border)' }} />
-                      <div style={{ padding: '6px 0 8px' }}>
+                      <div style={{ height: 1, background: 'var(--border)', margin: isMobile ? '16px 0' : 0 }} />
+                      <div style={{ padding: isMobile ? '16px 0' : '6px 0 8px' }}>
                         <button onClick={handleLogout}
-                          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', fontSize: 14, color: '#DC2626', background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", transition: 'background 0.15s', textAlign: 'left' }}
-                          onMouseOver={e => e.currentTarget.style.background = 'rgba(239,68,68,0.06)'}
+                          style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: isMobile ? '14px 0' : '10px 18px', fontSize: isMobile ? 16 : 14, color: '#DC2626', background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", transition: 'background 0.15s', textAlign: 'left', fontWeight: isMobile ? 600 : 400 }}
+                          onMouseOver={e => e.currentTarget.style.background = isMobile ? 'transparent' : 'rgba(239,68,68,0.06)'}
                           onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
-                          <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>→</span> {t('nav_logout', lang)}
+                          <span style={{ fontSize: isMobile ? 22 : 16, width: isMobile ? 28 : 20, textAlign: 'center' }}>→</span> {t('nav_logout', lang)}
                         </button>
                       </div>
                     </>
@@ -224,43 +260,7 @@ export default function Navbar() {
             </AnimatePresence>
           </div>
 
-          {/* Hamburger — mobile only */}
-          {isMobile && (
-            <button onClick={() => setMobileOpen(!mobileOpen)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', flexDirection: 'column', gap: 5, flexShrink: 0 }}>
-              {[0, 1, 2].map(i => (
-                <span key={i} style={{ display: 'block', width: 22, height: 2, background: isHero ? '#fff' : 'var(--text)', borderRadius: 1, transition: 'all 0.3s',
-                  transform: mobileOpen && i === 0 ? 'rotate(45deg) translate(5px,5px)' : mobileOpen && i === 2 ? 'rotate(-45deg) translate(5px,-5px)' : 'none',
-                  opacity: mobileOpen && i === 1 ? 0 : 1 }} />
-              ))}
-            </button>
-          )}
         </div>
-
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {mobileOpen && isMobile && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-              style={{ position: 'absolute', top: 68, left: 0, right: 0, background: isDark ? 'rgba(10,10,11,0.98)' : 'rgba(255,255,255,0.98)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', padding: '16px 5% 24px', overflow: 'hidden', zIndex: 999 }}>
-              {[
-                { to: '/catalog',    label: t('nav_vehicles', lang) },
-                { to: '/simulation', label: t('nav_financing', lang) },
-                { to: '/track',      label: t('nav_track', lang) },
-              ].map(({ to, label }) => (
-                <Link key={to} to={to} onClick={() => setMobileOpen(false)}
-                  style={{ display: 'block', padding: '13px 0', borderBottom: '1px solid var(--border)', fontFamily: "'Outfit',sans-serif", fontSize: 18, fontWeight: 700, color: 'var(--text)', textDecoration: 'none' }}>
-                  {label}
-                </Link>
-              ))}
-              <div style={{ marginTop: 16, display: 'flex', gap: 10 }}>
-                <a href="https://wa.me/4915788823274" target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#25D366', textDecoration: 'none', fontWeight: 700, fontSize: 16, padding: '10px 0' }}>
-                  💬 WhatsApp
-                </a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </nav>
     </>
   );
