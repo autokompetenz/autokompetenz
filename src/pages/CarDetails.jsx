@@ -21,6 +21,27 @@ const SPEC_LABELS = {
   ar: { power:'القوة', fuel:'الوقود', gear:'ناقل الحركة', km:'عداد المسافة', color:'اللون', stock:'التوافر', new:'جديد', available:'متوفر', unavailable:'غير متوفر' },
 };
 
+// All 20 image fields
+const IMAGE_FIELDS = [
+  'imageUrl','imageUrl2','imageUrl3','imageUrl4','imageUrl5',
+  'imageUrl6','imageUrl7','imageUrl8','imageUrl9','imageUrl10',
+  'imageUrl11','imageUrl12','imageUrl13','imageUrl14','imageUrl15',
+  'imageUrl16','imageUrl17','imageUrl18','imageUrl19','imageUrl20'
+];
+
+// Force dark theme variables for this page
+const darkStyles = {
+  '--page-bg':      '#0a0a0a',
+  '--page-card':    '#141414',
+  '--page-card2':   '#1a1a1a',
+  '--page-border':  'rgba(255,255,255,0.08)',
+  '--page-text':    '#ffffff',
+  '--page-text2':   'rgba(255,255,255,0.65)',
+  '--page-text3':   'rgba(255,255,255,0.35)',
+  '--page-red':     '#C8102E',
+  '--page-shadow':  '0 4px 24px rgba(0,0,0,0.4)',
+};
+
 export default function CarDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -50,56 +71,61 @@ export default function CarDetails() {
     try {
       setAdding(true);
       await addItem(car.id, selectedPayment);
-      addToast(`${car.make} ${car.model} ${lang === 'fr' ? 'ajouté au panier' : lang === 'en' ? 'added to cart' : lang === 'de' ? 'zum Warenkorb hinzugefügt' : 'أضيف إلى السلة'}`, 'success');
+      addToast(
+        `${car.make} ${car.model} ${
+          lang === 'fr' ? 'ajouté au panier' :
+          lang === 'en' ? 'added to cart' :
+          lang === 'de' ? 'zum Warenkorb hinzugefügt' :
+          'أضيف إلى السلة'
+        }`, 'success'
+      );
     } catch (err) {
       addToast(err.response?.data?.error || 'Erreur', 'error');
     } finally { setAdding(false); }
   };
 
-  if (loading) return <div style={{ paddingTop: 100, background: 'var(--bg)', minHeight: '100vh' }}><Loader text="Chargement..." /></div>;
+  if (loading) return (
+    <div style={{ paddingTop: 100, background: '#0a0a0a', minHeight: '100vh' }}>
+      <Loader text="Chargement..." />
+    </div>
+  );
   if (!car) return null;
 
-  console.log('=== CarDetails Debug ===');
-  console.log('Car data:', car);
+  // Collect all available images (up to 20)
+  const images = IMAGE_FIELDS.map(f => car?.[f]).filter(Boolean);
 
-  const images = [
-    car?.imageUrl,
-    car?.imageUrl2, 
-    car?.imageUrl3,
-    // Support for both old and new image formats
-    ...(Array.isArray(car?.images) ? car.images : [])
-  ].filter(Boolean);
-
-  console.log('Images array:', images);
   const totals = calculateOrderTotals(car.price, selectedPayment);
 
-  const breadcrumbs = { fr: 'Accueil', en: 'Home', de: 'Startseite', ar: 'الرئيسية' };
-  const catalogBc   = { fr: 'Catalogue', en: 'Catalogue', de: 'Katalog', ar: 'الكتالوج' };
-  const choosePayment = { fr: 'Choisir votre mode de paiement', en: 'Choose your payment method', de: 'Zahlungsart wählen', ar: 'اختر طريقة الدفع' };
-  const totalLabel    = { fr: 'Total', en: 'Total', de: 'Gesamt', ar: 'المجموع' };
-  const depositLabel  = { fr: 'Acompte', en: 'Deposit', de: 'Anzahlung', ar: 'دفعة أولى' };
-  const monthLabel    = { fr: 'Par mois', en: 'Per month', de: 'Pro Monat', ar: 'شهرياً' };
-  const addBtn        = { fr: 'Ajouter au panier', en: 'Add to Cart', de: 'In den Warenkorb', ar: 'أضف إلى السلة' };
-  const recSalary     = { fr: 'Salaire minimum recommandé', en: 'Minimum recommended salary', de: 'Empfohlenes Mindestgehalt', ar: 'الحد الأدنى الموصى به للراتب' };
-  const saving        = { fr: 'Économie', en: 'Saving', de: 'Ersparnis', ar: 'توفير' };
-  const totalContract = { fr: 'Total contrat', en: 'Total contract', de: 'Gesamtbetrag', ar: 'إجمالي العقد' };
+  const breadcrumbs  = { fr:'Accueil', en:'Home', de:'Startseite', ar:'الرئيسية' };
+  const catalogBc    = { fr:'Catalogue', en:'Catalogue', de:'Katalog', ar:'الكتالوج' };
+  const choosePayment= { fr:'Choisir votre mode de paiement', en:'Choose your payment method', de:'Zahlungsart wählen', ar:'اختر طريقة الدفع' };
+  const totalLabel   = { fr:'Total', en:'Total', de:'Gesamt', ar:'المجموع' };
+  const depositLabel = { fr:'Acompte', en:'Deposit', de:'Anzahlung', ar:'دفعة أولى' };
+  const monthLabel   = { fr:'Par mois', en:'Per month', de:'Pro Monat', ar:'شهرياً' };
+  const addBtn       = { fr:'Ajouter au panier', en:'Add to Cart', de:'In den Warenkorb', ar:'أضف إلى السلة' };
+  const recSalary    = { fr:'Salaire minimum recommandé', en:'Minimum recommended salary', de:'Empfohlenes Mindestgehalt', ar:'الحد الأدنى الموصى به للراتب' };
+  const saving       = { fr:'Économie', en:'Saving', de:'Ersparnis', ar:'توفير' };
+  const totalContract= { fr:'Total contrat', en:'Total contract', de:'Gesamtbetrag', ar:'إجمالي العقد' };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 76 }}>
+    <div style={{ ...darkStyles, minHeight: '100vh', background: 'var(--page-bg)', paddingTop: 76 }}>
+
       {/* Breadcrumb */}
-      <div style={{ padding: '18px 6%', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'var(--bg-card2)' }}>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)' }}>
-          <Link to="/" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'none', transition: 'color 0.2s' }}
-            onMouseOver={e => e.target.style.color = '#C8102E'} onMouseOut={e => e.target.style.color = 'rgba(255,255,255,0.35)'}>
+      <div style={{ padding: '18px 6%', borderBottom: '1px solid var(--page-border)', background: 'var(--page-card2)' }}>
+        <p style={{ fontSize: 13, color: 'var(--page-text3)' }}>
+          <Link to="/" style={{ color: 'var(--page-text3)', textDecoration: 'none', transition: 'color 0.2s' }}
+            onMouseOver={e => e.target.style.color = 'var(--page-red)'}
+            onMouseOut={e => e.target.style.color = 'var(--page-text3)'}>
             {breadcrumbs[lang]}
           </Link>
           <span style={{ margin: '0 10px', opacity: 0.3 }}>›</span>
-          <Link to="/catalog" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'none', transition: 'color 0.2s' }}
-            onMouseOver={e => e.target.style.color = '#C8102E'} onMouseOut={e => e.target.style.color = 'rgba(255,255,255,0.35)'}>
+          <Link to="/catalog" style={{ color: 'var(--page-text3)', textDecoration: 'none', transition: 'color 0.2s' }}
+            onMouseOver={e => e.target.style.color = 'var(--page-red)'}
+            onMouseOut={e => e.target.style.color = 'var(--page-text3)'}>
             {catalogBc[lang]}
           </Link>
           <span style={{ margin: '0 10px', opacity: 0.3 }}>›</span>
-          <span style={{ color: 'var(--text-2)' }}>{car.make} {car.model}</span>
+          <span style={{ color: 'var(--page-text2)' }}>{car.make} {car.model}</span>
         </p>
       </div>
 
@@ -108,24 +134,113 @@ export default function CarDetails() {
 
           {/* ── Gallery ── */}
           <div>
-            <motion.div key={activeImg} initial={{ opacity: 0.7, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
-              style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', aspectRatio: '4/3', background: 'var(--bg-card)' }}>
-              <img src={images[activeImg] || 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80'}
-                alt={`${car.make} ${car.model}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {/* Main image */}
+            <motion.div
+              key={activeImg}
+              initial={{ opacity: 0.7, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              style={{
+                position: 'relative',
+                borderRadius: 14,
+                overflow: 'hidden',
+                aspectRatio: '4/3',
+                background: 'var(--page-card)',
+                boxShadow: 'var(--page-shadow)',
+              }}
+            >
+              <img
+                src={images[activeImg] || 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80'}
+                alt={`${car.make} ${car.model}`}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
               {car.featured && (
-                <div style={{ position: 'absolute', top: 18, left: 18, background: '#C8102E', color: 'var(--text)', fontSize: 11, fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', padding: '6px 14px', borderRadius: 4 }}>
+                <div style={{
+                  position: 'absolute', top: 18, left: 18,
+                  background: '#C8102E', color: '#fff',
+                  fontSize: 11, fontWeight: 800, letterSpacing: '0.15em',
+                  textTransform: 'uppercase', padding: '6px 14px', borderRadius: 4
+                }}>
                   ★ {lang === 'fr' ? 'Recommandé' : lang === 'en' ? 'Featured' : lang === 'de' ? 'Empfohlen' : 'مميز'}
+                </div>
+              )}
+              {/* Image counter */}
+              {images.length > 1 && (
+                <div style={{
+                  position: 'absolute', bottom: 14, right: 14,
+                  background: 'rgba(0,0,0,0.7)', color: '#fff',
+                  fontSize: 12, fontWeight: 700, padding: '4px 10px',
+                  borderRadius: 20, backdropFilter: 'blur(4px)'
+                }}>
+                  {activeImg + 1} / {images.length}
                 </div>
               )}
             </motion.div>
 
-            {Array.isArray(images) && images.length > 1 && (
-              <div style={{ display: 'flex', gap: 12, marginTop: 14 }}>
+            {/* Thumbnails grid — all images */}
+            {images.length > 1 && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${Math.min(images.length, 5)}, 1fr)`,
+                gap: 8,
+                marginTop: 12,
+              }}>
                 {images.map((img, i) => (
-                  <button key={i} onClick={() => setActiveImg(i)} style={{ flex: 1, aspectRatio: '4/3', borderRadius: 8, overflow: 'hidden', border: `2px solid ${activeImg === i ? '#C8102E' : 'transparent'}`, opacity: activeImg === i ? 1 : 0.5, cursor: 'pointer', transition: 'all 0.2s', padding: 0, background: 'none' }}>
-                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    style={{
+                      aspectRatio: '4/3',
+                      borderRadius: 8,
+                      overflow: 'hidden',
+                      border: `2px solid ${activeImg === i ? '#C8102E' : 'transparent'}`,
+                      opacity: activeImg === i ? 1 : 0.5,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      padding: 0,
+                      background: 'none',
+                    }}
+                    onMouseOver={e => { if (activeImg !== i) e.currentTarget.style.opacity = '0.8'; }}
+                    onMouseOut={e => { if (activeImg !== i) e.currentTarget.style.opacity = '0.5'; }}
+                  >
+                    <img src={img} alt={`Vue ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </button>
                 ))}
+              </div>
+            )}
+
+            {/* Second row of thumbnails if more than 5 */}
+            {images.length > 5 && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${Math.min(images.length - 5, 5)}, 1fr)`,
+                gap: 8,
+                marginTop: 8,
+              }}>
+                {images.slice(5).map((img, i) => {
+                  const realIdx = i + 5;
+                  return (
+                    <button
+                      key={realIdx}
+                      onClick={() => setActiveImg(realIdx)}
+                      style={{
+                        aspectRatio: '4/3',
+                        borderRadius: 8,
+                        overflow: 'hidden',
+                        border: `2px solid ${activeImg === realIdx ? '#C8102E' : 'transparent'}`,
+                        opacity: activeImg === realIdx ? 1 : 0.5,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        padding: 0,
+                        background: 'none',
+                      }}
+                      onMouseOver={e => { if (activeImg !== realIdx) e.currentTarget.style.opacity = '0.8'; }}
+                      onMouseOut={e => { if (activeImg !== realIdx) e.currentTarget.style.opacity = '0.5'; }}
+                    >
+                      <img src={img} alt={`Vue ${realIdx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -133,21 +248,25 @@ export default function CarDetails() {
           {/* ── Details ── */}
           <div>
             <div style={{ marginBottom: 6 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#C8102E' }}>
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--page-red)' }}>
                 {car.category} · {car.year}
               </span>
             </div>
-            <h1 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 52, color: 'var(--text)', letterSpacing: '-0.02em', lineHeight: 1, marginBottom: 20 }}>
+            <h1 style={{
+              fontFamily: "'Outfit', sans-serif", fontWeight: 900,
+              fontSize: isMobile ? 36 : 52, color: 'var(--page-text)',
+              letterSpacing: '-0.02em', lineHeight: 1, marginBottom: 20
+            }}>
               {car.make} {car.model}
             </h1>
 
             {/* Price */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 28 }}>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 40, color: 'var(--text)', letterSpacing: '-0.02em' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 40, color: 'var(--page-text)', letterSpacing: '-0.02em' }}>
                 {formatEuro(car.price)}
               </span>
               {car.monthlyPayment && (
-                <span style={{ fontSize: 15, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}>
+                <span style={{ fontSize: 15, color: 'var(--page-text3)', fontWeight: 500 }}>
                   {t('or', lang)} {formatEuro(car.monthlyPayment)}{t('per_month', lang)}
                 </span>
               )}
@@ -156,17 +275,22 @@ export default function CarDetails() {
             {/* Specs grid */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
               {[
-                { label: SL.power, value: car.power ? `${car.power} hp` : 'N/A' },
-                { label: SL.fuel, value: car.fuelType },
-                { label: SL.gear, value: car.transmission },
-                { label: SL.km, value: car.mileage === 0 ? SL.new : `${car.mileage.toLocaleString('fr-FR')} km` },
-                { label: SL.color, value: car.color || 'N/A' },
-                { label: SL.stock, value: car.stock > 0 ? `${car.stock} ${SL.available}` : SL.unavailable, highlight: car.stock > 0 ? '#22C55E' : '#EF4444' },
+                { label: SL.power,  value: car.power ? `${car.power} hp` : 'N/A' },
+                { label: SL.fuel,   value: car.fuelType },
+                { label: SL.gear,   value: car.transmission },
+                { label: SL.km,     value: car.mileage === 0 ? SL.new : `${car.mileage.toLocaleString('fr-FR')} km` },
+                { label: SL.color,  value: car.color || 'N/A' },
+                { label: SL.stock,  value: car.stock > 0 ? `${car.stock} ${SL.available}` : SL.unavailable, highlight: car.stock > 0 ? '#22C55E' : '#EF4444' },
               ].map(({ label, value, highlight }) => (
-                <div key={label} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div key={label} style={{
+                  background: 'var(--page-card)',
+                  border: '1px solid var(--page-border)',
+                  borderRadius: 8, padding: '14px 16px',
+                  display: 'flex', alignItems: 'center', gap: 10
+                }}>
                   <div>
-                    <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 4 }}>{label}</p>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: highlight || '#fff' }}>{value}</p>
+                    <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--page-text3)', marginBottom: 4 }}>{label}</p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: highlight || 'var(--page-text)' }}>{value}</p>
                   </div>
                 </div>
               ))}
@@ -174,40 +298,71 @@ export default function CarDetails() {
 
             {/* Description */}
             {car.description && (
-              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: 28, borderLeft: '3px solid rgba(200,16,46,0.4)', paddingLeft: 18 }}>
+              <p style={{
+                fontSize: 15, color: 'var(--page-text2)', lineHeight: 1.75,
+                marginBottom: 28, borderLeft: '3px solid rgba(200,16,46,0.4)', paddingLeft: 18
+              }}>
                 {car.description}
               </p>
             )}
 
             {/* Payment options */}
-            <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: '#C8102E', marginBottom: 14 }}>
+            <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--page-red)', marginBottom: 14 }}>
               {choosePayment[lang] || choosePayment.fr}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
               {PAYMENT_OPTIONS.map(opt => {
                 const to = calculateOrderTotals(car.price, opt.id);
+                const isSelected = selectedPayment === opt.id;
                 return (
-                  <div key={opt.id} onClick={() => setSelectedPayment(opt.id)}
-                    className={`payment-option ${selectedPayment === opt.id ? 'selected' : ''}`}>
+                  <div
+                    key={opt.id}
+                    onClick={() => setSelectedPayment(opt.id)}
+                    style={{
+                      padding: '14px 16px',
+                      borderRadius: 10,
+                      border: `1px solid ${isSelected ? 'rgba(200,16,46,0.5)' : 'var(--page-border)'}`,
+                      background: isSelected ? 'rgba(200,16,46,0.08)' : 'var(--page-card)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                       <span style={{ fontSize: 26 }}>{opt.icon}</span>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>{t(opt.titleKey, lang)}</span>
+                          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--page-text)' }}>{t(opt.titleKey, lang)}</span>
                           <span style={{ fontSize: 10, background: 'rgba(200,16,46,0.15)', color: '#C8102E', border: '1px solid rgba(200,16,46,0.3)', padding: '2px 8px', borderRadius: 3, fontWeight: 700, letterSpacing: '0.1em' }}>
                             {t(opt.badgeKey, lang)}
                           </span>
                         </div>
-                        <p style={{ fontSize: 13, color: 'var(--text-3)' }}>
-                          {opt.id === 'full' ? (lang === 'fr' ? 'Paiement immédiat, 5% de remise offerte' : lang === 'en' ? 'Immediate payment, 5% discount applied' : lang === 'de' ? 'Sofortzahlung, 5% Rabatt' : 'دفع فوري، خصم 5%')
-                           : opt.id === 'deposit' ? (lang === 'fr' ? '25% maintenant, solde à la livraison' : lang === 'en' ? '25% now, balance on delivery' : lang === 'de' ? '25% jetzt, Rest bei Lieferung' : '25% الآن، الباقي عند التسليم')
-                           : (lang === 'fr' ? '60 mensualités à 6%/an' : lang === 'en' ? '60 months at 6%/year' : lang === 'de' ? '60 Monate, 6% p.a.' : '60 شهراً بمعدل 6% سنوياً')}
+                        <p style={{ fontSize: 13, color: 'var(--page-text3)' }}>
+                          {opt.id === 'full'
+                            ? (lang === 'fr' ? 'Paiement immédiat, 5% de remise offerte' : lang === 'en' ? 'Immediate payment, 5% discount applied' : lang === 'de' ? 'Sofortzahlung, 5% Rabatt' : 'دفع فوري، خصم 5%')
+                            : opt.id === 'deposit'
+                            ? (lang === 'fr' ? '25% maintenant, solde à la livraison' : lang === 'en' ? '25% now, balance on delivery' : lang === 'de' ? '25% jetzt, Rest bei Lieferung' : '25% الآن، الباقي عند التسليم')
+                            : (lang === 'fr' ? '60 mensualités à 6%/an' : lang === 'en' ? '60 months at 6%/year' : lang === 'de' ? '60 Monate, 6% p.a.' : '60 شهراً بمعدل 6% سنوياً')}
                         </p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        {opt.id === 'full' && <><p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', textDecoration: 'line-through' }}>{formatEuro(car.price)}</p><p style={{ fontWeight: 800, fontSize: 18, color: 'var(--text)' }}>{formatEuro(to.total)}</p></>}
-                        {opt.id === 'deposit' && <><p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{depositLabel[lang]}</p><p style={{ fontWeight: 800, fontSize: 18, color: 'var(--text)' }}>{formatEuro(to.deposit)}</p></>}
-                        {opt.id === 'monthly' && <><p style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{monthLabel[lang]}</p><p style={{ fontWeight: 800, fontSize: 18, color: 'var(--text)' }}>{formatEuro(to.monthly)}</p></>}
+                        {opt.id === 'full' && (
+                          <>
+                            <p style={{ fontSize: 12, color: 'var(--page-text3)', textDecoration: 'line-through' }}>{formatEuro(car.price)}</p>
+                            <p style={{ fontWeight: 800, fontSize: 18, color: 'var(--page-text)' }}>{formatEuro(to.total)}</p>
+                          </>
+                        )}
+                        {opt.id === 'deposit' && (
+                          <>
+                            <p style={{ fontSize: 11, color: 'var(--page-text3)' }}>{depositLabel[lang]}</p>
+                            <p style={{ fontWeight: 800, fontSize: 18, color: 'var(--page-text)' }}>{formatEuro(to.deposit)}</p>
+                          </>
+                        )}
+                        {opt.id === 'monthly' && (
+                          <>
+                            <p style={{ fontSize: 11, color: 'var(--page-text3)' }}>{monthLabel[lang]}</p>
+                            <p style={{ fontWeight: 800, fontSize: 18, color: 'var(--page-text)' }}>{formatEuro(to.monthly)}</p>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -216,31 +371,53 @@ export default function CarDetails() {
             </div>
 
             {/* Total display */}
-            <div style={{ background: 'rgba(200,16,46,0.06)', border: '1px solid rgba(200,16,46,0.2)', borderRadius: 10, padding: '16px 20px', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{
+              background: 'rgba(200,16,46,0.06)',
+              border: '1px solid rgba(200,16,46,0.2)',
+              borderRadius: 10, padding: '16px 20px', marginBottom: 20,
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+            }}>
               <div>
-                <p style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 2 }}>
-                  {selectedPayment === 'full' ? (totalLabel[lang] + ' (après remise)') : selectedPayment === 'deposit' ? depositLabel[lang] : monthLabel[lang]}
+                <p style={{ fontSize: 12, color: 'var(--page-text3)', marginBottom: 2 }}>
+                  {selectedPayment === 'full'    ? (totalLabel[lang] + ' (après remise)')
+                   : selectedPayment === 'deposit' ? depositLabel[lang]
+                   : monthLabel[lang]}
                 </p>
-                {selectedPayment === 'full' && totals.discount && <p style={{ fontSize: 12, color: '#22C55E' }}>✓ {saving[lang]} : {formatEuro(totals.discount)}</p>}
-                {selectedPayment === 'monthly' && <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>{totalContract[lang]} : {formatEuro(totals.total)}</p>}
+                {selectedPayment === 'full' && totals.discount && (
+                  <p style={{ fontSize: 12, color: '#22C55E' }}>✓ {saving[lang]} : {formatEuro(totals.discount)}</p>
+                )}
+                {selectedPayment === 'monthly' && (
+                  <p style={{ fontSize: 12, color: 'var(--page-text3)' }}>{totalContract[lang]} : {formatEuro(totals.total)}</p>
+                )}
               </div>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 30, color: 'var(--text)', letterSpacing: '-0.02em' }}>
-                {selectedPayment === 'full' ? formatEuro(totals.total)
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 30, color: 'var(--page-text)', letterSpacing: '-0.02em' }}>
+                {selectedPayment === 'full'    ? formatEuro(totals.total)
                  : selectedPayment === 'deposit' ? formatEuro(totals.deposit)
                  : `${formatEuro(totals.monthly)}/mo`}
               </span>
             </div>
 
             {/* Add to cart */}
-            <button onClick={handleAddToCart} disabled={car.stock === 0 || adding}
-              style={{ width: '100%', padding: '18px', borderRadius: 8, fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', cursor: car.stock === 0 ? 'not-allowed' : 'pointer', transition: 'all 0.3s', background: car.stock === 0 ? 'rgba(255,255,255,0.06)' : adding ? 'rgba(200,16,46,0.6)' : '#C8102E', color: car.stock === 0 ? '#444' : '#fff' }}
+            <button
+              onClick={handleAddToCart}
+              disabled={car.stock === 0 || adding}
+              style={{
+                width: '100%', padding: '18px', borderRadius: 8,
+                fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 800,
+                letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none',
+                cursor: car.stock === 0 ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s',
+                background: car.stock === 0 ? 'rgba(255,255,255,0.06)' : adding ? 'rgba(200,16,46,0.6)' : '#C8102E',
+                color: car.stock === 0 ? '#444' : '#fff',
+              }}
               onMouseOver={e => { if (car.stock > 0 && !adding) e.currentTarget.style.background = '#9B0B22'; }}
-              onMouseOut={e => { if (car.stock > 0 && !adding) e.currentTarget.style.background = '#C8102E'; }}>
+              onMouseOut={e => { if (car.stock > 0 && !adding) e.currentTarget.style.background = '#C8102E'; }}
+            >
               {adding ? '...' : car.stock === 0 ? t('out_of_stock', lang) : '🛒 ' + (addBtn[lang] || addBtn.fr)}
             </button>
 
             {car.minSalary && (
-              <p style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.25)', marginTop: 12 }}>
+              <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--page-text3)', marginTop: 12 }}>
                 {recSalary[lang] || recSalary.fr} : {formatEuro(car.minSalary)}/
                 {lang === 'fr' ? 'mois' : lang === 'en' ? 'month' : lang === 'de' ? 'Monat' : 'شهر'}
               </p>
