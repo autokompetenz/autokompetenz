@@ -181,9 +181,9 @@ export default function CarDetails() {
             {images.length > 1 && (
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: `repeat(${Math.min(images.length, 5)}, 1fr)`,
-                gap: 8,
-                marginTop: 12,
+                gridTemplateColumns: isMobile ? 'repeat(4, 1fr)' : 'repeat(5, 1fr)',
+                gap: 10,
+                marginTop: 16,
               }}>
                 {images.map((img, i) => (
                   <button
@@ -191,56 +191,34 @@ export default function CarDetails() {
                     onClick={() => setActiveImg(i)}
                     style={{
                       aspectRatio: '4/3',
-                      borderRadius: 8,
+                      borderRadius: 10,
                       overflow: 'hidden',
-                      border: `2px solid ${activeImg === i ? '#C8102E' : 'transparent'}`,
-                      opacity: activeImg === i ? 1 : 0.5,
+                      border: `2.5px solid ${activeImg === i ? '#C8102E' : 'var(--page-border)'}`,
+                      opacity: activeImg === i ? 1 : 0.6,
                       cursor: 'pointer',
-                      transition: 'all 0.2s',
+                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                       padding: 0,
-                      background: 'none',
+                      background: 'var(--page-card)',
+                      transform: activeImg === i ? 'scale(1.02)' : 'scale(1)',
                     }}
-                    onMouseOver={e => { if (activeImg !== i) e.currentTarget.style.opacity = '0.8'; }}
-                    onMouseOut={e => { if (activeImg !== i) e.currentTarget.style.opacity = '0.5'; }}
+                    onMouseOver={e => {
+                      if (activeImg !== i) {
+                        e.currentTarget.style.opacity = '0.9';
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                        e.currentTarget.style.borderColor = 'rgba(200,16,46,0.4)';
+                      }
+                    }}
+                    onMouseOut={e => {
+                      if (activeImg !== i) {
+                        e.currentTarget.style.opacity = '0.6';
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.borderColor = 'var(--page-border)';
+                      }
+                    }}
                   >
                     <img src={img} alt={`Vue ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </button>
                 ))}
-              </div>
-            )}
-
-            {/* Second row of thumbnails if more than 5 */}
-            {images.length > 5 && (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${Math.min(images.length - 5, 5)}, 1fr)`,
-                gap: 8,
-                marginTop: 8,
-              }}>
-                {images.slice(5).map((img, i) => {
-                  const realIdx = i + 5;
-                  return (
-                    <button
-                      key={realIdx}
-                      onClick={() => setActiveImg(realIdx)}
-                      style={{
-                        aspectRatio: '4/3',
-                        borderRadius: 8,
-                        overflow: 'hidden',
-                        border: `2px solid ${activeImg === realIdx ? '#C8102E' : 'transparent'}`,
-                        opacity: activeImg === realIdx ? 1 : 0.5,
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        padding: 0,
-                        background: 'none',
-                      }}
-                      onMouseOver={e => { if (activeImg !== realIdx) e.currentTarget.style.opacity = '0.8'; }}
-                      onMouseOut={e => { if (activeImg !== realIdx) e.currentTarget.style.opacity = '0.5'; }}
-                    >
-                      <img src={img} alt={`Vue ${realIdx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </button>
-                  );
-                })}
               </div>
             )}
           </div>
@@ -273,24 +251,29 @@ export default function CarDetails() {
             </div>
 
             {/* Specs grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, marginBottom: 24 }}>
               {[
-                { label: SL.power,  value: car.power ? `${car.power} hp` : 'N/A' },
-                { label: SL.fuel,   value: car.fuelType },
-                { label: SL.gear,   value: car.transmission },
-                { label: SL.km,     value: car.mileage === 0 ? SL.new : `${car.mileage.toLocaleString('fr-FR')} km` },
-                { label: SL.color,  value: car.color || 'N/A' },
-                { label: SL.stock,  value: car.stock > 0 ? `${car.stock} ${SL.available}` : SL.unavailable, highlight: car.stock > 0 ? '#22C55E' : '#EF4444' },
-              ].map(({ label, value, highlight }) => (
+                { label: SL.power,  value: car.power ? `${car.power} hp` : 'N/A', icon: '⚡' },
+                { label: SL.fuel,   value: car.fuelType, icon: '⛽' },
+                { label: SL.gear,   value: car.transmission, icon: '⚙️' },
+                { label: SL.km,     value: car.mileage === 0 ? SL.new : `${car.mileage.toLocaleString('fr-FR')} km`, icon: '📏' },
+                { label: SL.color,  value: car.color || 'N/A', icon: '🎨' },
+                { label: SL.stock,  value: car.stock > 0 ? `${car.stock} ${SL.available}` : SL.unavailable, highlight: car.stock > 0 ? '#22C55E' : '#EF4444', icon: '📦' },
+              ].map(({ label, value, highlight, icon }) => (
                 <div key={label} style={{
                   background: 'var(--page-card)',
                   border: '1px solid var(--page-border)',
-                  borderRadius: 8, padding: '14px 16px',
-                  display: 'flex', alignItems: 'center', gap: 10
-                }}>
+                  borderRadius: 12, padding: isMobile ? '14px 16px' : '16px 18px',
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  transition: 'all 0.2s',
+                }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(200,16,46,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--page-border)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <span style={{ fontSize: 24, opacity: 0.8 }}>{icon}</span>
                   <div>
                     <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--page-text3)', marginBottom: 4 }}>{label}</p>
-                    <p style={{ fontSize: 15, fontWeight: 700, color: highlight || 'var(--page-text)' }}>{value}</p>
+                    <p style={{ fontSize: isMobile ? 14 : 15, fontWeight: 700, color: highlight || 'var(--page-text)' }}>{value}</p>
                   </div>
                 </div>
               ))}
@@ -307,10 +290,10 @@ export default function CarDetails() {
             )}
 
             {/* Payment options */}
-            <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--page-red)', marginBottom: 14 }}>
+            <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--page-red)', marginBottom: 16 }}>
               {choosePayment[lang] || choosePayment.fr}
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
               {PAYMENT_OPTIONS.map(opt => {
                 const to = calculateOrderTotals(car.price, opt.id);
                 const isSelected = selectedPayment === opt.id;
@@ -319,24 +302,38 @@ export default function CarDetails() {
                     key={opt.id}
                     onClick={() => setSelectedPayment(opt.id)}
                     style={{
-                      padding: '14px 16px',
-                      borderRadius: 10,
-                      border: `1px solid ${isSelected ? 'rgba(200,16,46,0.5)' : 'var(--page-border)'}`,
-                      background: isSelected ? 'rgba(200,16,46,0.08)' : 'var(--page-card)',
+                      padding: isMobile ? '16px' : '18px 20px',
+                      borderRadius: 12,
+                      border: `2px solid ${isSelected ? 'rgba(200,16,46,0.6)' : 'var(--page-border)'}`,
+                      background: isSelected ? 'rgba(200,16,46,0.1)' : 'var(--page-card)',
                       cursor: 'pointer',
-                      transition: 'all 0.2s',
+                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transform: isSelected ? 'scale(1.01)' : 'scale(1)',
+                      boxShadow: isSelected ? '0 4px 20px rgba(200,16,46,0.15)' : 'none',
+                    }}
+                    onMouseOver={e => {
+                      if (!isSelected) {
+                        e.currentTarget.style.borderColor = 'rgba(200,16,46,0.3)';
+                        e.currentTarget.style.background = 'rgba(200,16,46,0.05)';
+                      }
+                    }}
+                    onMouseOut={e => {
+                      if (!isSelected) {
+                        e.currentTarget.style.borderColor = 'var(--page-border)';
+                        e.currentTarget.style.background = 'var(--page-card)';
+                      }
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                      <span style={{ fontSize: 26 }}>{opt.icon}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 16 }}>
+                      <span style={{ fontSize: isMobile ? 24 : 28 }}>{opt.icon}</span>
                       <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                          <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--page-text)' }}>{t(opt.titleKey, lang)}</span>
-                          <span style={{ fontSize: 10, background: 'rgba(200,16,46,0.15)', color: '#C8102E', border: '1px solid rgba(200,16,46,0.3)', padding: '2px 8px', borderRadius: 3, fontWeight: 700, letterSpacing: '0.1em' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 700, fontSize: isMobile ? 14 : 16, color: 'var(--page-text)' }}>{t(opt.titleKey, lang)}</span>
+                          <span style={{ fontSize: 10, background: 'rgba(200,16,46,0.2)', color: '#C8102E', border: '1px solid rgba(200,16,46,0.4)', padding: '3px 10px', borderRadius: 4, fontWeight: 700, letterSpacing: '0.1em' }}>
                             {t(opt.badgeKey, lang)}
                           </span>
                         </div>
-                        <p style={{ fontSize: 13, color: 'var(--page-text3)' }}>
+                        <p style={{ fontSize: isMobile ? 12 : 13, color: 'var(--page-text3)', lineHeight: 1.5 }}>
                           {opt.id === 'full'
                             ? (lang === 'fr' ? 'Paiement immédiat, 5% de remise offerte' : lang === 'en' ? 'Immediate payment, 5% discount applied' : lang === 'de' ? 'Sofortzahlung, 5% Rabatt' : 'دفع فوري، خصم 5%')
                             : opt.id === 'deposit'
@@ -344,23 +341,23 @@ export default function CarDetails() {
                             : (lang === 'fr' ? '60 mensualités à 6%/an' : lang === 'en' ? '60 months at 6%/year' : lang === 'de' ? '60 Monate, 6% p.a.' : '60 شهراً بمعدل 6% سنوياً')}
                         </p>
                       </div>
-                      <div style={{ textAlign: 'right' }}>
+                      <div style={{ textAlign: 'right', minWidth: isMobile ? 80 : 100 }}>
                         {opt.id === 'full' && (
                           <>
-                            <p style={{ fontSize: 12, color: 'var(--page-text3)', textDecoration: 'line-through' }}>{formatEuro(car.price)}</p>
-                            <p style={{ fontWeight: 800, fontSize: 18, color: 'var(--page-text)' }}>{formatEuro(to.total)}</p>
+                            <p style={{ fontSize: isMobile ? 11 : 12, color: 'var(--page-text3)', textDecoration: 'line-through', marginBottom: 2 }}>{formatEuro(car.price)}</p>
+                            <p style={{ fontWeight: 800, fontSize: isMobile ? 16 : 18, color: 'var(--page-text)' }}>{formatEuro(to.total)}</p>
                           </>
                         )}
                         {opt.id === 'deposit' && (
                           <>
-                            <p style={{ fontSize: 11, color: 'var(--page-text3)' }}>{depositLabel[lang]}</p>
-                            <p style={{ fontWeight: 800, fontSize: 18, color: 'var(--page-text)' }}>{formatEuro(to.deposit)}</p>
+                            <p style={{ fontSize: isMobile ? 10 : 11, color: 'var(--page-text3)', marginBottom: 2 }}>{depositLabel[lang]}</p>
+                            <p style={{ fontWeight: 800, fontSize: isMobile ? 16 : 18, color: 'var(--page-text)' }}>{formatEuro(to.deposit)}</p>
                           </>
                         )}
                         {opt.id === 'monthly' && (
                           <>
-                            <p style={{ fontSize: 11, color: 'var(--page-text3)' }}>{monthLabel[lang]}</p>
-                            <p style={{ fontWeight: 800, fontSize: 18, color: 'var(--page-text)' }}>{formatEuro(to.monthly)}</p>
+                            <p style={{ fontSize: isMobile ? 10 : 11, color: 'var(--page-text3)', marginBottom: 2 }}>{monthLabel[lang]}</p>
+                            <p style={{ fontWeight: 800, fontSize: isMobile ? 16 : 18, color: 'var(--page-text)' }}>{formatEuro(to.monthly)}</p>
                           </>
                         )}
                       </div>
@@ -372,25 +369,26 @@ export default function CarDetails() {
 
             {/* Total display */}
             <div style={{
-              background: 'rgba(200,16,46,0.06)',
-              border: '1px solid rgba(200,16,46,0.2)',
-              borderRadius: 10, padding: '16px 20px', marginBottom: 20,
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+              background: 'linear-gradient(135deg, rgba(200,16,46,0.08) 0%, rgba(200,16,46,0.04) 100%)',
+              border: '1.5px solid rgba(200,16,46,0.25)',
+              borderRadius: 14, padding: isMobile ? '18px 20px' : '20px 24px', marginBottom: 24,
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              boxShadow: '0 4px 16px rgba(200,16,46,0.08)'
             }}>
               <div>
-                <p style={{ fontSize: 12, color: 'var(--page-text3)', marginBottom: 2 }}>
+                <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--page-text3)', marginBottom: 4, letterSpacing: '0.05em' }}>
                   {selectedPayment === 'full'    ? (totalLabel[lang] + ' (après remise)')
                    : selectedPayment === 'deposit' ? depositLabel[lang]
                    : monthLabel[lang]}
                 </p>
                 {selectedPayment === 'full' && totals.discount && (
-                  <p style={{ fontSize: 12, color: '#22C55E' }}>✓ {saving[lang]} : {formatEuro(totals.discount)}</p>
+                  <p style={{ fontSize: 13, color: '#22C55E', fontWeight: 700 }}>✓ {saving[lang]} : {formatEuro(totals.discount)}</p>
                 )}
                 {selectedPayment === 'monthly' && (
                   <p style={{ fontSize: 12, color: 'var(--page-text3)' }}>{totalContract[lang]} : {formatEuro(totals.total)}</p>
                 )}
               </div>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: 30, color: 'var(--page-text)', letterSpacing: '-0.02em' }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 32, color: 'var(--page-text)', letterSpacing: '-0.02em' }}>
                 {selectedPayment === 'full'    ? formatEuro(totals.total)
                  : selectedPayment === 'deposit' ? formatEuro(totals.deposit)
                  : `${formatEuro(totals.monthly)}/mo`}
@@ -402,16 +400,30 @@ export default function CarDetails() {
               onClick={handleAddToCart}
               disabled={car.stock === 0 || adding}
               style={{
-                width: '100%', padding: '18px', borderRadius: 8,
-                fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 800,
+                width: '100%', padding: isMobile ? '18px' : '20px', borderRadius: 12,
+                fontFamily: "'Outfit', sans-serif", fontSize: isMobile ? 14 : 15, fontWeight: 800,
                 letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none',
                 cursor: car.stock === 0 ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s',
-                background: car.stock === 0 ? 'rgba(255,255,255,0.06)' : adding ? 'rgba(200,16,46,0.6)' : '#C8102E',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                background: car.stock === 0 ? 'rgba(255,255,255,0.06)' : adding ? 'rgba(200,16,46,0.7)' : 'linear-gradient(135deg, #C8102E 0%, #9B0B22 100%)',
                 color: car.stock === 0 ? '#444' : '#fff',
+                boxShadow: car.stock > 0 && !adding ? '0 4px 16px rgba(200,16,46,0.3)' : 'none',
+                transform: car.stock > 0 && !adding ? 'scale(1)' : 'scale(1)',
               }}
-              onMouseOver={e => { if (car.stock > 0 && !adding) e.currentTarget.style.background = '#9B0B22'; }}
-              onMouseOut={e => { if (car.stock > 0 && !adding) e.currentTarget.style.background = '#C8102E'; }}
+              onMouseOver={e => { 
+                if (car.stock > 0 && !adding) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #9B0B22 0%, #7A0818 100%)';
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                  e.currentTarget.style.boxShadow = '0 6px 24px rgba(200,16,46,0.4)';
+                }
+              }}
+              onMouseOut={e => { 
+                if (car.stock > 0 && !adding) {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #C8102E 0%, #9B0B22 100%)';
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(200,16,46,0.3)';
+                }
+              }}
             >
               {adding ? '...' : car.stock === 0 ? t('out_of_stock', lang) : '🛒 ' + (addBtn[lang] || addBtn.fr)}
             </button>
