@@ -165,6 +165,43 @@ export default function Home() {
             <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 14 : 22 }}>
               {featured.slice(0, isMobile ? 3 : 6).map((car, i) => <CarCard key={car.id} car={car} index={i} />)}
             </div>
+            
+            {/* Mobile message to see details */}
+            {isMobile && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                style={{ 
+                  marginTop: 24, 
+                  padding: '16px 20px', 
+                  background: 'rgba(200,16,46,0.08)', 
+                  border: '1px solid rgba(200,16,46,0.2)', 
+                  borderRadius: 12, 
+                  textAlign: 'center' 
+                }}
+              >
+                <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 8 }}>
+                  {l==='fr'?'👆 Tapez sur une voiture pour voir les détails complets':
+                   l==='en'?'👆 Tap on a car to see full details':
+                   l==='de'?'👆 Tippen Sie auf ein Auto, um alle Details zu sehen':
+                   l==='es'?'👆 Toca un coche para ver todos los detalles':
+                   l==='it'?'👆 Tocca un\'auto per vedere tutti i dettagli':
+                   '👆 Toque em um carro para ver todos os detalhes'}
+                </p>
+                <Link to="/catalog" style={{ 
+                  fontSize: 13, 
+                  fontWeight: 700, 
+                  color: '#C8102E', 
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6
+                }}>
+                  {l==='fr'?'Voir tout le catalogue':l==='en'?'View full catalog':l==='de'?'Gesamten Katalog ansehen':l==='es'?'Ver catálogo completo':l==='it'?'Vedi catalogo completo':'Ver catálogo completo'} →
+                </Link>
+              </motion.div>
+            )}
           </div>
         </section>
       )}

@@ -371,6 +371,348 @@ export default function CarDetails() {
             )}
           </div>
         </div>
+
+        {/* ==================== PREMIUM SECTIONS ==================== */}
+        
+        {/* 1. SECTION GARANTIE */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ marginTop: isMobile ? 48 : 72 }}
+        >
+          <div style={{ marginBottom: isMobile ? 24 : 32 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
+              {lang === 'fr' ? 'Protection' : lang === 'en' ? 'Protection' : lang === 'de' ? 'Schutz' : 'حماية'}
+            </span>
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
+              {lang === 'fr' ? 'Protection adaptée à vos besoins' : lang === 'en' ? 'Protection tailored to your needs' : lang === 'de' ? 'Schutz maßgeschneidert für Ihre Bedürfnisse' : 'حماية مخصصة لاحتياجاتك'}
+            </h2>
+          </div>
+
+          {/* Main warranty card */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: isMobile ? 24 : 32, marginBottom: 24, boxShadow: C.shadow }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+              <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>
+                🛡️
+              </div>
+              <div>
+                <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: isMobile ? 18 : 22, color: C.text, marginBottom: 4 }}>
+                  {lang === 'fr' ? 'Garantie basique German Auto Cars' : lang === 'en' ? 'German Auto Cars Basic Warranty' : lang === 'de' ? 'German Auto Cars Basisgarantie' : 'ضمان German Auto Cars الأساسي'}
+                </h3>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(200,16,46,0.1)', border: '1px solid rgba(200,16,46,0.25)', padding: '4px 12px', borderRadius: 6 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: '#C8102E' }}>
+                    {lang === 'fr' ? '✓ Incluse dans toutes les commandes' : lang === 'en' ? '✓ Included in all orders' : lang === 'de' ? '✓ In allen Bestellungen enthalten' : '✓ مشمول في جميع الطلبات'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: 12, marginBottom: 24 }}>
+              {[
+                { text: lang === 'fr' ? 'Valable 12 mois ou 10 000 km' : lang === 'en' ? 'Valid 12 months or 10,000 km' : lang === 'de' ? 'Gültig 12 Monate oder 10.000 km' : 'صالح لمدة 12 شهرًا أو 10000 كم', icon: '📅' },
+                { text: lang === 'fr' ? 'Protection moteur' : lang === 'en' ? 'Engine protection' : lang === 'de' ? 'Motorschutz' : 'حماية المحرك', icon: '⚙️' },
+                { text: lang === 'fr' ? 'Protection boîte de vitesse' : lang === 'en' ? 'Transmission protection' : lang === 'de' ? 'Getriebeschutz' : 'حماية ناقل الحركة', icon: '🔧' },
+                { text: lang === 'fr' ? 'Hors pièces d’usure' : lang === 'en' ? 'Excluding wear parts' : lang === 'de' ? 'Verschleißteile ausgeschlossen' : 'باستثناء قطع التآكل', icon: '📋' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: C.card2, borderRadius: 10 }}>
+                  <span style={{ fontSize: 20 }}>{item.icon}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: C.text2 }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Warranty badge */}
+            <div style={{ background: isDark ? 'rgba(200,16,46,0.1)' : 'rgba(200,16,46,0.08)', border: '1px solid rgba(200,16,46,0.25)', borderRadius: 10, padding: 16, textAlign: 'center' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8102E' }}>
+                  {lang === 'fr' ? 'Garantie incluse – 12 mois' : lang === 'en' ? 'Warranty included – 12 months' : lang === 'de' ? 'Garantie enthalten – 12 Monate' : 'الضمان مشمول – 12 شهرًا'}
+                </span>
+              </div>
+              <p style={{ fontSize: isMobile ? 14 : 16, fontWeight: 700, color: C.text }}>
+                {lang === 'fr' ? `Votre ${car.make} ${car.model} couvert jusqu'à 36 mois` : lang === 'en' ? `Your ${car.make} ${car.model} covered up to 36 months` : lang === 'de' ? `Ihr ${car.make} ${car.model} bis zu 36 Monate abgedeckt` : `${car.make} ${car.model} الخاص بك مغطى لمدة تصل إلى 36 شهرًا`}
+              </p>
+            </div>
+          </div>
+
+          {/* Coverage grid */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: isMobile ? 24 : 32, marginBottom: 24, boxShadow: C.shadow }}>
+            <h4 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: 20 }}>
+              {lang === 'fr' ? 'Ce qui est couvert' : lang === 'en' ? 'What is covered' : lang === 'de' ? 'Was ist abgedeckt' : 'ما هو المشمول'}
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 12 }}>
+              {[
+                { text: lang === 'fr' ? 'Moteur & boîte de vitesses' : lang === 'en' ? 'Engine & transmission' : lang === 'de' ? 'Motor & Getriebe' : 'المحرك وناقل الحركة', icon: '⚙️' },
+                { text: lang === 'fr' ? 'Système de refroidissement' : lang === 'en' ? 'Cooling system' : lang === 'de' ? 'Kühlsystem' : 'نظام التبريد', icon: '❄️' },
+                { text: lang === 'fr' ? 'Direction & freinage' : lang === 'en' ? 'Steering & braking' : lang === 'de' ? 'Lenkung & Bremsen' : 'التوجيه والفرامل', icon: '🛞' },
+                { text: lang === 'fr' ? 'Électronique embarquée' : lang === 'en' ? 'On-board electronics' : lang === 'de' ? 'Bordelektronik' : 'الإلكترونيات المدمجة', icon: '📟' },
+                { text: lang === 'fr' ? 'Climatisation' : lang === 'en' ? 'Air conditioning' : lang === 'de' ? 'Klimaanlage' : 'مكيف الهواء', icon: '❄️' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', background: C.card2, borderRadius: 10, transition: 'all 0.2s' }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-2px)'; }}
+                  onMouseOut={e => { e.currentTarget.style.transform='translateY(0)'; }}>
+                  <span style={{ fontSize: 22 }}>{item.icon}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Extension options */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: isMobile ? 24 : 32, boxShadow: C.shadow }}>
+            <h4 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: 20 }}>
+              {lang === 'fr' ? 'Options d’extension' : lang === 'en' ? 'Extension options' : lang === 'de' ? 'Erweiterungsoptionen' : 'خيارات التمديد'}
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: 12 }}>
+              {[
+                { text: lang === 'fr' ? 'Extension 24 mois' : lang === 'en' ? '24-month extension' : lang === 'de' ? '24 Monate Erweiterung' : 'تمديد 24 شهرًا', icon: '📅' },
+                { text: lang === 'fr' ? 'Extension 36 mois' : lang === 'en' ? '36-month extension' : lang === 'de' ? '36 Monate Erweiterung' : 'تمديد 36 شهرًا', icon: '📅' },
+                { text: lang === 'fr' ? 'Assistance 24h/24 – 7j/7' : lang === 'en' ? '24/7 assistance' : lang === 'de' ? '24/7 Assistance' : 'مساعدة على مدار الساعة', icon: '🆘' },
+                { text: lang === 'fr' ? 'Véhicule de remplacement' : lang === 'en' ? 'Replacement vehicle' : lang === 'de' ? 'Ersatzfahrzeug' : 'مركبة بديلة', icon: '🚗' },
+                { text: lang === 'fr' ? 'Garantie carrosserie' : lang === 'en' ? 'Body warranty' : lang === 'de' ? 'Karossergarantie' : 'ضمان الهيكل', icon: '🛡️' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', background: C.card2, borderRadius: 10, border: '1px solid transparent', transition: 'all 0.2s' }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-2px)'; }}
+                  onMouseOut={e => { e.currentTarget.style.borderColor='transparent'; e.currentTarget.style.transform='translateY(0)'; }}>
+                  <span style={{ fontSize: 22 }}>{item.icon}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 2. SECTION LIVRAISON */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ marginTop: isMobile ? 48 : 72 }}
+        >
+          <div style={{ marginBottom: isMobile ? 24 : 32 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
+              {lang === 'fr' ? 'Livraison' : lang === 'en' ? 'Delivery' : lang === 'de' ? 'Lieferung' : 'توصيل'}
+            </span>
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
+              {lang === 'fr' ? 'Livraison véhicule' : lang === 'en' ? 'Vehicle delivery' : lang === 'de' ? 'Fahrzeuglieferung' : 'توصيل المركبة'}
+            </h2>
+            <p style={{ fontSize: isMobile ? 15 : 17, color: C.text2, marginTop: 12, maxWidth: 700, lineHeight: 1.6 }}>
+              {lang === 'fr' ? `Votre ${car.make} ${car.model} livré partout en Europe. Véhicule remis propre, plein de carburant et documents conformes.` : lang === 'en' ? `Your ${car.make} ${car.model} delivered anywhere in Europe. Vehicle delivered clean, with full tank and compliant documents.` : lang === 'de' ? `Ihr ${car.make} ${car.model} überall in Europa geliefert. Fahrzeug sauber übergeben, vollgetankt und mit ordnungsgemäßen Dokumenten.` : `${car.make} ${car.model} الخاص بك يتم توصيله في أي مكان في أوروبا. يتم تسليم المركبة نظيفة مع خزان كامل ووثائق متوافقة.`}
+            </p>
+          </div>
+
+          {/* Delivery info card */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: isMobile ? 24 : 32, marginBottom: 24, boxShadow: C.shadow }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: 24 }}>
+              <div>
+                <h4 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: 16 }}>
+                  {lang === 'fr' ? 'Livraison à domicile' : lang === 'en' ? 'Home delivery' : lang === 'de' ? 'Hauslieferung' : 'توصيل للمنزل'}
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {[
+                    { text: lang === 'fr' ? 'Partout en Europe' : lang === 'en' ? 'Anywhere in Europe' : lang === 'de' ? 'Überall in Europa' : 'في أي مكان في أوروبا', icon: '🌍' },
+                    { text: lang === 'fr' ? 'Délai : 3 à 7 jours ouvrés' : lang === 'en' ? 'Timeframe: 3-7 business days' : lang === 'de' ? 'Zeitraum: 3-7 Werktage' : 'الإطار الزمني: 3-7 أيام عمل', icon: '📅' },
+                    { text: lang === 'fr' ? 'Livraison assurée' : lang === 'en' ? 'Insured delivery' : lang === 'de' ? 'Versicherte Lieferung' : 'توصيل مؤمن', icon: '🛡️' },
+                    { text: lang === 'fr' ? 'Signature à la remise' : lang === 'en' ? 'Signature on delivery' : lang === 'de' ? 'Unterschrift bei Übergabe' : 'توقيع عند الاستلام', icon: '✍️' },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span style={{ fontSize: 20 }}>{item.icon}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: 16 }}>
+                  {lang === 'fr' ? 'Avantages' : lang === 'en' ? 'Advantages' : lang === 'de' ? 'Vorteile' : 'المزايا'}
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {[
+                    lang === 'fr' ? '✓ Livraison partout en Europe' : lang === 'en' ? '✓ Delivery anywhere in Europe' : lang === 'de' ? '✓ Lieferung überall in Europa' : '✓ توصيل في أي مكان في أوروبا',
+                    lang === 'fr' ? '✓ Créneau confirmé avec le client' : lang === 'en' ? '✓ Time slot confirmed with client' : lang === 'de' ? '✓ Zeitfenster mit Kunde bestätigt' : '✓ فترة زمنية مؤكدة مع العميل',
+                    lang === 'fr' ? '✓ Suivi avant remise' : lang === 'en' ? '✓ Tracking before handover' : lang === 'de' ? '✓ Verfolgung vor Übergabe' : '✓ تتبع قبل التسليم',
+                    lang === 'fr' ? '✓ Documents préparés' : lang === 'en' ? '✓ Documents prepared' : lang === 'de' ? '✓ Dokumente vorbereitet' : '✓ الوثائق محضرة',
+                    lang === 'fr' ? '✓ Accompagnement à la réception' : lang === 'en' ? '✓ Assistance on receipt' : lang === 'de' ? '✓ Begleitung bei Empfang' : '✓ مرافقة عند الاستلام',
+                  ].map((item, i) => (
+                    <div key={i} style={{ fontSize: 14, fontWeight: 600, color: C.text2, lineHeight: 1.6 }}>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Info box */}
+            <div style={{ marginTop: 24, padding: 16, background: isDark ? 'rgba(200,16,46,0.08)' : 'rgba(200,16,46,0.05)', border: '1px solid rgba(200,16,46,0.2)', borderRadius: 10 }}>
+              <p style={{ fontSize: 14, color: C.text2, lineHeight: 1.6, textAlign: 'center' }}>
+                {lang === 'fr' ? 'Le véhicule est livré propre, avec le plein de carburant et tous les documents en règle. Un essai routier peut être effectué avant validation finale.' : lang === 'en' ? 'The vehicle is delivered clean, with a full tank of fuel and all documents in order. A road test can be performed before final validation.' : lang === 'de' ? 'Das Fahrzeug wird sauber übergeben, mit vollem Tank und allen ordnungsgemäßen Dokumenten. Vor der endgültigen Validierung kann eine Probefahrt durchgeführt werden.' : 'يتم تسليم المركبة نظيفة مع خزان وقود ممتلئ وجميع الوثائق مرتبة. يمكن إجراء اختبار طريق قبل التحقق النهائي.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Timeline */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: isMobile ? 24 : 32, marginBottom: 24, boxShadow: C.shadow }}>
+            <h4 style={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: C.text3, marginBottom: 20 }}>
+              {lang === 'fr' ? 'Du clic à la remise des clés – sans souci' : lang === 'en' ? 'From click to key handover – hassle-free' : lang === 'de' ? 'Vom Klick zur Schlüsselübergabe – sorgenfrei' : 'من النقرة إلى تسليم المفاتيح - بلا متاعب'}
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(5, 1fr)', gap: 16 }}>
+              {[
+                { step: '1', text: lang === 'fr' ? 'Validation commande' : lang === 'en' ? 'Order validation' : lang === 'de' ? 'Bestellvalidierung' : 'التحقق من الطلب', icon: '📋' },
+                { step: '2', text: lang === 'fr' ? 'Préparation véhicule' : lang === 'en' ? 'Vehicle preparation' : lang === 'de' ? 'Fahrzeugvorbereitung' : 'تحضير المركبة', icon: '🔧' },
+                { step: '3', text: lang === 'fr' ? 'Transport sécurisé' : lang === 'en' ? 'Secure transport' : lang === 'de' ? 'Sicherer Transport' : 'نقل آمن', icon: '🚚' },
+                { step: '4', text: lang === 'fr' ? 'Livraison domicile' : lang === 'en' ? 'Home delivery' : lang === 'de' ? 'Hauslieferung' : 'توصيل للمنزل', icon: '🏠' },
+                { step: '5', text: lang === 'fr' ? 'Remise des clés' : lang === 'en' ? 'Key handover' : lang === 'de' ? 'Schlüsselübergabe' : 'تسليم المفاتيح', icon: '🔑' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 12 }}>
+                  <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'linear-gradient(135deg,#C8102E,#9B0B22)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 900, color: '#fff' }}>
+                    {item.step}
+                  </div>
+                  <span style={{ fontSize: 28 }}>{item.icon}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: C.text, lineHeight: 1.4 }}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Badges */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+            {[
+              { text: lang === 'fr' ? '✓ Livraison Europe' : lang === 'en' ? '✓ Europe Delivery' : lang === 'de' ? '✓ Europa-Lieferung' : '✓ توصيل أوروبا', color: '#C8102E' },
+              { text: lang === 'fr' ? '✓ Remise à domicile' : lang === 'en' ? '✓ Home delivery' : lang === 'de' ? '✓ Hauslieferung' : '✓ توصيل للمنزل', color: '#C8102E' },
+              { text: lang === 'fr' ? '✓ Date au choix' : lang === 'en' ? '✓ Date of your choice' : lang === 'de' ? '✓ Datum nach Wahl' : '✓ تاريخ حسب اختيارك', color: '#C8102E' },
+              { text: lang === 'fr' ? '✓ Transaction sécurisée' : lang === 'en' ? '✓ Secure transaction' : lang === 'de' ? '✓ Sichere Transaktion' : '✓ معاملة آمنة', color: '#C8102E' },
+            ].map((badge, i) => (
+              <div key={i} style={{ padding: '10px 20px', background: isDark ? 'rgba(200,16,46,0.1)' : 'rgba(200,16,46,0.08)', border: '1px solid rgba(200,16,46,0.25)', borderRadius: 8, fontSize: 13, fontWeight: 700, color: badge.color }}>
+                {badge.text}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* 3. SECTION INSPECTION PREMIUM */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ marginTop: isMobile ? 48 : 72 }}
+        >
+          <div style={{ marginBottom: isMobile ? 24 : 32 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
+              {lang === 'fr' ? 'Qualité' : lang === 'en' ? 'Quality' : lang === 'de' ? 'Qualität' : 'جودة'}
+            </span>
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
+              {lang === 'fr' ? 'Inspection technique certifiée' : lang === 'en' ? 'Certified technical inspection' : lang === 'de' ? 'Zertifizierte technische Inspektion' : 'فحص فني معتمد'}
+            </h2>
+            <p style={{ fontSize: isMobile ? 15 : 17, color: C.text2, marginTop: 12, maxWidth: 700, lineHeight: 1.6 }}>
+              {lang === 'fr' ? 'Ce véhicule a été soumis à une inspection rigoureuse de plus de 150 points techniques réalisée par nos mécaniciens certifiés.' : lang === 'en' ? 'This vehicle has undergone a rigorous inspection of over 150 technical points performed by our certified mechanics.' : lang === 'de' ? 'Dieses Fahrzeug wurde einer strengen Inspektion von über 150 technischen Punkten unterzogen, die von unseren zertifizierten Mechanikern durchgeführt wurde.' : 'خضعت هذه المركبة لفحص دقيق لأكثر من 150 نقطة فنية تم إجراؤها بواسطة ميكانيكيينا المعتمدين.'}
+            </p>
+          </div>
+
+          {/* Inspection grid */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: isMobile ? 24 : 32, marginBottom: 24, boxShadow: C.shadow }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: 16 }}>
+              {[
+                { title: lang === 'fr' ? 'Moteur & transmission' : lang === 'en' ? 'Engine & transmission' : lang === 'de' ? 'Motor & Getriebe' : 'المحرك وناقل الحركة', desc: lang === 'fr' ? 'Contrôle complet du groupe motopropulseur' : lang === 'en' ? 'Complete powertrain check' : lang === 'de' ? 'Vollständige Antriebsstrangprüfung' : 'فحص كامل لمجموعة القيادة', icon: '⚙️' },
+                { title: lang === 'fr' ? 'Carrosserie & peinture' : lang === 'en' ? 'Body & paint' : lang === 'de' ? 'Karosserie & Lack' : 'الهيكل والطلاء', desc: lang === 'fr' ? 'Inspection dommages et retouches' : lang === 'en' ? 'Damage and touch-up inspection' : lang === 'de' ? 'Schaden- und Retuscheninspektion' : 'فحص الأضرار واللمسات', icon: '🎨' },
+                { title: lang === 'fr' ? 'Freins & suspensions' : lang === 'en' ? 'Brakes & suspension' : lang === 'de' ? 'Bremsen & Fahrwerk' : 'الفرامل والمعلقات', desc: lang === 'fr' ? 'Vérification systèmes sécurité' : lang === 'en' ? 'Safety systems verification' : lang === 'de' ? 'Überprüfung der Sicherheitssysteme' : 'التحقق من أنظمة الأمان', icon: '🛞' },
+                { title: lang === 'fr' ? 'Électronique & diagnostic' : lang === 'en' ? 'Electronics & diagnostics' : lang === 'de' ? 'Elektronik & Diagnose' : 'الإلكترونيات والتشخيص', desc: lang === 'fr' ? 'Scan OBD-II complet – zéro défaut toléré' : lang === 'en' ? 'Full OBD-II scan – zero defects tolerated' : lang === 'de' ? 'Vollständiger OBD-II-Scan – null Fehler toleriert' : 'فحص OBD-II كامل - لا توجد عيوب مسموحة', icon: '📟' },
+                { title: lang === 'fr' ? 'Fluides & filtres' : lang === 'en' ? 'Fluids & filters' : lang === 'de' ? 'Flüssigkeiten & Filter' : 'السوائل والمرشحات', desc: lang === 'fr' ? 'Remplacement si nécessaire' : lang === 'en' ? 'Replacement if necessary' : lang === 'de' ? 'Ersetzung bei Bedarf' : 'الاستبدال عند الضرورة', icon: '💧' },
+                { title: lang === 'fr' ? 'Pneus & jantes' : lang === 'en' ? 'Tires & wheels' : lang === 'de' ? 'Reifen & Felgen' : 'الإطارات والعجلات', desc: lang === 'fr' ? 'Contrôle usure et profondeur' : lang === 'en' ? 'Wear and depth check' : lang === 'de' ? 'Verschleiß- und Tiefenprüfung' : 'فحص التآكل والعمق', icon: '🛞' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: 16, padding: '20px', background: C.card2, borderRadius: 12, transition: 'all 0.2s' }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-2px)'; }}
+                  onMouseOut={e => { e.currentTarget.style.transform='translateY(0)'; }}>
+                  <div style={{ width: 52, height: 52, borderRadius: 12, background: 'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h5 style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 6 }}>{item.title}</h5>
+                    <p style={{ fontSize: 13, color: C.text3, lineHeight: 1.5 }}>{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Certification badge */}
+          <div style={{ background: 'linear-gradient(135deg,rgba(200,16,46,0.1),rgba(200,16,46,0.05))', border: '2px solid rgba(200,16,46,0.3)', borderRadius: 16, padding: isMobile ? 28 : 36, textAlign: 'center' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <span style={{ fontSize: 48 }}>✓</span>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontSize: 14, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8102E' }}>
+                  {lang === 'fr' ? 'Certifié German Auto Cars' : lang === 'en' ? 'Certified German Auto Cars' : lang === 'de' ? 'Zertifiziert German Auto Cars' : 'معتمد من German Auto Cars'}
+                </div>
+                <p style={{ fontSize: isMobile ? 16 : 18, fontWeight: 700, color: C.text, marginTop: 4 }}>
+                  {lang === 'fr' ? 'Ce véhicule a validé notre contrôle qualité complet.' : lang === 'en' ? 'This vehicle has passed our complete quality control.' : lang === 'de' ? 'Dieses Fahrzeug hat unsere vollständige Qualitätskontrolle bestanden.' : 'اجتازت هذه المركبة فحص الجودة الكامل لدينا.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 4. SECTION HISTORIQUE ENTRETIEN */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ marginTop: isMobile ? 48 : 72, marginBottom: isMobile ? 48 : 72 }}
+        >
+          <div style={{ marginBottom: isMobile ? 24 : 32 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
+              {lang === 'fr' ? 'Transparence' : lang === 'en' ? 'Transparency' : lang === 'de' ? 'Transparenz' : 'شفافية'}
+            </span>
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
+              {lang === 'fr' ? 'Historique d’entretien' : lang === 'en' ? 'Maintenance history' : lang === 'de' ? 'Wartungshistorie' : 'سجل الصيانة'}
+            </h2>
+          </div>
+
+          {/* Transparency badge */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+            <div style={{ padding: '12px 24px', background: 'linear-gradient(135deg,#C8102E,#9B0B22)', borderRadius: 10, fontSize: 14, fontWeight: 800, color: '#fff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              {lang === 'fr' ? 'Transparence totale' : lang === 'en' ? 'Total transparency' : lang === 'de' ? 'Volle Transparenz' : 'شفافية كاملة'}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 36, fontWeight: 900, color: '#C8102E' }}>100%</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: C.text2 }}>
+                {lang === 'fr' ? 'Traçabilité vérifiée' : lang === 'en' ? 'Verified traceability' : lang === 'de' ? 'Verifizierte Rückverfolgbarkeit' : 'قابلية التتبع موثقة'}
+              </span>
+            </div>
+          </div>
+
+          <p style={{ fontSize: isMobile ? 15 : 17, color: C.text2, marginBottom: 32, maxWidth: 700, lineHeight: 1.6 }}>
+            {lang === 'fr' ? 'Ce véhicule bénéficie d\'un historique complet et traçable. Toutes les révisions, entretiens, pièces remplacées et documents administratifs sont vérifiés.' : lang === 'en' ? 'This vehicle benefits from a complete and traceable history. All services, maintenance, replaced parts and administrative documents are verified.' : lang === 'de' ? 'Dieses Fahrzeug verfügt über eine vollständige und nachverfolgbare Historie. Alle Serviceleistungen, Wartungen, ersetzten Teile und Verwaltungsdokumente werden überprüft.' : 'تتمتع هذه المركبة بسجل كامل قابل للتتبع. يتم التحقق من جميع الخدمات والصيانة والأجزاء المستبدلة والوثائق الإدارية.'}
+          </p>
+
+          {/* History cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: 20 }}>
+            {[
+              { title: lang === 'fr' ? 'Vérification antécédents' : lang === 'en' ? 'Background verification' : lang === 'de' ? 'Hintergrundüberprüfung' : 'التحقق من الخلفية', desc: lang === 'fr' ? 'Bases officielles : sinistres, vols, jauges' : lang === 'en' ? 'Official databases: accidents, thefts, odometer' : lang === 'de' ? 'Offizielle Datenbanken: Unfälle, Diebstahl, Tachometer' : 'قواعد البيانات الرسمية: الحوادث، السرقات، عدادات المسافة', icon: '🔍' },
+              { title: lang === 'fr' ? 'Carnet entretien analysé' : lang === 'en' ? 'Service log analyzed' : lang === 'de' ? 'Serviceheft analysiert' : 'تحليل سجل الخدمة', desc: lang === 'fr' ? 'Révisions, vidanges, pièces remplacées' : lang === 'en' ? 'Services, oil changes, replaced parts' : lang === 'de' ? 'Service, Ölwechsel, ersetzte Teile' : 'الخدمات، تغيير الزيت، الأجزاء المستبدلة', icon: '📋' },
+              { title: lang === 'fr' ? 'Entretien pré-vente' : lang === 'en' ? 'Pre-sale maintenance' : lang === 'de' ? 'Vorverkaufswartung' : 'صيانة ما قبل البيع', desc: lang === 'fr' ? 'Fluides mis à jour, véhicule prêt à rouler' : lang === 'en' ? 'Fluids updated, vehicle ready to drive' : lang === 'de' ? 'Flüssigkeiten aktualisiert, fahrbereit' : 'السوائل محدثة، المركبة جاهزة للقيادة', icon: '🔧' },
+              { title: lang === 'fr' ? 'Rapport acheteur' : lang === 'en' ? 'Buyer report' : lang === 'de' ? 'Käuferbericht' : 'تقرير المشتري', desc: lang === 'fr' ? 'Rapport d\'inspection remis à la livraison' : lang === 'en' ? 'Inspection report provided at delivery' : lang === 'de' ? 'Inspektionsbericht bei Lieferung übergeben' : 'تقرير الفحص مقدم عند التسليم', icon: '📄' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: isMobile ? 24 : 28, boxShadow: C.shadow, transition: 'all 0.2s' }}
+                onMouseOver={e => { e.currentTarget.style.borderColor='rgba(200,16,46,0.4)'; e.currentTarget.style.transform='translateY(-4px)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.transform='translateY(0)'; }}>
+                <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+                  <div style={{ width: 56, height: 56, borderRadius: 12, background: 'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, flexShrink: 0 }}>
+                    {item.icon}
+                  </div>
+                  <div>
+                    <h5 style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 6 }}>{item.title}</h5>
+                    <p style={{ fontSize: 14, color: C.text3, lineHeight: 1.5 }}>{item.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
       </div>
     </div>
   );
