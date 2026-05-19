@@ -20,6 +20,8 @@ import Profile      from './pages/Profile';
 import Login        from './pages/Login';
 import Register     from './pages/Register';
 import Legal        from './pages/Legal';
+import Warranty     from './pages/Warranty';
+import Insurance    from './pages/Insurance';
 
 // Admin
 import AdminLayout      from './pages/admin/AdminLayout';
@@ -70,6 +72,8 @@ export default function App() {
         <Route path="/simulation"element={<MainLayout><Simulation /></MainLayout>} />
         <Route path="/track"     element={<MainLayout><Track /></MainLayout>} />
         <Route path="/track/:orderNumber" element={<MainLayout><Track /></MainLayout>} />
+        <Route path="/warranty"  element={<MainLayout><Warranty /></MainLayout>} />
+        <Route path="/insurance" element={<MainLayout><Insurance /></MainLayout>} />
 
         {/* Legal pages */}
         <Route path="/mentions-legales"         element={<MainLayout><Legal /></MainLayout>} />

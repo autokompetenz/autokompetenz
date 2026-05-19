@@ -57,6 +57,7 @@ export default function Home() {
   const { lang } = useLangStore();
   const { isMobile, isTablet } = useBreakpoint();
   const [featured, setFeatured] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [trackNum, setTrackNum] = useState('');
   const heroRef = useRef(null);
   const navigate = useNavigate();
@@ -66,7 +67,10 @@ export default function Home() {
   const heroO = useTransform(scrollYProgress, [0,0.7], [1,0]);
 
   useEffect(() => {
-    carAPI.getAll({ featured:'true', limit:6 }).then(r => setFeatured(r.data.cars||[])).catch(()=>{});
+    setLoading(true);
+    carAPI.getAll({ featured:'true', limit:12 })
+      .then(r => { setFeatured(r.data.cars||[]); setLoading(false); })
+      .catch(() => { setLoading(false); });
   }, []);
 
   const handleTrack = (e) => {
@@ -150,21 +154,49 @@ export default function Home() {
       </div>
 
       {/* ── FEATURED VEHICLES ── */}
-      {featured.length > 0 && (
-        <section className="section-pad">
-          <div style={{ maxWidth:1400, margin:'0 auto' }}>
-            <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', flexWrap:'wrap', gap:16, marginBottom:36 }}>
-              <div>
-                <div className="section-eyebrow">{t('catalog_title', l)}</div>
-                <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:'var(--text)', letterSpacing:'-0.02em', lineHeight:1.05 }}>
-                  {l==='fr'?'Nos Véhicules\nà la Une':l==='en'?'Featured\nVehicles':l==='de'?'Ausgewählte\nFahrzeuge':l==='es'?'Vehículos\nDestacados':l==='it'?'Veicoli\nin evidenza':'Veículos\nDestacados'}
-                </h2>
-              </div>
-              <Link to="/catalog" className="btn-outline">{t('see_all', l)} →</Link>
+      <section className="section-pad">
+        <div style={{ maxWidth:1400, margin:'0 auto' }}>
+          <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', flexWrap:'wrap', gap:16, marginBottom:36 }}>
+            <div>
+              <div className="section-eyebrow">{t('catalog_title', l)}</div>
+              <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:'var(--text)', letterSpacing:'-0.02em', lineHeight:1.05 }}>
+                {l==='fr'?'Nos Véhicules\nà la Une':l==='en'?'Featured\nVehicles':l==='de'?'Ausgewählte\nFahrzeuge':l==='es'?'Vehículos\nDestacados':l==='it'?'Veicoli\nin evidenza':'Veículos\nDestacados'}
+              </h2>
             </div>
+            <Link to="/catalog" className="btn-outline">{t('see_all', l)} →</Link>
+          </div>
+          
+          {loading ? (
+            <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 14 : 22 }}>
+              {Array.from({ length: isMobile ? 3 : 6 }).map((_, i) => (
+                <div key={i} style={{ 
+                  background:'var(--bg-card)', 
+                  border:'1px solid var(--border)', 
+                  borderRadius:12, 
+                  padding:20,
+                  minHeight:280,
+                  display:'flex',
+                  flexDirection:'column',
+                  gap:12
+                }}>
+                  <div style={{ 
+                    width:'100%', 
+                    height:160, 
+                    background:'var(--bg-card2)', 
+                    borderRadius:8,
+                    animation:'pulse 1.5s ease-in-out infinite'
+                  }} />
+                  <div style={{ height:20, background:'var(--bg-card2)', borderRadius:4, width:'70%' }} />
+                  <div style={{ height:16, background:'var(--bg-card2)', borderRadius:4, width:'50%' }} />
+                  <div style={{ height:24, background:'var(--bg-card2)', borderRadius:4, width:'40%', marginTop:'auto' }} />
+                </div>
+              ))}
+            </div>
+          ) : featured.length > 0 ? (
             <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 14 : 22 }}>
               {featured.slice(0, isMobile ? 3 : 6).map((car, i) => <CarCard key={car.id} car={car} index={i} />)}
             </div>
+          ) : null}
             
             {/* Mobile message to see details */}
             {isMobile && (
@@ -204,7 +236,6 @@ export default function Home() {
             )}
           </div>
         </section>
-      )}
 
       {/* ── SERVICES ── */}
       <section style={{ background:'var(--bg-card2)', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }} className="section-pad">
@@ -262,7 +293,7 @@ export default function Home() {
               <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6, marginBottom:20 }}>
                 {l==='fr'?'Incluse dans toutes les commandes. Valable 12 mois ou 10 000 km. Protection moteur, boîte de vitesse, hors pièces d\'usure.':l==='en'?'Included in all orders. Valid 12 months or 10,000 km. Engine and transmission protection, excluding wear parts.':l==='de'?'In allen Bestellungen enthalten. Gültig 12 Monate oder 10.000 km. Motor- und Getriebeschutz, Verschleißteile ausgeschlossen.':l==='es'?'Incluida en todos los pedidos. Válida 12 meses o 10.000 km. Protección de motor y transmisión, excluyendo piezas de desgaste.':l==='it'?'Inclusa in tutti gli ordini. Valida 12 mesi o 10.000 km. Protezione motore e trasmissione, esclusi pezzi di usura.':'Incluída em todos os pedidos. Válida 12 meses ou 10.000 km. Proteção de motor e transmissão, excluindo peças de desgaste.'}
               </p>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:20 }}>
                 {[
                   l==='fr'?'✓ 12 mois':l==='en'?'✓ 12 months':l==='de'?'✓ 12 Monate':l==='es'?'✓ 12 meses':l==='it'?'✓ 12 mesi':'✓ 12 meses',
                   l==='fr'?'✓ 10 000 km':l==='en'?'✓ 10,000 km':l==='de'?'✓ 10.000 km':l==='es'?'✓ 10.000 km':l==='it'?'✓ 10.000 km':'✓ 10.000 km',
@@ -271,6 +302,18 @@ export default function Home() {
                   <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
                 ))}
               </div>
+              <Link to="/warranty" style={{ 
+                display:'inline-flex', 
+                alignItems:'center', 
+                gap:6, 
+                fontSize:13, 
+                fontWeight:700, 
+                color:'#C8102E', 
+                textDecoration:'none',
+                transition:'all 0.3s'
+              }}>
+                {l==='fr'?'En savoir plus':l==='en'?'Learn more':l==='de'?'Mehr erfahren':l==='es'?'Saber más':l==='it'?'Scopri di più':'Saiba mais'} →
+              </Link>
             </motion.div>
 
             {/* Extension Options */}
@@ -287,7 +330,7 @@ export default function Home() {
               <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6, marginBottom:20 }}>
                 {l==='fr'?'Étendez votre protection jusqu\'à 36 mois. Options disponibles : assistance 24/7, véhicule de remplacement, garantie carrosserie.':l==='en'?'Extend your protection up to 36 months. Available options: 24/7 assistance, replacement vehicle, body warranty.':l==='de'?'Erweitern Sie Ihren Schutz bis zu 36 Monaten. Verfügbare Optionen: 24/7 Assistance, Ersatzfahrzeug, Karossergarantie.':l==='es'?'Amplíe su protección hasta 36 meses. Opciones disponibles: asistencia 24/7, vehículo de reemplazo, garantía de carrocería.':l==='it'?'Estendete la tua protezione fino a 36 mesi. Opzioni disponibili: assistenza 24/7, veicolo sostitutivo, garanzia carrozzeria.':'Estenda sua proteção até 36 meses. Opções disponíveis: assistência 24/7, veículo substituto, garantia de carroceria.'}
               </p>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:20 }}>
                 {[
                   l==='fr'?'✓ 24 mois':l==='en'?'✓ 24 months':l==='de'?'✓ 24 Monate':l==='es'?'✓ 24 meses':l==='it'?'✓ 24 mesi':'✓ 24 meses',
                   l==='fr'?'✓ 36 mois':l==='en'?'✓ 36 months':l==='de'?'✓ 36 Monate':l==='es'?'✓ 36 meses':l==='it'?'✓ 36 mesi':'✓ 36 meses',
@@ -296,6 +339,18 @@ export default function Home() {
                   <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
                 ))}
               </div>
+              <Link to="/warranty" style={{ 
+                display:'inline-flex', 
+                alignItems:'center', 
+                gap:6, 
+                fontSize:13, 
+                fontWeight:700, 
+                color:'#C8102E', 
+                textDecoration:'none',
+                transition:'all 0.3s'
+              }}>
+                {l==='fr'?'En savoir plus':l==='en'?'Learn more':l==='de'?'Mehr erfahren':l==='es'?'Saber más':l==='it'?'Scopri di più':'Saiba mais'} →
+              </Link>
             </motion.div>
 
             {/* Insurance */}
@@ -312,7 +367,7 @@ export default function Home() {
               <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6, marginBottom:20 }}>
                 {l==='fr'?'Solutions d\'assurance complètes : responsabilité civile, tous risques, protection contre le vol et les incendies.':l==='en'?'Comprehensive insurance solutions: liability, full coverage, theft and fire protection.':l==='de'?'Umfassende Versicherungslösungen: Haftpflicht, Vollkasko, Diebstahl- und Brandschutz.':l==='es'?'Soluciones de seguro completas: responsabilidad civil, cobertura total, protección contra robo e incendios.':l==='it'?'Soluzioni assicurative complete: responsabilità civile, copertura totale, protezione contro furto e incendio.':'Soluções de seguro abrangentes: responsabilidade civil, cobertura total, proteção contra roubo e incêndio.'}
               </p>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:20 }}>
                 {[
                   l==='fr'?'✓ RC':l==='en'?'✓ Liability':l==='de'?'✓ Haftpflicht':l==='es'?'✓ RC':l==='it'?'✓ RC':'✓ RC',
                   l==='fr'?'✓ Tous risques':l==='en'?'✓ Full coverage':l==='de'?'✓ Vollkasko':l==='es'?'✓ Todo riesgo':l==='it'?'✓ Casco totale':'✓ Cobertura total',
@@ -321,6 +376,9 @@ export default function Home() {
                   <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
                 ))}
               </div>
+              <Link to="/insurance" style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#C8102E', textDecoration:'none' }}>
+                {l==='fr'?'En savoir plus':l==='en'?'Learn more':l==='de'?'Mehr erfahren':l==='es'?'Saber más':l==='it'?'Scopri di più':'Saiba mais'} →
+              </Link>
             </motion.div>
           </div>
 

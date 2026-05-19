@@ -713,6 +713,102 @@ export default function CarDetails() {
           </div>
         </motion.div>
 
+        {/* Related Vehicles */}
+        {car && (
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            style={{ marginTop: isMobile ? 48 : 72 }}
+          >
+            <div style={{ marginBottom: isMobile ? 24 : 32 }}>
+              <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
+                {l==='fr'?'VOUS POURRIEZ AUSSI AIMER':l==='en'?'YOU MIGHT ALSO LIKE':l==='de'?'SIE KÖNNTEN AUCH GEFALLEN':l==='es'?'TAMBIÉN PODRÍA GUSTARLE':l==='it'?'POTREBBE PIACERTI ANCHE':'VOCÊ TAMBÉM PODE GOSTAR'}
+              </span>
+              <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
+                {l==='fr'?'Véhicules similaires':l==='en'?'Similar Vehicles':l==='de'?'Ähnliche Fahrzeuge':l==='es'?'Vehículos Similares':l==='it'?'Veicoli Simili':'Veículos Similares'}
+              </h2>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 16 : 24 }}>
+              {Array.from({ length: isMobile ? 2 : 3 }).map((_, i) => (
+                <div key={i} style={{ 
+                  background: 'var(--bg-card)', 
+                  border: '1px solid var(--border)', 
+                  borderRadius: 16, 
+                  padding: 20,
+                  minHeight: 280,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12
+                }}>
+                  <div style={{ 
+                    width: '100%', 
+                    height: 160, 
+                    background: 'var(--bg-card2)', 
+                    borderRadius: 12,
+                    animation: 'pulse 1.5s ease-in-out infinite'
+                  }} />
+                  <div style={{ height: 20, background: 'var(--bg-card2)', borderRadius: 4, width: '70%' }} />
+                  <div style={{ height: 16, background: 'var(--bg-card2)', borderRadius: 4, width: '50%' }} />
+                  <div style={{ height: 24, background: 'var(--bg-card2)', borderRadius: 4, width: '40%', marginTop: 'auto' }} />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Vehicle Type Suggestions */}
+        {car && (
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            style={{ marginTop: isMobile ? 48 : 72 }}
+          >
+            <div style={{ marginBottom: isMobile ? 24 : 32 }}>
+              <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
+                {l==='fr'?'AUTRES TYPES DE VÉHICULES':l==='en'?'OTHER VEHICLE TYPES':l==='de'?'ANDERE FAHRZEUGTYPEN':l==='es'?'OTROS TIPOS DE VEHÍCULOS':l==='it'?'ALTRI TIPI DI VEICOLI':'OUTROS TIPOS DE VEÍCULOS'}
+              </span>
+              <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
+                {l==='fr'?'Explorez notre gamme':l==='en'?'Explore our range':l==='de'?'Erkunden Sie unsere Auswahl':l==='es'?'Explore nuestra gama':l==='it'?'Esplora la nostra gamma':'Explore nossa gama'}
+              </h2>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 16 }}>
+              {[
+                { type: l==='fr'?'SUV':l==='en'?'SUV':l==='de'?'SUV':l==='es'?'SUV':l==='it'?'SUV':'SUV', icon: '🚙', count: 12 },
+                { type: l==='fr'?'Berline':l==='en'?'Sedan':l==='de'?'Limousine':l==='es'?'Sedán':l==='it'?'Berlina':'Sedã', icon: '🚗', count: 8 },
+                { type: l==='fr'?'Sportive':l==='en'?'Sports':l==='de'?'Sportwagen':l==='es'?'Deportivo':l==='it'?'Sportiva':'Esportivo', icon: '🏎️', count: 5 },
+                { type: l==='fr'?'Électrique':l==='en'?'Electric':l==='de'?'Elektro':l==='es'?'Eléctrico':l==='it'?'Elettrico':'Elétrico', icon: '⚡', count: 6 },
+              ].map((item, i) => (
+                <Link 
+                  key={i}
+                  to="/catalog"
+                  style={{ 
+                    background: 'var(--bg-card)', 
+                    border: '1px solid var(--border)', 
+                    borderRadius: 16, 
+                    padding: 24,
+                    textDecoration: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 12,
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(200,16,46,0.4)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                  onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <div style={{ fontSize: 40 }}>{item.icon}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>{item.type}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-3)' }}>{item.count} {l==='fr'?'disponibles':l==='en'?'available':l==='de'?'verfügbar':l==='es'?'disponibles':l==='it'?'disponibili':'disponíveis'}</div>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
       </div>
     </div>
   );
