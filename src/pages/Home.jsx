@@ -232,6 +232,114 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── WARRANTY & INSURANCE ── */}
+      <section className="section-pad">
+        <div style={{ maxWidth:1300, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:44 }}>
+            <div className="section-eyebrow" style={{ justifyContent:'center' }}>
+              {l==='fr'?'Protection':l==='en'?'Protection':l==='de'?'Schutz':l==='es'?'Protección':l==='it'?'Protezione':'Proteção'}
+            </div>
+            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:'var(--text)', letterSpacing:'-0.02em' }}>
+              {l==='fr'?'Garanties &\nAssurances':l==='en'?'Warranties &\nInsurance':l==='de'?'Garantien &\nVersicherungen':l==='es'?'Garantías &\nSeguros':l==='it'?'Garanzie &\nAssicurazioni':'Garantias &\nSeguros'}
+            </h2>
+            <p style={{ fontSize:16, color:'var(--text-3)', marginTop:12, maxWidth:600, margin:'12px auto 0' }}>
+              {l==='fr'?'Une protection complète pour votre véhicule, avec des garanties étendues et des options d\'assurance sur mesure.':l==='en'?'Complete protection for your vehicle with extended warranties and tailored insurance options.':l==='de'?'Umfassender Schutz für Ihr Fahrzeug mit erweiterten Garantien und maßgeschneiderten Versicherungsoptionen.':l==='es'?'Protección completa para su vehículo con garantías extendidas y opciones de seguro a medida.':l==='it'?'Protezione completa per il vostro veicolo con garanzie estese e opzioni assicurative su misura.':'Proteção completa para seu veículo com garantias estendidas e opções de seguro sob medida.'}
+            </p>
+          </div>
+
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 16 : 24 }}>
+            {/* Warranty Card */}
+            <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5 }}
+              style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 32, boxShadow:'var(--shadow-sm)', transition:'all 0.3s' }}
+              onMouseOver={e=>{e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='var(--shadow-md)';}}
+              onMouseOut={e=>{e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-sm)';}}>
+              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>
+                🛡️
+              </div>
+              <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 18 : 20, color:'var(--text)', marginBottom:12 }}>
+                {l==='fr'?'Garantie German Auto Cars':l==='en'?'German Auto Cars Warranty':l==='de'?'German Auto Cars Garantie':l==='es'?'Garantía German Auto Cars':l==='it'?'Garanzia German Auto Cars':'Garantia German Auto Cars'}
+              </h3>
+              <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6, marginBottom:20 }}>
+                {l==='fr'?'Incluse dans toutes les commandes. Valable 12 mois ou 10 000 km. Protection moteur, boîte de vitesse, hors pièces d\'usure.':l==='en'?'Included in all orders. Valid 12 months or 10,000 km. Engine and transmission protection, excluding wear parts.':l==='de'?'In allen Bestellungen enthalten. Gültig 12 Monate oder 10.000 km. Motor- und Getriebeschutz, Verschleißteile ausgeschlossen.':l==='es'?'Incluida en todos los pedidos. Válida 12 meses o 10.000 km. Protección de motor y transmisión, excluyendo piezas de desgaste.':l==='it'?'Inclusa in tutti gli ordini. Valida 12 mesi o 10.000 km. Protezione motore e trasmissione, esclusi pezzi di usura.':'Incluída em todos os pedidos. Válida 12 meses ou 10.000 km. Proteção de motor e transmissão, excluindo peças de desgaste.'}
+              </p>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                {[
+                  l==='fr'?'✓ 12 mois':l==='en'?'✓ 12 months':l==='de'?'✓ 12 Monate':l==='es'?'✓ 12 meses':l==='it'?'✓ 12 mesi':'✓ 12 meses',
+                  l==='fr'?'✓ 10 000 km':l==='en'?'✓ 10,000 km':l==='de'?'✓ 10.000 km':l==='es'?'✓ 10.000 km':l==='it'?'✓ 10.000 km':'✓ 10.000 km',
+                  l==='fr'?'✓ Moteur':l==='en'?'✓ Engine':l==='de'?'✓ Motor':l==='es'?'✓ Motor':l==='it'?'✓ Motore':'✓ Motor',
+                ].map((badge, i) => (
+                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Extension Options */}
+            <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay:0.1 }}
+              style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 32, boxShadow:'var(--shadow-sm)', transition:'all 0.3s' }}
+              onMouseOver={e=>{e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='var(--shadow-md)';}}
+              onMouseOut={e=>{e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-sm)';}}>
+              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>
+                📅
+              </div>
+              <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 18 : 20, color:'var(--text)', marginBottom:12 }}>
+                {l==='fr'?'Options d\'extension':l==='en'?'Extension options':l==='de'?'Erweiterungsoptionen':l==='es'?'Opciones de extensión':l==='it'?'Opzioni di estensione':'Opções de extensão'}
+              </h3>
+              <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6, marginBottom:20 }}>
+                {l==='fr'?'Étendez votre protection jusqu\'à 36 mois. Options disponibles : assistance 24/7, véhicule de remplacement, garantie carrosserie.':l==='en'?'Extend your protection up to 36 months. Available options: 24/7 assistance, replacement vehicle, body warranty.':l==='de'?'Erweitern Sie Ihren Schutz bis zu 36 Monaten. Verfügbare Optionen: 24/7 Assistance, Ersatzfahrzeug, Karossergarantie.':l==='es'?'Amplíe su protección hasta 36 meses. Opciones disponibles: asistencia 24/7, vehículo de reemplazo, garantía de carrocería.':l==='it'?'Estendete la tua protezione fino a 36 mesi. Opzioni disponibili: assistenza 24/7, veicolo sostitutivo, garanzia carrozzeria.':'Estenda sua proteção até 36 meses. Opções disponíveis: assistência 24/7, veículo substituto, garantia de carroceria.'}
+              </p>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                {[
+                  l==='fr'?'✓ 24 mois':l==='en'?'✓ 24 months':l==='de'?'✓ 24 Monate':l==='es'?'✓ 24 meses':l==='it'?'✓ 24 mesi':'✓ 24 meses',
+                  l==='fr'?'✓ 36 mois':l==='en'?'✓ 36 months':l==='de'?'✓ 36 Monate':l==='es'?'✓ 36 meses':l==='it'?'✓ 36 mesi':'✓ 36 meses',
+                  l==='fr'?'✓ 24/7':l==='en'?'✓ 24/7':l==='de'?'✓ 24/7':l==='es'?'✓ 24/7':l==='it'?'✓ 24/7':'✓ 24/7',
+                ].map((badge, i) => (
+                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Insurance */}
+            <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay:0.2 }}
+              style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 32, boxShadow:'var(--shadow-sm)', transition:'all 0.3s' }}
+              onMouseOver={e=>{e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='var(--shadow-md)';}}
+              onMouseOut={e=>{e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-sm)';}}>
+              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>
+                💳
+              </div>
+              <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 18 : 20, color:'var(--text)', marginBottom:12 }}>
+                {l==='fr'?'Assurance véhicule':l==='en'?'Vehicle insurance':l==='de'?'Fahrzeugversicherung':l==='es'?'Seguro de vehículo':l==='it'?'Assicurazione veicolo':'Seguro veículo'}
+              </h3>
+              <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6, marginBottom:20 }}>
+                {l==='fr'?'Solutions d\'assurance complètes : responsabilité civile, tous risques, protection contre le vol et les incendies.':l==='en'?'Comprehensive insurance solutions: liability, full coverage, theft and fire protection.':l==='de'?'Umfassende Versicherungslösungen: Haftpflicht, Vollkasko, Diebstahl- und Brandschutz.':l==='es'?'Soluciones de seguro completas: responsabilidad civil, cobertura total, protección contra robo e incendios.':l==='it'?'Soluzioni assicurative complete: responsabilità civile, copertura totale, protezione contro furto e incendio.':'Soluções de seguro abrangentes: responsabilidade civil, cobertura total, proteção contra roubo e incêndio.'}
+              </p>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                {[
+                  l==='fr'?'✓ RC':l==='en'?'✓ Liability':l==='de'?'✓ Haftpflicht':l==='es'?'✓ RC':l==='it'?'✓ RC':'✓ RC',
+                  l==='fr'?'✓ Tous risques':l==='en'?'✓ Full coverage':l==='de'?'✓ Vollkasko':l==='es'?'✓ Todo riesgo':l==='it'?'✓ Casco totale':'✓ Cobertura total',
+                  l==='fr'?'✓ Vol':l==='en'?'✓ Theft':l==='de'?'✓ Diebstahl':l==='es'?'✓ Robo':l==='it'?'✓ Furto':'✓ Roubo',
+                ].map((badge, i) => (
+                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Trust badges */}
+          <div style={{ marginTop:40, display:'flex', justifyContent:'center', flexWrap:'wrap', gap:12 }}>
+            {[
+              { text: l==='fr'?'✓ Garantie incluse':l==='en'?'✓ Warranty included':l==='de'?'✓ Garantie enthalten':l==='es'?'✓ Garantía incluida':l==='it'?'✓ Garanzia inclusa':'✓ Garantia incluída', color: '#C8102E' },
+              { text: l==='fr'?'✓ Protection étendue':l==='en'?'✓ Extended protection':l==='de'?'✓ Erweiterter Schutz':l==='es'?'✓ Protección extendida':l==='it'?'✓ Protezione estesa':'✓ Proteção estendida', color: '#C8102E' },
+              { text: l==='fr'?'✓ Assurance sur mesure':l==='en'?'✓ Tailored insurance':l==='de'?'✓ Maßgeschneiderte Versicherung':l==='es'?'✓ Seguro a medida':l==='it'?'✓ Assicurazione su misura':'✓ Seguro sob medida', color: '#C8102E' },
+              { text: l==='fr'?'✓ Assistance 24/7':l==='en'?'✓ 24/7 assistance':l==='de'?'✓ 24/7 Assistance':l==='es'?'✓ Asistencia 24/7':l==='it'?'✓ Assistenza 24/7':'✓ Assistência 24/7', color: '#C8102E' },
+            ].map((badge, i) => (
+              <div key={i} style={{ padding:'10px 20px', background:'var(--bg-card2)', border:'1px solid rgba(200,16,46,0.2)', borderRadius:8, fontSize:13, fontWeight:700, color:badge.color }}>
+                {badge.text}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── REVIEWS ── */}
       <section className="section-pad">
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
