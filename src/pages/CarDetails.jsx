@@ -17,10 +17,10 @@ const PAYMENT_OPTIONS = [
 ];
 
 const SPEC_LABELS = {
-  fr: { power:'Puissance', fuel:'Carburant', gear:'Boîte', km:'Kilométrage', color:'Couleur', stock:'Disponibilité', new:'Neuf', available:'disponible(s)', unavailable:'Épuisé' },
-  en: { power:'Power', fuel:'Fuel', gear:'Gearbox', km:'Mileage', color:'Colour', stock:'Availability', new:'New', available:'available', unavailable:'Out of stock' },
-  de: { power:'Leistung', fuel:'Kraftstoff', gear:'Getriebe', km:'Kilometerstand', color:'Farbe', stock:'Verfügbarkeit', new:'Neu', available:'verfügbar', unavailable:'Ausverkauft' },
-  ar: { power:'القوة', fuel:'الوقود', gear:'ناقل الحركة', km:'عداد المسافة', color:'اللون', stock:'التوافر', new:'جديد', available:'متوفر', unavailable:'غير متوفر' },
+  fr: { year:'Année', power:'Puissance', fuel:'Carburant', gear:'Boîte', km:'Kilométrage', color:'Couleur', stock:'Disponibilité', new:'Neuf', available:'disponible(s)', unavailable:'Épuisé' },
+  en: { year:'Year', power:'Power', fuel:'Fuel', gear:'Gearbox', km:'Mileage', color:'Colour', stock:'Availability', new:'New', available:'available', unavailable:'Out of stock' },
+  de: { year:'Baujahr', power:'Leistung', fuel:'Kraftstoff', gear:'Getriebe', km:'Kilometerstand', color:'Farbe', stock:'Verfügbarkeit', new:'Neu', available:'verfügbar', unavailable:'Ausverkauft' },
+  ar: { year:'السنة', power:'القوة', fuel:'الوقود', gear:'ناقل الحركة', km:'عداد المسافة', color:'اللون', stock:'التوافر', new:'جديد', available:'متوفر', unavailable:'غير متوفر' },
 };
 
 const IMAGE_FIELDS = [
@@ -230,7 +230,7 @@ export default function CarDetails() {
           <div>
             <div style={{ marginBottom: 6 }}>
               <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', color: C.red }}>
-                {car.category} · {car.year}
+                {car.category}
               </span>
             </div>
             <h1 style={{
@@ -256,6 +256,7 @@ export default function CarDetails() {
             {/* Specs grid */}
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, marginBottom: 24 }}>
               {[
+                { label: SL.year,  value: String(car.year), icon: '📅' },
                 { label: SL.power, value: car.power ? `${car.power} hp` : 'N/A', icon: '⚡' },
                 { label: SL.fuel,  value: car.fuelType, icon: '⛽' },
                 { label: SL.gear,  value: car.transmission, icon: '⚙️' },
