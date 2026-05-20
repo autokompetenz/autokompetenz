@@ -55,6 +55,15 @@ export default function Simulation() {
     noResultSub2:{ fr:", aucun véhicule ne correspond. Contactez-nous pour des solutions personnalisées.", en:", no vehicle matches. Contact us for personalised solutions.", de:", passt kein Fahrzeug. Kontaktieren Sie uns.", es:", ningún vehículo coincide. Contáctenos para soluciones personalizadas.", it:", nessun veicolo corrisponde. Contattateci per soluzioni personalizzate.", pt:", nenhum veículo corresponde. Contacte-nos para soluções personalizadas." },
     contact:     { fr:'Nous contacter via WhatsApp', en:'Contact us via WhatsApp', de:'WhatsApp kontaktieren', es:'Contáctenos por WhatsApp',         it:'Contattateci via WhatsApp',     pt:'Contacte-nos via WhatsApp' },
     per_month:   { fr:'/mois',                 en:'/month',                     de:'/Monat',                    es:'/mes',                             it:'/mese',                         pt:'/mês' },
+    introTag:    { fr:'Financement Auto',      en:'Car Financing',              de:'Autofinanzierung',          es:'Financiacion Auto',                it:'Finanziamento Auto',            pt:'Financiamento Auto' },
+    introTitle:  { fr:'Payez par mois jusqu a la remise de votre vehicule', en:'Pay monthly until vehicle delivery', de:'Monatlich zahlen bis zur Fahrzeugubergabe', es:'Paga mensualmente hasta la entrega del vehiculo', it:'Paga mensilmente fino alla consegna del veicolo', pt:'Pague mensalmente ate a entrega do veiculo' },
+    introSub:    { fr:'Une solution simple et transparente pour avancer pas a pas vers votre prochaine voiture, avec un rythme adapte a votre salaire.', en:'A simple and transparent solution to move step by step toward your next car, at a pace adapted to your income.', de:'Eine einfache und transparente Losung, um Schritt fur Schritt zu Ihrem nachsten Auto zu kommen, in einem Tempo passend zu Ihrem Einkommen.', es:'Una solucion simple y transparente para avanzar paso a paso hacia su proximo coche, con un ritmo adaptado a sus ingresos.', it:'Una soluzione semplice e trasparente per avanzare passo dopo passo verso la tua prossima auto, con un ritmo adatto al tuo reddito.', pt:'Uma solucao simples e transparente para avancar passo a passo rumo ao seu proximo carro, com um ritmo adaptado ao seu rendimento.' },
+    introStep1T: { fr:'1. Vous choisissez votre budget mensuel', en:'1. Choose your monthly budget', de:'1. Monatliches Budget festlegen', es:'1. Elige tu presupuesto mensual', it:'1. Scegli il tuo budget mensile', pt:'1. Escolha seu orcamento mensal' },
+    introStep1D: { fr:'Le simulateur calcule une mensualite realiste selon votre salaire.', en:'The simulator calculates a realistic monthly payment based on your salary.', de:'Der Rechner berechnet eine realistische Monatsrate auf Basis Ihres Gehalts.', es:'El simulador calcula una cuota mensual realista segun su salario.', it:'Il simulatore calcola una rata mensile realistica in base al tuo stipendio.', pt:'O simulador calcula uma parcela mensal realista com base no seu salario.' },
+    introStep2T: { fr:'2. Vous payez par mois', en:'2. Pay month by month', de:'2. Monat fur Monat zahlen', es:'2. Pagas mes a mes', it:'2. Paghi mese per mese', pt:'2. Pague mes a mes' },
+    introStep2D: { fr:'Vous avancez progressivement vers votre objectif, sans pression.', en:'You move progressively toward your goal, without pressure.', de:'Sie kommen schrittweise und ohne Druck Ihrem Ziel naher.', es:'Avanzas progresivamente hacia tu objetivo, sin presion.', it:'Avanzi progressivamente verso il tuo obiettivo, senza pressione.', pt:'Voce avanca progressivamente rumo ao seu objetivo, sem pressao.' },
+    introStep3T: { fr:'3. Vous obtenez votre vehicule', en:'3. Receive your vehicle', de:'3. Fahrzeug erhalten', es:'3. Recibe tu vehiculo', it:'3. Ricevi il tuo veicolo', pt:'3. Receba seu veiculo' },
+    introStep3D: { fr:'Quand les conditions sont atteintes, la livraison est organisee rapidement.', en:'Once conditions are met, delivery is arranged quickly.', de:'Sobald die Bedingungen erfullt sind, wird die Ubergabe schnell organisiert.', es:'Cuando se cumplen las condiciones, la entrega se organiza rapidamente.', it:'Quando le condizioni sono soddisfatte, la consegna viene organizzata rapidamente.', pt:'Quando as condicoes sao atingidas, a entrega e organizada rapidamente.' },
   };
 
   return (
@@ -74,6 +83,32 @@ export default function Simulation() {
       </div>
 
       <div style={{ maxWidth:1100, margin:'0 auto', padding: isMobile ? '28px 4%' : '52px 6%' }}>
+        {/* Financing intro */}
+        <section style={{ marginBottom:30 }}>
+          <div style={{ background:'var(--bg-card2)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? '20px 16px' : '28px 30px' }}>
+            <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)', marginBottom:10 }}>
+              {L.introTag[l]}
+            </p>
+            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile ? 26 : 34, color:'var(--text)', lineHeight:1.2, marginBottom:10 }}>
+              {L.introTitle[l]}
+            </h2>
+            <p style={{ fontSize: isMobile ? 14 : 16, color:'var(--text-3)', lineHeight:1.7, marginBottom:18 }}>
+              {L.introSub[l]}
+            </p>
+            <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,minmax(0,1fr))', gap:12 }}>
+              {[
+                { t: L.introStep1T[l], d: L.introStep1D[l] },
+                { t: L.introStep2T[l], d: L.introStep2D[l] },
+                { t: L.introStep3T[l], d: L.introStep3D[l] },
+              ].map((item) => (
+                <div key={item.t} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 14 : 16 }}>
+                  <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:15, color:'var(--text)', marginBottom:7 }}>{item.t}</p>
+                  <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.6 }}>{item.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Simulator card */}
         <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? '24px 20px' : '40px 44px', marginBottom:44, boxShadow:'var(--shadow-md)' }}>
