@@ -417,7 +417,7 @@ export default function Home() {
                     <p style={{ fontWeight:700, fontSize:15, color:'var(--text)' }}>{r.name}</p>
                     <Stars n={r.rating} />
                   </div>
-                  <span style={{ marginLeft:'auto', fontSize:11, color:'var(--text-3)', fontWeight:600, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.2)', color:'var(--green)', padding:'3px 10px', borderRadius:4 }}>✓ {t('verified', l)}</span>
+                  <span style={{ marginLeft:'auto', fontSize:11, fontWeight:600, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.2)', color:'var(--green)', padding:'3px 10px', borderRadius:4 }}>✓ {t('verified', l)}</span>
                 </div>
                 <p style={{ fontSize:14, color:'var(--text-2)', lineHeight:1.7 }}>"{getReviewText(r)}"</p>
               </motion.div>

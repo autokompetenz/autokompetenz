@@ -21,67 +21,69 @@ export default function Warranty() {
     shadow: '0 4px 24px rgba(0,0,0,0.08)',
   };
 
+  const t = (obj) => obj[l] || obj.fr;
+
   const coverageItems = [
     { 
-      title: l==='fr'?'Moteur & boîte de vitesses':l==='en'?'Engine & Transmission':l==='de'?'Motor & Getriebe':l==='es'?'Motor y transmisión':l==='it'?'Motore e trasmissione':'Motor e transmissão',
-      desc: l==='fr'?'Protection complète du groupe motopropulseur, y compris les pièces internes du moteur, la culasse, le bloc moteur, les pistons, les bielles, le vilebrequin et la boîte de vitesses.':l==='en'?'Complete powertrain protection including internal engine parts, cylinder head, engine block, pistons, connecting rods, crankshaft and transmission.':l==='de'?'Vollständiger Antriebsstrangschutz einschließlich interner Motorteile, Zylinderkopf, Motorblock, Kolben, Pleuel, Kurbelwelle und Getriebe.':l==='es'?'Protección completa del tren motriz, incluidas las piezas internas del motor, culata, bloque del motor, pistones, bielas, cigüeñal y transmisión.':l==='it'?'Protezione completa del powertrain inclusi i pezzi interni del motore, testata, blocco motore, pistoni, bielle, albero a gomiti e trasmissione.':l==='pt'?'Proteção completa do trem de força, incluindo peças internas do motor, cabeçote, bloco do motor, pistões, bielas, virabrequim e transmissão.',
+      title: t({ fr:'Moteur & boîte de vitesses', en:'Engine & Transmission', de:'Motor & Getriebe', es:'Motor y transmisión', it:'Motore e trasmissione', pt:'Motor e transmissão' }),
+      desc: t({ fr:'Protection complète du groupe motopropulseur, y compris les pièces internes du moteur, la culasse, le bloc moteur, les pistons, les bielles, le vilebrequin et la boîte de vitesses.', en:'Complete powertrain protection including internal engine parts, cylinder head, engine block, pistons, connecting rods, crankshaft and transmission.', de:'Vollständiger Antriebsstrangschutz einschließlich interner Motorteile, Zylinderkopf, Motorblock, Kolben, Pleuel, Kurbelwelle und Getriebe.', es:'Protección completa del tren motriz, incluidas las piezas internas del motor, culata, bloque del motor, pistones, bielas, cigüeñal y transmisión.', it:'Protezione completa del powertrain inclusi i pezzi interni del motore, testata, blocco motore, pistoni, bielle, albero a gomiti e trasmissione.', pt:'Proteção completa do trem de força, incluindo peças internas do motor, cabeçote, bloco do motor, pistões, bielas, virabrequim e transmissão.' }),
       icon: '⚙️'
     },
     { 
-      title: l==='fr'?'Système de refroidissement':l==='en'?'Cooling System':l==='de'?'Kühlsystem':l==='es'?'Sistema de refrigeración':l==='it'?'Sistema di raffreddamento':'Sistema de refrigeração',
-      desc: l==='fr'?'Radiateur, pompe à eau, thermostat, durites, ventilateur de refroidissement et tous les composants du circuit de refroidissement.':l==='en'?'Radiator, water pump, thermostat, hoses, cooling fan and all cooling system components.':l==='de'?'Kühler, Wasserpumpe, Thermostat, Schläuche, Lüfter und alle Kühlsystemkomponenten.':l==='es'?'Radiador, bomba de agua, termostato, mangueras, ventilador de refrigeración y todos los componentes del sistema de refrigeración.':l==='it'?'Radiatore, pompa dell\'acqua, termostato, tubi, ventilatore di raffreddamento e tutti i componenti del sistema di raffreddamento.':l==='pt'?'Radiador, bomba de água, termostato, mangueiras, ventilador de refrigeração e todos os componentes do sistema de refrigeração.',
+      title: t({ fr:'Système de refroidissement', en:'Cooling System', de:'Kühlsystem', es:'Sistema de refrigeración', it:'Sistema di raffreddamento', pt:'Sistema de refrigeração' }),
+      desc: t({ fr:'Radiateur, pompe à eau, thermostat, durites, ventilateur de refroidissement et tous les composants du circuit de refroidissement.', en:'Radiator, water pump, thermostat, hoses, cooling fan and all cooling system components.', de:'Kühler, Wasserpumpe, Thermostat, Schläuche, Lüfter und alle Kühlsystemkomponenten.', es:'Radiador, bomba de agua, termostato, mangueras, ventilador de refrigeración y todos los componentes del sistema de refrigeración.', it:'Radiatore, pompa dell\'acqua, termostato, tubi, ventilatore di raffreddamento e tutti i componenti del sistema di raffreddamento.', pt:'Radiador, bomba de água, termostato, mangueiras, ventilador de refrigeração e todos os componentes do sistema de refrigeração.' }),
       icon: '❄️'
     },
     { 
-      title: l==='fr'?'Direction & freinage':l==='en'?'Steering & Braking':l==='de'?'Lenkung & Bremsen':l==='es'?'Dirección y frenado':l==='it'?'Sterzo e frenatura':'Direção e frenagem',
-      desc: l==='fr'?'Direction assistée, pompe de direction, colonne de direction, maître-cylindre, étriers de frein, plaquettes, disques et système ABS.':l==='en'?'Power steering, steering pump, steering column, master cylinder, brake calipers, pads, discs and ABS system.':l==='de'?'Servolenkung, Lenkpumpe, Lenksäule, Hauptbrezylinder, Bremssättel, Beläge, Scheiben und ABS-System.':l==='es'?'Dirección asistida, bomba de dirección, columna de dirección, cilindro maestro, pinzas de freno, pastillas, discos y sistema ABS.':l==='it'?'Servosterzo, pompa dello sterzo, colonna dello sterzo, cilindro principale, pinze freno, pastiglie, dischi e sistema ABS.':l==='pt'?'Direção assistida, bomba de direção, coluna de direção, cilindro mestre, pinças de freio, pastilhas, discos e sistema ABS.',
+      title: t({ fr:'Direction & freinage', en:'Steering & Braking', de:'Lenkung & Bremsen', es:'Dirección y frenado', it:'Sterzo e frenatura', pt:'Direção e frenagem' }),
+      desc: t({ fr:'Direction assistée, pompe de direction, colonne de direction, maître-cylindre, étriers de frein, plaquettes, disques et système ABS.', en:'Power steering, steering pump, steering column, master cylinder, brake calipers, pads, discs and ABS system.', de:'Servolenkung, Lenkpumpe, Lenksäule, Hauptbrezylinder, Bremssättel, Beläge, Scheiben und ABS-System.', es:'Dirección asistida, bomba de dirección, columna de dirección, cilindro maestro, pinzas de freno, pastillas, discos y sistema ABS.', it:'Servosterzo, pompa dello sterzo, colonna dello sterzo, cilindro principale, pinze freno, pastiglie, dischi e sistema ABS.', pt:'Direção assistida, bomba de direção, coluna de direção, cilindro mestre, pinças de freio, pastilhas, discos e sistema ABS.' }),
       icon: '🛞'
     },
     { 
-      title: l==='fr'?'Électronique embarquée':l==='en'?'On-board Electronics':l==='de'?'Bordelektronik':l==='es'?'Electrónica a bordo':l==='it'?'Elettronica di bordo':'Eletrônica embarcada',
-      desc: l==='fr'?'ECU, capteurs, calculateurs, système d\'injection, allumage électronique, tableau de bord et tous les modules électroniques.':l==='en'?'ECU, sensors, control units, injection system, electronic ignition, dashboard and all electronic modules.':l==='de'?'Steuergerät, Sensoren, Steuergeräte, Einspritzsystem, elektronische Zündung, Armaturenbrett und alle elektronischen Module.':l==='es'?'ECU, sensores, unidades de control, sistema de inyección, encendido electrónico, tablero y todos los módulos electrónicos.':l==='it'?'ECU, sensori, unità di controllo, sistema di iniezione, accensione elettronica, cruscotto e tutti i moduli elettronici.':l==='pt'?'ECU, sensores, unidades de controle, sistema de injeção, ignição eletrônica, painel e todos os módulos eletrônicos.',
+      title: t({ fr:'Électronique embarquée', en:'On-board Electronics', de:'Bordelektronik', es:'Electrónica a bordo', it:'Elettronica di bordo', pt:'Eletrônica embarcada' }),
+      desc: t({ fr:'ECU, capteurs, calculateurs, système d\'injection, allumage électronique, tableau de bord et tous les modules électroniques.', en:'ECU, sensors, control units, injection system, electronic ignition, dashboard and all electronic modules.', de:'Steuergerät, Sensoren, Steuergeräte, Einspritzsystem, elektronische Zündung, Armaturenbrett und alle elektronischen Module.', es:'ECU, sensores, unidades de control, sistema de inyección, encendido electrónico, tablero y todos los módulos electrónicos.', it:'ECU, sensori, unità di controllo, sistema di iniezione, accensione elettronica, cruscotto e tutti i moduli elettronici.', pt:'ECU, sensores, unidades de controle, sistema de injeção, ignição eletrônica, painel e todos os módulos eletrônicos.' }),
       icon: '📟'
     },
     { 
-      title: l==='fr'?'Climatisation':l==='en'?'Air Conditioning':l==='de'?'Klimaanlage':l==='es'?'Aire acondicionado':l==='it'?'Climatizzazione':'Ar condicionado',
-      desc: l==='fr'?'Compresseur, condenseur, évaporateur, détendeur, système de chauffage et tous les composants du circuit de climatisation.':l==='en'?'Compressor, condenser, evaporator, expansion valve, heating system and all AC components.':l==='de'?'Kompressor, Kondensator, Verdampfer, Expansionsventil, Heizsystem und alle Klimaanlagenkomponenten.':l==='es'?'Compresor, condensador, evaporador, válvula de expansión, sistema de calefacción y todos los componentes del aire acondicionado.':l==='it'?'Compressore, condensatore, evaporatore, valvola di espansione, sistema di riscaldamento e tutti i componenti del climatizzatore.':l==='pt'?'Compressor, condensador, evaporador, válvula de expansão, sistema de aquecimento e todos os componentes do ar condicionado.',
+      title: t({ fr:'Climatisation', en:'Air Conditioning', de:'Klimaanlage', es:'Aire acondicionado', it:'Climatizzazione', pt:'Ar condicionado' }),
+      desc: t({ fr:'Compresseur, condenseur, évaporateur, détendeur, système de chauffage et tous les composants du circuit de climatisation.', en:'Compressor, condenser, evaporator, expansion valve, heating system and all AC components.', de:'Kompressor, Kondensator, Verdampfer, Expansionsventil, Heizsystem und alle Klimaanlagenkomponenten.', es:'Compresor, condensador, evaporador, válvula de expansión, sistema de calefacción y todos los componentes del aire acondicionado.', it:'Compressore, condensatore, evaporatore, valvola di espansione, sistema di riscaldamento e tutti i componenti del climatizzatore.', pt:'Compressor, condensador, evaporador, válvula de expansão, sistema de aquecimento e todos os componentes do ar condicionado.' }),
       icon: '❄️'
     },
     { 
-      title: l==='fr'?'Système électrique':l==='en'?'Electrical System':l==='de'?'Elektrisches System':l==='es'?'Sistema eléctrico':l==='it'?'Sistema elettrico':'Sistema elétrico',
-      desc: l==='fr'?'Alternateur, démarreur, batterie, faisceau électrique, fusibles, relais et tous les composants électriques.':l==='en'?'Alternator, starter, battery, wiring harness, fuses, relays and all electrical components.':l==='de'?'Lichtmaschine, Anlasser, Batterie, Kabelbaum, Sicherungen, Relais und alle elektrischen Komponenten.':l==='es'?'Alternador, motor de arranque, batería, arnés de cables, fusibles, relés y todos los componentes eléctricos.':l==='it'?'Alternatore, motorino di avviamento, batteria, cablaggio, fusibili, relè e tutti i componenti elettrici.':l==='pt'?'Alternador, motor de partida, bateria, chicote elétrico, fusíveis, relés e todos os componentes elétricos.',
+      title: t({ fr:'Système électrique', en:'Electrical System', de:'Elektrisches System', es:'Sistema eléctrico', it:'Sistema elettrico', pt:'Sistema elétrico' }),
+      desc: t({ fr:'Alternateur, démarreur, batterie, faisceau électrique, fusibles, relais et tous les composants électriques.', en:'Alternator, starter, battery, wiring harness, fuses, relays and all electrical components.', de:'Lichtmaschine, Anlasser, Batterie, Kabelbaum, Sicherungen, Relais und alle elektrischen Komponenten.', es:'Alternador, motor de arranque, batería, arnés de cables, fusibles, relés y todos los componentes eléctricos.', it:'Alternatore, motorino di avviamento, batteria, cablaggio, fusibili, relè e tutti i componenti elettrici.', pt:'Alternador, motor de partida, bateria, chicote elétrico, fusíveis, relés e todos os componentes elétricos.' }),
       icon: '⚡'
     },
   ];
 
   const extensionOptions = [
     {
-      title: l==='fr'?'Extension 24 mois':l==='en'?'24-month Extension':l==='de'?'24 Monate Erweiterung':l==='es'?'Extensión 24 meses':l==='it'?'Estensione 24 mesi':'Extensão 24 meses',
-      price: l==='fr'?'À partir de 299€':l==='en'?'From 299€':l==='de'?'Ab 299€':l==='es'?'Desde 299€':l==='it'?'Da 299€':'A partir de 299€',
+      title: t({ fr:'Extension 24 mois', en:'24-month Extension', de:'24 Monate Erweiterung', es:'Extensión 24 meses', it:'Estensione 24 mesi', pt:'Extensão 24 meses' }),
+      price: t({ fr:'À partir de 299€', en:'From 299€', de:'Ab 299€', es:'Desde 299€', it:'Da 299€', pt:'A partir de 299€' }),
       features: [
-        l==='fr'?'✓ Couverture moteur et transmission':l==='en'?'✓ Engine and transmission coverage':l==='de'?'✓ Motor- und Getriebeschutz':l==='es'?'✓ Cobertura de motor y transmisión':l==='it'?'✓ Copertura motore e trasmissione':'✓ Cobertura de motor e transmissão',
-        l==='fr'?'✓ Pièces et main-d\'œuvre':l==='en'?'✓ Parts and labor':l==='de'?'✓ Teile und Arbeitszeit':l==='es'?'✓ Piezas y mano de obra':l==='it'?'✓ Ricambi e manodopera':'✓ Peças e mão de obra',
-        l==='fr'?'✓ Assistance dépannage':l==='en'?'✓ Breakdown assistance':l==='de'?'✓ Pannenhilfe':l==='es'?'✓ Asistencia de averías':l==='it'?'✓ Assistenza guasto':'✓ Assistência de pane',
+        t({ fr:'✓ Couverture moteur et transmission', en:'✓ Engine and transmission coverage', de:'✓ Motor- und Getriebeschutz', es:'✓ Cobertura de motor y transmisión', it:'✓ Copertura motore e trasmissione', pt:'✓ Cobertura de motor e transmissão' }),
+        t({ fr:'✓ Pièces et main-d\'œuvre', en:'✓ Parts and labor', de:'✓ Teile und Arbeitszeit', es:'✓ Piezas y mano de obra', it:'✓ Ricambi e manodopera', pt:'✓ Peças e mão de obra' }),
+        t({ fr:'✓ Assistance dépannage', en:'✓ Breakdown assistance', de:'✓ Pannenhilfe', es:'✓ Asistencia de averías', it:'✓ Assistenza guasto', pt:'✓ Assistência de pane' }),
       ]
     },
     {
-      title: l==='fr'?'Extension 36 mois':l==='en'?'36-month Extension':l==='de'?'36 Monate Erweiterung':l==='es'?'Extensión 36 meses':l==='it'?'Estensione 36 mesi':'Extensão 36 meses',
-      price: l==='fr'?'À partir de 499€':l==='en'?'From 499€':l==='de'?'Ab 499€':l==='es'?'Desde 499€':l==='it'?'Da 499€':'A partir de 499€',
+      title: t({ fr:'Extension 36 mois', en:'36-month Extension', de:'36 Monate Erweiterung', es:'Extensión 36 meses', it:'Estensione 36 mesi', pt:'Extensão 36 meses' }),
+      price: t({ fr:'À partir de 499€', en:'From 499€', de:'Ab 499€', es:'Desde 499€', it:'Da 499€', pt:'A partir de 499€' }),
       features: [
-        l==='fr'?'✓ Couverture complète':l==='en'?'✓ Full coverage':l==='de'?'✓ Vollständige Abdeckung':l==='es'?'✓ Cobertura completa':l==='it'?'✓ Copertura completa':'✓ Cobertura completa',
-        l==='fr'?'✓ Véhicule de remplacement':l==='en'?'✓ Replacement vehicle':l==='de'?'✓ Ersatzfahrzeug':l==='es'?'✓ Vehículo de reemplazo':l==='it'?'✓ Veicolo sostitutivo':'✓ Veículo substituto',
-        l==='fr'?'✓ Assistance 24/7':l==='en'?'✓ 24/7 assistance':l==='de'?'✓ 24/7 Assistance':l==='es'?'✓ Asistencia 24/7':l==='it'?'✓ Assistenza 24/7':'✓ Assistência 24/7',
-        l==='fr'?'✓ Garantie carrosserie':l==='en'?'✓ Body warranty':l==='de'?'✓ Karossergarantie':l==='es'?'✓ Garantía de carrocería':l==='it'?'✓ Garanzia carrozzeria':'✓ Garantia de carroceria',
+        t({ fr:'✓ Couverture complète', en:'✓ Full coverage', de:'✓ Vollständige Abdeckung', es:'✓ Cobertura completa', it:'✓ Copertura completa', pt:'✓ Cobertura completa' }),
+        t({ fr:'✓ Véhicule de remplacement', en:'✓ Replacement vehicle', de:'✓ Ersatzfahrzeug', es:'✓ Vehículo de reemplazo', it:'✓ Veicolo sostitutivo', pt:'✓ Veículo substituto' }),
+        t({ fr:'✓ Assistance 24/7', en:'✓ 24/7 assistance', de:'✓ 24/7 Assistance', es:'✓ Asistencia 24/7', it:'✓ Assistenza 24/7', pt:'✓ Assistência 24/7' }),
+        t({ fr:'✓ Garantie carrosserie', en:'✓ Body warranty', de:'✓ Karossergarantie', es:'✓ Garantía de carrocería', it:'✓ Garanzia carrozzeria', pt:'✓ Garantia de carroceria' }),
       ]
     },
     {
-      title: l==='fr'?'Premium Gold':l==='en'?'Premium Gold':l==='de'?'Premium Gold':l==='es'?'Premium Gold':l==='it'?'Premium Gold':'Premium Gold',
-      price: l==='fr'?'À partir de 799€':l==='en'?'From 799€':l==='de'?'Ab 799€':l==='es'?'Desde 799€':l==='it'?'Da 799€':'A partir de 799€',
+      title: t({ fr:'Premium Gold', en:'Premium Gold', de:'Premium Gold', es:'Premium Gold', it:'Premium Gold', pt:'Premium Gold' }),
+      price: t({ fr:'À partir de 799€', en:'From 799€', de:'Ab 799€', es:'Desde 799€', it:'Da 799€', pt:'A partir de 799€' }),
       features: [
-        l==='fr'?'✓ Tous les avantages Premium':l==='en'?'✓ All Premium benefits':l==='de'?'✓ Alle Premium-Vorteile':l==='es'?'✓ Todos los beneficios Premium':l==='it'?'✓ Tutti i vantaggi Premium':'✓ Todos os benefícios Premium',
-        l==='fr'?'✓ Kilométrage illimité':l==='en'?'✓ Unlimited mileage':l==='de'?'✓ Unbegrenzte Kilometer':l==='es'?'✓ Kilometraje ilimitado':l==='it'?'✓ Chilometraggio illimitato':'✓ Quilometragem ilimitado',
-        l==='fr'?'✓ Hôtel en cas de panne':l==='en'?'✓ Hotel in case of breakdown':l==='de'?'✓ Hotel bei Panne':l==='es'?'✓ Hotel en caso de avería':l==='it'?'✓ Hotel in caso di guasto':'✓ Hotel em caso de pane',
-        l==='fr'?'✓ Rapatriement véhicule':l==='en'?'✓ Vehicle repatriation':l==='de'?'✓ Fahrzeugrückführung':l==='es'?'✓ Repatriación del vehículo':l==='it'?'✓ Rimpatrio veicolo':'✓ Repatriação do veículo',
+        t({ fr:'✓ Tous les avantages Premium', en:'✓ All Premium benefits', de:'✓ Alle Premium-Vorteile', es:'✓ Todos los beneficios Premium', it:'✓ Tutti i vantaggi Premium', pt:'✓ Todos os benefícios Premium' }),
+        t({ fr:'✓ Kilométrage illimité', en:'✓ Unlimited mileage', de:'✓ Unbegrenzte Kilometer', es:'✓ Kilometraje ilimitado', it:'✓ Chilometraggio illimitato', pt:'✓ Quilometragem ilimitado' }),
+        t({ fr:'✓ Hôtel en cas de panne', en:'✓ Hotel in case of breakdown', de:'✓ Hotel bei Panne', es:'✓ Hotel en caso de avería', it:'✓ Hotel in caso di guasto', pt:'✓ Hotel em caso de pane' }),
+        t({ fr:'✓ Rapatriement véhicule', en:'✓ Vehicle repatriation', de:'✓ Fahrzeugrückführung', es:'✓ Repatriación del vehículo', it:'✓ Rimpatrio veicolo', pt:'✓ Repatriação do veículo' }),
       ]
     },
   ];
@@ -123,7 +125,7 @@ export default function Warranty() {
           <div style={{ display:'inline-flex', alignItems:'center', gap:10, background:'rgba(200,16,46,0.2)', border:'1px solid rgba(200,16,46,0.4)', borderRadius:4, padding:'8px 18px', marginBottom:24 }}>
             <span style={{ width:8, height:8, borderRadius:'50%', background:'#C8102E', display:'inline-block' }} />
             <span style={{ fontSize:12, fontWeight:700, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(255,255,255,0.9)' }}>
-              {l==='fr'?'Protection':l==='en'?'Protection':l==='de'?'Schutz':l==='es'?'Protección':l==='it'?'Protezione':'Proteção'}
+              {t({ fr:'Protection', en:'Protection', de:'Schutz', es:'Protección', it:'Protezione', pt:'Proteção' })}
             </span>
           </div>
           <h1 style={{ 
@@ -135,10 +137,10 @@ export default function Warranty() {
             lineHeight:1.1, 
             marginBottom:20 
           }}>
-            {l==='fr'?'Garantie\nGerman Auto Cars':l==='en'?'German Auto Cars\nWarranty':l==='de'?'German Auto Cars\nGarantie':l==='es'?'Garantía\nGerman Auto Cars':l==='it'?'Garanzia\nGerman Auto Cars':'Garantia\nGerman Auto Cars'}
+            {t({ fr:'Garantie\nGerman Auto Cars', en:'German Auto Cars\nWarranty', de:'German Auto Cars\nGarantie', es:'Garantía\nGerman Auto Cars', it:'Garanzia\nGerman Auto Cars', pt:'Garantia\nGerman Auto Cars' })}
           </h1>
           <p style={{ fontSize: isMobile ? 16 : 18, color:'rgba(255,255,255,0.7)', lineHeight:1.7, maxWidth:600, marginBottom:32 }}>
-            {l==='fr'?'Une protection complète pour votre véhicule avec des garanties étendues et une assistance 24/7. Roulez l\'esprit tranquille.':l==='en'?'Complete protection for your vehicle with extended warranties and 24/7 assistance. Drive with peace of mind.':l==='de'?'Umfassender Schutz für Ihr Fahrzeug mit erweiterten Garantien und 24/7 Assistance. Fahren Sie sorgenfrei.':l==='es'?'Protección completa para su vehículo con garantías extendidas y asistencia 24/7. Conduzca con tranquilidad.':l==='it'?'Protezione completa per il vostro veicolo con garanzie estese e assistenza 24/7. Guidate tranquilli.':l==='pt'?'Proteção completa para seu veículo com garantias estendidas e assistência 24/7. Dirija com tranquilidade.'}
+            {t({ fr:'Une protection complète pour votre véhicule avec des garanties étendues et une assistance 24/7. Roulez l\'esprit tranquille.', en:'Complete protection for your vehicle with extended warranties and 24/7 assistance. Drive with peace of mind.', de:'Umfassender Schutz für Ihr Fahrzeug mit erweiterten Garantien und 24/7 Assistance. Fahren Sie sorgenfrei.', es:'Protección completa para su vehículo con garantías extendidas y asistencia 24/7. Conduzca con tranquilidad.', it:'Protezione completa per il vostro veicolo con garanzie estese e assistenza 24/7. Guidate tranquilli.', pt:'Proteção completa para seu veículo com garantias estendidas e assistência 24/7. Dirija com tranquilidade.' })}
           </p>
           <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
             <Link to="/catalog" style={{ 
@@ -155,7 +157,7 @@ export default function Warranty() {
               gap:8,
               boxShadow:'0 4px 16px rgba(200,16,46,0.4)'
             }}>
-              {l==='fr'?'Voir les véhicules':l==='en'?'View vehicles':l==='de'?'Fahrzeuge ansehen':l==='es'?'Ver vehículos':l==='it'?'Vedi veicoli':'Ver veículos'} →
+              {t({ fr:'Voir les véhicules', en:'View vehicles', de:'Fahrzeuge ansehen', es:'Ver vehículos', it:'Vedi veicoli', pt:'Ver veículos' })} →
             </Link>
             <Link to="/insurance" style={{ 
               background:'rgba(255,255,255,0.1)', 
@@ -171,7 +173,7 @@ export default function Warranty() {
               alignItems:'center', 
               gap:8
             }}>
-              {l==='fr'?'Assurances':l==='en'?'Insurance':l==='de'?'Versicherung':l==='es'?'Seguros':l==='it'?'Assicurazione':'Seguros'}
+              {t({ fr:'Assurances', en:'Insurance', de:'Versicherung', es:'Seguros', it:'Assicurazione', pt:'Seguros' })}
             </Link>
           </div>
         </motion.div>
@@ -188,13 +190,13 @@ export default function Warranty() {
             style={{ textAlign:'center', marginBottom:48 }}
           >
             <div className="section-eyebrow" style={{ justifyContent:'center' }}>
-              {l==='fr'?'INCLUSE':l==='en'?'INCLUDED':l==='de'?'INKLUSIVE':l==='es'?'INCLUIDO':l==='it'?'INCLUSO':'INCLUÍDO'}
+              {t({ fr:'INCLUSE', en:'INCLUDED', de:'INKLUSIVE', es:'INCLUIDO', it:'INCLUSO', pt:'INCLUÍDO' })}
             </div>
             <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:C.text, letterSpacing:'-0.02em' }}>
-              {l==='fr'?'Garantie Basique\nGerman Auto Cars':l==='en'?'German Auto Cars\nBasic Warranty':l==='de'?'German Auto Cars\nBasisgarantie':l==='es'?'Garantía Básica\nGerman Auto Cars':l==='it'?'Garanzia Base\nGerman Auto Cars':'Garantia Básica\nGerman Auto Cars'}
+              {t({ fr:'Garantie Basique\nGerman Auto Cars', en:'German Auto Cars\nBasic Warranty', de:'German Auto Cars\nBasisgarantie', es:'Garantía Básica\nGerman Auto Cars', it:'Garanzia Base\nGerman Auto Cars', pt:'Garantia Básica\nGerman Auto Cars' })}
             </h2>
             <p style={{ fontSize:16, color:C.text3, marginTop:12, maxWidth:600, margin:'12px auto 0' }}>
-              {l==='fr'?'Incluse dans toutes les commandes. Valable 12 mois ou 10 000 km (première échéance atteinte).':l==='en'?'Included in all orders. Valid 12 months or 10,000 km (first threshold reached).':l==='de'?'In allen Bestellungen enthalten. Gültig 12 Monate oder 10.000 km (erste Schwelle erreicht).':l==='es'?'Incluida en todos los pedidos. Válida 12 meses o 10.000 km (primer umbral alcanzado).':l==='it'?'Inclusa in tutti gli ordini. Valida 12 mesi o 10.000 km (prima soglia raggiunta).':'Incluída em todos os pedidos. Válida 12 meses ou 10.000 km (primeiro limite atingido).'}
+              {t({ fr:'Incluse dans toutes les commandes. Valable 12 mois ou 10 000 km (première échéance atteinte).', en:'Included in all orders. Valid 12 months or 10,000 km (first threshold reached).', de:'In allen Bestellungen enthalten. Gültig 12 Monate oder 10.000 km (erste Schwelle erreicht).', es:'Incluida en todos los pedidos. Válida 12 meses o 10.000 km (primer umbral alcanzado).', it:'Inclusa in tutti gli ordini. Valida 12 mesi o 10.000 km (prima soglia raggiunta).', pt:'Incluída em todos os pedidos. Válida 12 meses ou 10.000 km (primeiro limite atingido).' })}
             </p>
           </motion.div>
 
@@ -207,9 +209,9 @@ export default function Warranty() {
           >
             <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap:24, marginBottom:32 }}>
               {[
-                { value:'12', label:l==='fr'?'MOIS':l==='en'?'MONTHS':l==='de'?'MONATE':l==='es'?'MESES':l==='it'?'MESI':'MESES', icon:'📅' },
-                { value:'10 000', label:l==='fr'?'KM':l==='en'?'KM':l==='de'?'KM':l==='es'?'KM':l==='it'?'KM':'KM', icon:'📏' },
-                { value:'100%', label:l==='fr'?'COUVERTURE':l==='en'?'COVERAGE':l==='de'?'ABDECKUNG':l==='es'?'COBERTURA':l==='it'?'COBERTURA':'COBERTURA', icon:'🛡️' },
+                { value:'12', label:t({ fr:'MOIS', en:'MONTHS', de:'MONATE', es:'MESES', it:'MESI', pt:'MESES' }), icon:'📅' },
+                { value:'10 000', label:t({ fr:'KM', en:'KM', de:'KM', es:'KM', it:'KM', pt:'KM' }), icon:'📏' },
+                { value:'100%', label:t({ fr:'COUVERTURE', en:'COVERAGE', de:'ABDECKUNG', es:'COBERTURA', it:'COBERTURA', pt:'COBERTURA' }), icon:'🛡️' },
               ].map((stat, i) => (
                 <div key={i} style={{ textAlign:'center', padding:24, background:C.card2, borderRadius:16 }}>
                   <div style={{ fontSize:32, marginBottom:12 }}>{stat.icon}</div>
@@ -272,13 +274,13 @@ export default function Warranty() {
             style={{ textAlign:'center', marginBottom:48 }}
           >
             <div className="section-eyebrow" style={{ justifyContent:'center' }}>
-              {l==='fr'?'EXTENSIONS':l==='en'?'EXTENSIONS':l==='de'?'ERWEITERUNGEN':l==='es'?'EXTENSIONES':l==='it'?'ESTENSIONI':'EXTENSÕES'}
+              {t({ fr:'EXTENSIONS', en:'EXTENSIONS', de:'ERWEITERUNGEN', es:'EXTENSIONES', it:'ESTENSIONI', pt:'EXTENSÕES' })}
             </div>
             <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:C.text, letterSpacing:'-0.02em' }}>
-              {l==='fr'?'Options d\'Extension\nde Garantie':l==='en'?'Warranty\nExtension Options':l==='de'?'Garantie-\nErweiterungsoptionen':l==='es'?'Opciones de\nExtensión de Garantía':l==='it'?'Opzioni di\nEstensione Garanzia':'Opções de\nExtensão de Garantia'}
+              {t({ fr:'Options d\'Extension\nde Garantie', en:'Warranty\nExtension Options', de:'Garantie-\nErweiterungsoptionen', es:'Opciones de\nExtensión de Garantía', it:'Opzioni di\nEstensione Garanzia', pt:'Opções de\nExtensão de Garantia' })}
             </h2>
             <p style={{ fontSize:16, color:C.text3, marginTop:12, maxWidth:600, margin:'12px auto 0' }}>
-              {l==='fr'?'Étendez votre protection jusqu\'à 36 mois avec nos options d\'extension premium.':l==='en'?'Extend your protection up to 36 months with our premium extension options.':l==='de'?'Erweitern Sie Ihren Schutz bis zu 36 Monate mit unseren Premium-Erweiterungsoptionen.':l==='es'?'Amplíe su protección hasta 36 meses con nuestras opciones de extensión premium.':l==='it'?'Estendete la vostra protezione fino a 36 mesi con le nostre opzioni di estensione premium.':l==='pt'?'Estenda sua proteção até 36 meses com nossas opções de extensão premium.'}
+              {t({ fr:'Étendez votre protection jusqu\'à 36 mois avec nos options d\'extension premium.', en:'Extend your protection up to 36 months with our premium extension options.', de:'Erweitern Sie Ihren Schutz bis zu 36 Monate mit unseren Premium-Erweiterungsoptionen.', es:'Amplíe su protección hasta 36 meses con nuestras opciones de extensión premium.', it:'Estendete la vostra protezione fino a 36 mesi con le nostre opzioni di estensione premium.', pt:'Estenda sua proteção até 36 meses com nossas opções de extensão premium.' })}
             </p>
           </motion.div>
 
@@ -305,7 +307,7 @@ export default function Warranty() {
               >
                 {i === 2 && (
                   <div style={{ position:'absolute', top:0, right:0, background:'linear-gradient(135deg,#C8102E,#9B0B22)', color:'#fff', fontSize:10, fontWeight:800, letterSpacing:'0.2em', textTransform:'uppercase', padding:'6px 16px', borderBottomLeftRadius:12 }}>
-                    {l==='fr'?'POPULAIRE':l==='en'?'POPULAR':l==='de'?'BELIEBT':l==='es'?'POPULAR':l==='it'?'POPOLARE':'POPULAR'}
+                    {t({ fr:'POPULAIRE', en:'POPULAR', de:'BELIEBT', es:'POPULAR', it:'POPOLARE', pt:'POPULAR' })}
                   </div>
                 )}
                 <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:22, color:C.text, marginBottom:12 }}>{option.title}</h3>
@@ -329,7 +331,7 @@ export default function Warranty() {
                   cursor:'pointer',
                   transition:'all 0.3s'
                 }}>
-                  {l==='fr'?'Choisir cette option':l==='en'?'Choose this option':l==='de'?'Diese Option wählen':l==='es'?'Elegir esta opción':l==='it'?'Scegli questa opzione':'Escolher esta opção'}
+                  {t({ fr:'Choisir cette option', en:'Choose this option', de:'Diese Option wählen', es:'Elegir esta opción', it:'Scegli questa opzione', pt:'Escolher esta opção' })}
                 </button>
               </motion.div>
             ))}
@@ -348,10 +350,10 @@ export default function Warranty() {
             style={{ textAlign:'center', marginBottom:48 }}
           >
             <div className="section-eyebrow" style={{ justifyContent:'center' }}>
-              {l==='fr'?'EXCLUSIONS':l==='en'?'EXCLUSIONS':l==='de'?'AUSSCHLÜSSE':l==='es'?'EXCLUSIONES':l==='it'?'ESCLUSIONI':'EXCLUSÕES'}
+              {t({ fr:'EXCLUSIONS', en:'EXCLUSIONS', de:'AUSSCHLÜSSE', es:'EXCLUSIONES', it:'ESCLUSIONI', pt:'EXCLUSÕES' })}
             </div>
             <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:C.text, letterSpacing:'-0.02em' }}>
-              {l==='fr'?'Ce qui n\'est pas\ncouvert':l==='en'?'What is not\ncovered':l==='de'?'Was nicht\nabgedeckt ist':l==='es'?'Lo que no está\ncubierto':l==='it'?'Cosa non è\ncoperto':'O que não está\ncoberto'}
+              {t({ fr:'Ce qui n\'est pas\ncouvert', en:'What is not\ncovered', de:'Was nicht\nabgedeckt ist', es:'Lo que no está\ncubierto', it:'Cosa non è\ncoperto', pt:'O que não está\ncoberto' })}
             </h2>
           </motion.div>
 
@@ -364,12 +366,12 @@ export default function Warranty() {
           >
             <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap:20 }}>
               {[
-                l==='fr'?'✗ Pièces d\'usure (plaquettes, disques, pneus, essuie-glaces)':l==='en'?'✗ Wear parts (brake pads, discs, tires, wipers)':l==='de'?'✗ Verschleißteile (Bremsbeläge, Scheiben, Reifen, Scheibenwischer)':l==='es'?'✗ Piezas de desgaste (pastillas, discos, neumáticos, limpiaparabrisas)':l==='it'?'✗ Pezzi di usura (pastiglie, dischi, pneumatici, tergicristallo)':'✗ Peças de desgaste (pastilhas, discos, pneus, limpadores)',
-                l==='fr'?'✗ Entretien courant (huile, filtres, bougies)':l==='en'?'✗ Routine maintenance (oil, filters, spark plugs)':l==='de'?'✗ Routine-Wartung (Öl, Filter, Zündkerzen)':l==='es'?'✗ Mantenimiento rutinario (aceite, filtros, bujías)':l==='it'?'✗ Manutenzione ordinaria (olio, filtri, candele)':'✗ Manutenção de rotina (óleo, filtros, velas)',
-                l==='fr'?'✗ Carrosserie et peinture (sauf option carrosserie)':l==='en'?'✗ Body and paint (unless body option selected)':l==='de'?'✗ Karosserie und Lack (außer Karosserie-Option)':l==='es'?'✗ Carrocería y pintura (salvo opción de carrocería)':l==='it'?'✗ Carrozzeria e vernice (salvo opzione carrozzeria)':'✗ Carroceria e pintura (exceto opção de carroceria)',
-                l==='fr'?'✗ Accessoires et modifications non conformes':l==='en'?'✗ Non-compliant accessories and modifications':l==='de'?'✗ Nicht konforme Zubehörteile und Modifikationen':l==='es'?'✗ Accesorios y modificaciones no conformes':l==='it'?'✗ Accessori e modifiche non conformi':'✗ Acessórios e modificações não conformes',
-                l==='fr'?'✗ Dommages résultant d\'un accident ou négligence':l==='en'?'✗ Damage resulting from accident or negligence':l==='de'?'✗ Schäden durch Unfall oder Fahrlässigkeit':l==='es'?'✗ Daños resultantes de accidente o negligencia':l==='it'?'✗ Danni derivanti da incidente o negligenza':'✗ Danos resultantes de acidente ou negligência',
-                l==='fr'?'✗ Utilisation commerciale ou compétition':l==='en'?'✗ Commercial use or competition':l==='de'?'✗ Gewerbliche Nutzung oder Wettbewerb':l==='es'?'✗ Uso comercial o competición':l==='it'?'✗ Uso commerciale o competizione':'✗ Uso comercial ou competição',
+                t({ fr:'✗ Pièces d\'usure (plaquettes, disques, pneus, essuie-glaces)', en:'✗ Wear parts (brake pads, discs, tires, wipers)', de:'✗ Verschleißteile (Bremsbeläge, Scheiben, Reifen, Scheibenwischer)', es:'✗ Piezas de desgaste (pastillas, discos, neumáticos, limpiaparabrisas)', it:'✗ Pezzi di usura (pastiglie, dischi, pneumatici, tergicristallo)', pt:'✗ Peças de desgaste (pastilhas, discos, pneus, limpadores)' }),
+                t({ fr:'✗ Entretien courant (huile, filtres, bougies)', en:'✗ Routine maintenance (oil, filters, spark plugs)', de:'✗ Routine-Wartung (Öl, Filter, Zündkerzen)', es:'✗ Mantenimiento rutinario (aceite, filtros, bujías)', it:'✗ Manutenzione ordinaria (olio, filtri, candele)', pt:'✗ Manutenção de rotina (óleo, filtros, velas)' }),
+                t({ fr:'✗ Carrosserie et peinture (sauf option carrosserie)', en:'✗ Body and paint (unless body option selected)', de:'✗ Karosserie und Lack (außer Karosserie-Option)', es:'✗ Carrocería y pintura (salvo opción de carrocería)', it:'✗ Carrozzeria e vernice (salvo opzione carrozzeria)', pt:'✗ Carroceria e pintura (exceto opção de carroceria)' }),
+                t({ fr:'✗ Accessoires et modifications non conformes', en:'✗ Non-compliant accessories and modifications', de:'✗ Nicht konforme Zubehörteile und Modifikationen', es:'✗ Accesorios y modificaciones no conformes', it:'✗ Accessori e modifiche non conformi', pt:'✗ Acessórios e modificações não conformes' }),
+                t({ fr:'✗ Dommages résultant d\'un accident ou négligence', en:'✗ Damage resulting from accident or negligence', de:'✗ Schäden durch Unfall oder Fahrlässigkeit', es:'✗ Daños resultantes de accidente o negligencia', it:'✗ Danni derivanti da incidente o negligenza', pt:'✗ Danos resultantes de acidente ou negligência' }),
+                t({ fr:'✗ Utilisation commerciale ou compétition', en:'✗ Commercial use or competition', de:'✗ Gewerbliche Nutzung oder Wettbewerb', es:'✗ Uso comercial o competición', it:'✗ Uso commerciale o competizione', pt:'✗ Uso comercial ou competição' }),
               ].map((item, i) => (
                 <div key={i} style={{ fontSize:14, color:C.text2, lineHeight:1.7, fontWeight:600 }}>{item}</div>
               ))}
@@ -388,10 +390,10 @@ export default function Warranty() {
             transition={{ duration:0.6 }}
           >
             <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile ? 32 : 42, color:'#fff', letterSpacing:'-0.02em', marginBottom:20 }}>
-              {l==='fr'?'Prêt à protéger votre véhicule?':l==='en'?'Ready to protect your vehicle?':l==='de'?'Bereit, Ihr Fahrzeug zu schützen?':l==='es'?'¿Listo para proteger su vehículo?':l==='it'?'Pronto a proteggere il tuo veicolo?':'Pronto para proteger seu veículo?'}
+              {t({ fr:'Prêt à protéger votre véhicule?', en:'Ready to protect your vehicle?', de:'Bereit, Ihr Fahrzeug zu schützen?', es:'¿Listo para proteger su vehículo?', it:'Pronto a proteggere il tuo veicolo?', pt:'Pronto para proteger seu veículo?' })}
             </h2>
             <p style={{ fontSize:16, color:'rgba(255,255,255,0.7)', lineHeight:1.7, marginBottom:32 }}>
-              {l==='fr'?'Contactez-nous pour discuter des options de garantie adaptées à vos besoins.':l==='en'?'Contact us to discuss warranty options tailored to your needs.':l==='de'?'Kontaktieren Sie uns, um Garantieoptionen zu besprechen, die auf Ihre Bedürfnisse zugeschnitten sind.':l==='es'?'Contáctenos para discutir opciones de garantía adaptadas a sus necesidades.':l==='it'?'Contattateci per discutere le opzioni di garanzia adatte alle tue esigenze.':l==='pt'?'Entre em contato conosco para discutir opções de garantia adaptadas às suas necessidades.'}
+              {t({ fr:'Contactez-nous pour discuter des options de garantie adaptées à vos besoins.', en:'Contact us to discuss warranty options tailored to your needs.', de:'Kontaktieren Sie uns, um Garantieoptionen zu besprechen, die auf Ihre Bedürfnisse zugeschnitten sind.', es:'Contáctenos para discutir opciones de garantía adaptadas a sus necesidades.', it:'Contattateci per discutere le opzioni di garanzia adatte alle tue esigenze.', pt:'Entre em contato conosco para discutir opções de garantia adaptadas às suas necessidades.' })}
             </p>
             <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
               <a href="https://wa.me/4915788823274" target="_blank" rel="noopener noreferrer" style={{ 
@@ -424,7 +426,7 @@ export default function Warranty() {
                 alignItems:'center', 
                 gap:8
               }}>
-                {l==='fr'?'Voir les véhicules':l==='en'?'View vehicles':l==='de'?'Fahrzeuge ansehen':l==='es'?'Ver vehículos':l==='it'?'Vedi veicoli':'Ver veículos'}
+                {t({ fr:'Voir les véhicules', en:'View vehicles', de:'Fahrzeuge ansehen', es:'Ver vehículos', it:'Vedi veicoli', pt:'Ver veículos' })}
               </Link>
             </div>
           </motion.div>
