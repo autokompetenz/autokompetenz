@@ -4,17 +4,18 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { carAPI } from '../services/api';
 import { useAuthStore, useCartStore, useToastStore, useLangStore, useThemeStore } from '../store';
-import { formatEuro, calculateOrderTotals } from '../utils/helpers';
+import { formatEuro } from '../utils/helpers';
 import { Loader } from '../components/UI';
 import CarCard from '../components/CarCard';
 import { t } from '../utils/i18n';
 import { CATEGORIES, CATEGORY_ICONS, getCategoryLabel } from '../utils/categories';
 
-const PAYMENT_OPTIONS = [
-  { id: 'full',    icon: '💎', titleKey: 'payment_full',    badgeKey: 'discount_5' },
-  { id: 'deposit', icon: '🔑', titleKey: 'payment_deposit', badgeKey: 'payment_deposit' },
-  { id: 'monthly', icon: '📅', titleKey: 'payment_monthly', badgeKey: 'months_60' },
-];
+const INFO_TITLE = {
+  fr: 'Informations complémentaires sur le véhicule',
+  en: 'Additional vehicle information',
+  de: 'Zusätzliche Fahrzeuginformationen',
+  ar: 'معلومات إضافية عن المركبة',
+};
 
 const SPEC_LABELS = {
   fr: { year:'Année', power:'Puissance', fuel:'Carburant', gear:'Boîte', km:'Kilométrage', color:'Couleur', stock:'Disponibilité', new:'Neuf', available:'disponible(s)', unavailable:'Épuisé' },
@@ -45,7 +46,6 @@ export default function CarDetails() {
   const [similarCars, setSimilarCars] = useState([]);
   const [similarLoading, setSimilarLoading] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
-  const [selectedPayment, setSelectedPayment] = useState('full');
   const [adding, setAdding] = useState(false);
 
   const SL = SPEC_LABELS[lang] || SPEC_LABELS.fr;
@@ -100,7 +100,7 @@ export default function CarDetails() {
     if (!isAuthenticated) return navigate('/login');
     try {
       setAdding(true);
-      await addItem(car.id, selectedPayment);
+      await addItem(car.id, 'full');
       addToast(
         `${car.make} ${car.model} ${
           lang === 'fr' ? 'ajouté au panier' :
@@ -122,18 +122,11 @@ export default function CarDetails() {
   if (!car) return null;
 
   const images = IMAGE_FIELDS.map(f => car?.[f]).filter(Boolean);
-  const totals = calculateOrderTotals(car.price, selectedPayment);
 
   const breadcrumbs   = { fr:'Accueil', en:'Home', de:'Startseite', ar:'الرئيسية' };
   const catalogBc     = { fr:'Catalogue', en:'Catalogue', de:'Katalog', ar:'الكتالوج' };
-  const choosePayment = { fr:'Choisir votre mode de paiement', en:'Choose your payment method', de:'Zahlungsart wählen', ar:'اختر طريقة الدفع' };
-  const totalLabel    = { fr:'Total', en:'Total', de:'Gesamt', ar:'المجموع' };
-  const depositLabel  = { fr:'Acompte', en:'Deposit', de:'Anzahlung', ar:'دفعة أولى' };
-  const monthLabel    = { fr:'Par mois', en:'Per month', de:'Pro Monat', ar:'شهرياً' };
   const addBtn        = { fr:'Ajouter au panier', en:'Add to Cart', de:'In den Warenkorb', ar:'أضف إلى السلة' };
   const recSalary     = { fr:'Salaire minimum recommandé', en:'Minimum recommended salary', de:'Empfohlenes Mindestgehalt', ar:'الحد الأدنى الموصى به للراتب' };
-  const saving        = { fr:'Économie', en:'Saving', de:'Ersparnis', ar:'توفير' };
-  const totalContract = { fr:'Total contrat', en:'Total contract', de:'Gesamtbetrag', ar:'إجمالي العقد' };
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, paddingTop: 76 }}>
@@ -278,99 +271,21 @@ export default function CarDetails() {
               ))}
             </div>
 
-            {/* Description */}
+            {/* Informations complémentaires */}
             {car.description && (
-              <p style={{ fontSize: 15, color: C.text2, lineHeight: 1.75, marginBottom: 28, borderLeft: '3px solid rgba(200,16,46,0.4)', paddingLeft: 18 }}>
-                {car.description}
-              </p>
-            )}
-
-            {/* Payment options */}
-            <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase', color: C.red, marginBottom: 16 }}>
-              {choosePayment[lang] || choosePayment.fr}
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
-              {PAYMENT_OPTIONS.map(opt => {
-                const to = calculateOrderTotals(car.price, opt.id);
-                const isSelected = selectedPayment === opt.id;
-                return (
-                  <div key={opt.id} onClick={() => setSelectedPayment(opt.id)}
-                    style={{
-                      padding: isMobile ? '16px' : '18px 20px', borderRadius: 12,
-                      border: `2px solid ${isSelected ? 'rgba(200,16,46,0.6)' : C.border}`,
-                      background: isSelected ? 'rgba(200,16,46,0.08)' : C.card,
-                      cursor: 'pointer', transition: 'all 0.25s ease',
-                      transform: isSelected ? 'scale(1.01)' : 'scale(1)',
-                      boxShadow: isSelected ? '0 4px 20px rgba(200,16,46,0.12)' : 'none',
-                    }}
-                    onMouseOver={e => { if (!isSelected) { e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.background=isDark?'rgba(200,16,46,0.05)':'rgba(200,16,46,0.03)'; }}}
-                    onMouseOut={e => { if (!isSelected) { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.background=C.card; }}}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 16 }}>
-                      <span style={{ fontSize: isMobile ? 24 : 28 }}>{opt.icon}</span>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
-                          <span style={{ fontWeight: 700, fontSize: isMobile ? 14 : 16, color: C.text }}>{t(opt.titleKey, lang)}</span>
-                          <span style={{ fontSize: 10, background: 'rgba(200,16,46,0.15)', color: '#C8102E', border: '1px solid rgba(200,16,46,0.3)', padding: '3px 10px', borderRadius: 4, fontWeight: 700, letterSpacing: '0.1em' }}>
-                            {t(opt.badgeKey, lang)}
-                          </span>
-                        </div>
-                        <p style={{ fontSize: isMobile ? 12 : 13, color: C.text3, lineHeight: 1.5 }}>
-                          {opt.id === 'full'
-                            ? (lang==='fr'?'Paiement immédiat, 5% de remise offerte':lang==='en'?'Immediate payment, 5% discount applied':lang==='de'?'Sofortzahlung, 5% Rabatt':'دفع فوري، خصم 5%')
-                            : opt.id === 'deposit'
-                            ? (lang==='fr'?'25% maintenant, solde à la livraison':lang==='en'?'25% now, balance on delivery':lang==='de'?'25% jetzt, Rest bei Lieferung':'25% الآن، الباقي عند التسليم')
-                            : (lang==='fr'?'60 mensualités à 6%/an':lang==='en'?'60 months at 6%/year':lang==='de'?'60 Monate, 6% p.a.':'60 شهراً بمعدل 6% سنوياً')}
-                        </p>
-                      </div>
-                      <div style={{ textAlign: 'right', minWidth: isMobile ? 80 : 100 }}>
-                        {opt.id === 'full' && (
-                          <>
-                            <p style={{ fontSize: isMobile?11:12, color: C.text3, textDecoration: 'line-through', marginBottom: 2 }}>{formatEuro(car.price)}</p>
-                            <p style={{ fontWeight: 800, fontSize: isMobile?16:18, color: C.text }}>{formatEuro(to.total)}</p>
-                          </>
-                        )}
-                        {opt.id === 'deposit' && (
-                          <>
-                            <p style={{ fontSize: isMobile?10:11, color: C.text3, marginBottom: 2 }}>{depositLabel[lang]}</p>
-                            <p style={{ fontWeight: 800, fontSize: isMobile?16:18, color: C.text }}>{formatEuro(to.deposit)}</p>
-                          </>
-                        )}
-                        {opt.id === 'monthly' && (
-                          <>
-                            <p style={{ fontSize: isMobile?10:11, color: C.text3, marginBottom: 2 }}>{monthLabel[lang]}</p>
-                            <p style={{ fontWeight: 800, fontSize: isMobile?16:18, color: C.text }}>{formatEuro(to.monthly)}</p>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Total */}
-            <div style={{
-              background: isDark ? 'rgba(200,16,46,0.07)' : 'rgba(200,16,46,0.04)',
-              border: '1.5px solid rgba(200,16,46,0.2)',
-              borderRadius: 14, padding: isMobile ? '18px 20px' : '20px 24px', marginBottom: 24,
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            }}>
-              <div>
-                <p style={{ fontSize: 12, fontWeight: 600, color: C.text3, marginBottom: 4 }}>
-                  {selectedPayment==='full' ? (totalLabel[lang]+' (après remise)') : selectedPayment==='deposit' ? depositLabel[lang] : monthLabel[lang]}
+              <div style={{ marginBottom: 28 }}>
+                <h3 style={{
+                  fontFamily: "'Outfit', sans-serif", fontWeight: 800,
+                  fontSize: isMobile ? 20 : 24, color: C.text,
+                  letterSpacing: '-0.02em', marginBottom: 14, lineHeight: 1.2,
+                }}>
+                  {INFO_TITLE[lang] || INFO_TITLE.fr}
+                </h3>
+                <p style={{ fontSize: 15, color: C.text2, lineHeight: 1.75, borderLeft: '3px solid rgba(200,16,46,0.4)', paddingLeft: 18 }}>
+                  {car.description}
                 </p>
-                {selectedPayment==='full' && totals.discount && (
-                  <p style={{ fontSize: 13, color: '#22C55E', fontWeight: 700 }}>✓ {saving[lang]} : {formatEuro(totals.discount)}</p>
-                )}
-                {selectedPayment==='monthly' && (
-                  <p style={{ fontSize: 12, color: C.text3 }}>{totalContract[lang]} : {formatEuro(totals.total)}</p>
-                )}
               </div>
-              <span style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile?28:32, color: C.text, letterSpacing:'-0.02em' }}>
-                {selectedPayment==='full' ? formatEuro(totals.total) : selectedPayment==='deposit' ? formatEuro(totals.deposit) : `${formatEuro(totals.monthly)}/mo`}
-              </span>
-            </div>
+            )}
 
             {/* Add to cart */}
             <button
