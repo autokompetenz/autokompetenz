@@ -263,6 +263,137 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── WHY CHOOSE US ── */}
+      <section className="section-pad">
+        <div style={{ maxWidth:1300, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:48 }}>
+            <div className="section-eyebrow" style={{ justifyContent:'center' }}>
+              {l==='fr'?'Notre Force':l==='en'?'Our Strength':l==='de'?'Unsere Stärke':l==='es'?'Nuestra Fuerza':l==='it'?'La Nostra Forza':'Nossa Força'}
+            </div>
+            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:'var(--text)', letterSpacing:'-0.02em' }}>
+              {l==='fr'?'Pourquoi nous\nchoisir ?':l==='en'?'Why choose\nus?':l==='de'?'Warum uns\nwählen?':l==='es'?'¿Por qué\nelegirnos?':l==='it'?'Perché sceglierci':'Por que nos escolher?'}
+            </h2>
+            <p style={{ fontSize:16, color:'var(--text-3)', marginTop:12, maxWidth:600, margin:'12px auto 0' }}>
+              {l==='fr'?'Découvrez ce qui nous distingue et pourquoi des milliers de clients nous font confiance.':l==='en'?'Discover what sets us apart and why thousands of customers trust us.':l==='de'?'Entdecken Sie, was uns unterscheidet und warum uns tausende Kunden vertrauen.':l==='es'?'Descubre lo que nos distingue y por qué miles de clientes confían en nosotros.':l==='it'?'Scopri cosa ci distingue e perché migliaia di clienti si fidano di noi.':'Descubra o que nos diferencia e por que milhares de clientes confiam em nós.'}
+            </p>
+          </div>
+
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: isMobile ? 24 : 32 }}>
+            {/* Q&A Item 1 */}
+            <motion.div initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
+              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
+              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80" alt="Quality" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              </div>
+              <div style={{ flex:1 }}>
+                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
+                  {l==='fr'?'Véhicules certifiés et inspectés':l==='en'?'Certified and inspected vehicles':l==='de'?'Zertifizierte und geprüfte Fahrzeuge':l==='es'?'Vehículos certificados e inspeccionados':l==='it'?'Veicoli certificati e ispezionati':'Veículos certificados e inspecionados'}
+                </h3>
+                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
+                  {l==='fr'?'Chaque véhicule passe par une inspection de 150 points. Historique complet vérifié, garantie jusqu\'à 24 mois.':l==='en'?'Every vehicle undergoes a 150-point inspection. Complete verified history, warranty up to 24 months.':l==='de'?'Jedes Fahrzeug durchläuft eine 150-Punkte-Inspektion. Vollständig verifizierte Historie, Garantie bis zu 24 Monaten.':l==='es'?'Cada vehículo pasa por una inspección de 150 puntos. Historial completo verificado, garantía hasta 24 meses.':l==='it'?'Ogni veicolo subisce un\'ispezione di 150 punti. Storia completa verificata, garanzia fino a 24 mesi.'}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Q&A Item 2 */}
+            <motion.div initial={{ opacity:0, x:20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.1 }}
+              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
+              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
+                <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300&q=80" alt="Financing" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              </div>
+              <div style={{ flex:1 }}>
+                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
+                  {l==='fr'?'Financement sur mesure':l==='en'?'Tailored financing':l==='de'?'Maßgeschneiderte Finanzierung':l==='es'?'Financiación a medida':l==='it'?'Finanziamento su misura':'Financiamento personalizado'}
+                </h3>
+                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
+                  {l==='fr'?'Taux compétitifs, réponse en 24h, options flexibles. Nous travaillons avec les meilleurs partenaires bancaires.':l==='en'?'Competitive rates, response in 24h, flexible options. We work with the best banking partners.':l==='de'?'Wettbewerbsfähige Zinsen, Antwort in 24h, flexible Optionen. Wir arbeiten mit den besten Bankpartnern.':l==='es'?'Tasas competitivas, respuesta en 24h, opciones flexibles. Trabajamos con los mejores socios bancarios.':l==='it'?'Tassi competitivi, risposta in 24h, opzioni flessibili. Lavoriamo con i migliori partner bancari.'}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Q&A Item 3 */}
+            <motion.div initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.2 }}
+              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
+              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
+                <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=300&q=80" alt="Delivery" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              </div>
+              <div style={{ flex:1 }}>
+                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
+                  {l==='fr'?'Livraison partout en Europe':l==='en'?'Delivery across Europe':l==='de'?'Lieferung in ganz Europa':l==='es'?'Entrega en toda Europa':l==='it'?'Consegna in tutta Europa':'Entrega em toda a Europa'}
+                </h3>
+                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
+                  {l==='fr'?'Transport sécurisé, livraison à domicile, suivi en temps réel. Votre véhicule livré propre et avec plein.':l==='en'?'Secure transport, home delivery, real-time tracking. Your vehicle delivered clean and with full tank.':l==='de'?'Sicherer Transport, Hauslieferung, Echtzeit-Tracking. Ihr Fahrzeug sauber und vollgetankt geliefert.':l==='es'?'Transporte seguro, entrega a domicilio, seguimiento en tiempo real. Su vehículo entregado limpio y con depósito lleno.':l==='it'?'Trasporto sicuro, consegna a domicilio, tracciamento in tempo reale. Il vostro veicolo consegnato pulito e con il pieno.'}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Q&A Item 4 */}
+            <motion.div initial={{ opacity:0, x:20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.3 }}
+              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
+              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
+                <img src="https://images.unsplash.com/photo-1454117096348-e4abbeba002c?w=300&q=80" alt="Support" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              </div>
+              <div style={{ flex:1 }}>
+                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
+                  {l==='fr'?'Support client 24/7':l==='en'?'24/7 customer support':l==='de'?'24/7 Kundensupport':l==='es'?'Soporte al cliente 24/7':l==='it'?'Supporto clienti 24/7':'Suporte ao cliente 24/7'}
+                </h3>
+                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
+                  {l==='fr'?'Équipe disponible par WhatsApp, email et téléphone. Assistance pour toutes vos questions, même après la vente.':l==='en'?'Team available via WhatsApp, email and phone. Assistance for all your questions, even after sale.':l==='de'?'Team verfügbar per WhatsApp, E-Mail und Telefon. Unterstützung für alle Ihre Fragen, auch nach dem Verkauf.':l==='es'?'Equipo disponible por WhatsApp, correo y teléfono. Asistencia para todas sus preguntas, incluso después de la venta.':l==='it'?'Team disponibile via WhatsApp, email e telefono. Assistenza per tutte le vostre domande, anche dopo la vendita.'}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Q&A Item 5 */}
+            <motion.div initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.4 }}
+              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
+              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
+                <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300&q=80" alt="Trade-in" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              </div>
+              <div style={{ flex:1 }}>
+                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
+                  {l==='fr'?'Reprise de votre véhicule':l==='en'?'Trade-in your vehicle':l==='de'?'Ankauf Ihres Fahrzeugs':l==='es'?'Canje de su vehículo':l==='it'?'Permuta del vostro veicolo':'Troca do seu veículo'}
+                </h3>
+                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
+                  {l==='fr'?'Estimation gratuite en ligne, reprise au meilleur prix. Simplifiez votre achat avec notre service de reprise.':l==='en'?'Free online valuation, trade-in at best price. Simplify your purchase with our trade-in service.':l==='de'?'Kostenlose Online-Bewertung, Ankauf zum besten Preis. Vereinfachen Sie Ihren Kauf mit unserem Ankaufsservice.':l==='es'?'Valoración gratuita en línea, canje al mejor precio. Simplifique su compra con nuestro servicio de canje.':l==='it'?'Valutazione gratuita online, permuta al miglior prezzo. Semplificate il vostro acquisto con il nostro servizio di permuta.'}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Q&A Item 6 */}
+            <motion.div initial={{ opacity:0, x:20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.5 }}
+              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
+              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
+                <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=300&q=80" alt="Warranty" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+              </div>
+              <div style={{ flex:1 }}>
+                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
+                  {l==='fr'?'Garantie étendue incluse':l==='en'?'Extended warranty included':l==='de'?'Erweiterte Garantie enthalten':l==='es'?'Garantía extendida incluida':l==='it'?'Garanzia estesa inclusa':'Garantia estendida incluída'}
+                </h3>
+                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
+                  {l==='fr'?'Protection moteur et transmission, assistance 24/7, options d\'extension jusqu\'à 36 mois. Roulez l\'esprit tranquille.':l==='en'?'Engine and transmission protection, 24/7 assistance, extension options up to 36 months. Drive with peace of mind.':l==='de'?'Motor- und Getriebeschutz, 24/7 Assistance, Erweiterungsoptionen bis zu 36 Monaten. Fahren Sie mit ruhigem Gewissen.':l==='es'?'Protección de motor y transmisión, asistencia 24/7, opciones de extensión hasta 36 meses. Conduzca con tranquilidad.':l==='it'?'Protezione motore e trasmissione, assistenza 24/7, opzioni di estensione fino a 36 mesi. Guidate con tranquillità.'}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Stats Banner */}
+          <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.6 }}
+            style={{ marginTop:48, padding: isMobile ? 28 : 36, background:'linear-gradient(135deg,rgba(200,16,46,0.08),rgba(200,16,46,0.03))', border:'2px solid rgba(200,16,46,0.2)', borderRadius:16, display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4,1fr)', gap:24, textAlign:'center' }}>
+            {[
+              { value:'10+', label:l==='fr'?'Années d\'expérience':l==='en'?'Years experience':l==='de'?'Jahre Erfahrung':l==='es'?'Años de experiencia':l==='it'?'Anni di esperienza':'Anos de experiência' },
+              { value:'5000+', label:l==='fr'?'Clients satisfaits':l==='en'?'Happy clients':l==='de'?'Zufriedene Kunden':l==='es'?'Clientes satisfechos':l==='it'?'Clienti soddisfatti':'Clientes satisfeitos' },
+              { value:'4.9★', label:l==='fr'?'Note moyenne':l==='en'?'Average rating':l==='de'?'Durchschnittsbewertung':l==='es'?'Calificación promedio':l==='it'?'Valutazione media':'Avaliação média' },
+              { value:'24/7', label:l==='fr'?'Support disponible':l==='en'?'Support available':l==='de'?'Support verfügbar':l==='es'?'Soporte disponible':l==='it'?'Supporto disponibile':'Suporte disponível' },
+            ].map(({ value, label }) => (
+              <div key={label}>
+                <div style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile ? 32 : 40, color:'#C8102E', lineHeight:1 }}>{value}</div>
+                <div style={{ fontSize: isMobile ? 12 : 13, color:'var(--text-3)', marginTop:6, fontWeight:600 }}>{label}</div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── WARRANTY & INSURANCE ── */}
       <section className="section-pad">
         <div style={{ maxWidth:1300, margin:'0 auto' }}>
