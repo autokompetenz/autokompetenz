@@ -6,6 +6,9 @@ const multer = require('multer');
 const { createClient } = require('@supabase/supabase-js');
 const { prisma } = require('../lib/prisma.js');
 const { sendWelcomeEmail, sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } = require('../lib/mailer.js');
+const { calculateMonthlyPayment } = require('../lib/helpers.js');
+const { calculateMonthlyPayment } = require('../lib/helpers.js');
+const { calculateMonthlyPayment } = require('../lib/helpers.js');
 
 // Initialize Express app
 const app = express();
@@ -41,6 +44,56 @@ const upload = multer({
     }
   }
 });
+
+async function uploadCarImages(files) {
+  const sorted = [...files].sort((a, b) =>
+    a.originalname.localeCompare(b.originalname, undefined, { numeric: true })
+  );
+
+  const results = await Promise.all(
+    sorted.map(async (file, index) => {
+      const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const fileName = `${Date.now()}-${index}-${safeName}`;
+      const { error } = await supabase.storage
+        .from('cars')
+        .upload(fileName, file.buffer, { contentType: file.mimetype });
+      if (error) throw error;
+      const { data: publicUrlData } = supabase.storage.from('cars').getPublicUrl(fileName);
+      return { index, url: publicUrlData.publicUrl };
+    })
+  );
+
+  const urls = {};
+  results.forEach(({ index, url }) => {
+    urls[index === 0 ? 'imageUrl' : `imageUrl${index + 1}`] = url;
+  });
+  return urls;
+}
+
+function parseCarFormBody(data) {
+  const price = Number(data.price);
+  const minSalaryRaw = data.minSalary;
+  return {
+    make: data.make,
+    model: data.model,
+    year: Number(data.year),
+    price,
+    stock: Number(data.stock) || 1,
+    description: data.description || null,
+    fuelType: data.fuelType,
+    transmission: data.transmission,
+    mileage: Number(data.mileage) || 0,
+    color: data.color || null,
+    power: data.power ? Number(data.power) : null,
+    category: data.category,
+    minSalary: minSalaryRaw !== undefined && minSalaryRaw !== '' && minSalaryRaw !== null
+      ? Number(minSalaryRaw) : null,
+    featured: data.featured === 'true' || data.featured === true,
+    isActive: data.isActive !== 'false' && data.isActive !== false,
+    monthlyPayment: calculateMonthlyPayment(price),
+    imageUrl: data.imageUrl || null,
+  };
+}
 
 // CORS configuration
 const corsOptions = {
@@ -365,94 +418,22 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.any(), async (req,
     }
     
     // Handle FormData for file uploads
+    const carData = parseCarFormBody(req.body);
+
     if (req.files && req.files.length > 0) {
-      const data = req.body;
-      const files = req.files;
-      
-      const carData = {
-        make: data.make,
-        model: data.model,
-        year: Number(data.year),
-        price: Number(data.price),
-        stock: Number(data.stock),
-        description: data.description || null,
-        fuelType: data.fuelType,
-        transmission: data.transmission,
-        mileage: Number(data.mileage) || 0,
-        color: data.color || null,
-        power: data.power ? Number(data.power) : null,
-        category: data.category,
-        minSalary: data.minSalary ? Number(data.minSalary) : null,
-        featured: data.featured === 'true',
-        isActive: data.isActive !== 'false',
-        imageUrl: data.imageUrl || null,
-      };
-      
-      // Handle uploaded files - Upload to Supabase Storage
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const fileName = `${Date.now()}-${file.originalname}`;
-        
-        console.log(`Uploading file ${i + 1}:`, fileName);
-        
-        // Upload to Supabase Storage
-        const { data, error } = await supabase.storage
-          .from('cars')
-          .upload(fileName, file.buffer, {
-            contentType: file.mimetype
-          });
-        
-        if (error) {
-          console.error('Supabase upload error:', error);
-          return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
-        }
-        
-        // Get public URL
-        const { data: publicUrlData } = supabase.storage
-          .from('cars')
-          .getPublicUrl(fileName);
-        
-        const fieldName = i === 0 ? 'imageUrl' : `imageUrl${i + 1}`;
-        carData[fieldName] = publicUrlData.publicUrl;
-        
-        console.log(`File ${i + 1} uploaded successfully:`, publicUrlData.publicUrl);
-        console.log(`File ${i + 1} publicUrlData:`, publicUrlData);
+      try {
+        const imageUrls = await uploadCarImages(req.files);
+        Object.assign(carData, imageUrls);
+      } catch (uploadErr) {
+        console.error('Supabase upload error:', uploadErr);
+        return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
       }
-      
-      console.log('Final carData:', carData);
-      
-      const car = await prisma.car.create({ data: carData });
-      console.log('Car created:', car);
-      res.status(201).json({ car });
-    } else {
-      // Handle regular JSON data
-      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl } = req.body;
-      
-      const carData = {
-        make,
-        model,
-        year: Number(year),
-        price: Number(price),
-        stock: Number(stock),
-        description: description || null,
-        fuelType,
-        transmission,
-        mileage: Number(mileage) || 0,
-        color: color || null,
-        power: power ? Number(power) : null,
-        category,
-        minSalary: minSalary ? Number(minSalary) : null,
-        featured: featured === 'true',
-        isActive: isActive !== 'false',
-        imageUrl: imageUrl || null,
-      };
-      
-      console.log('Final carData (JSON):', carData);
-      
-      const car = await prisma.car.create({ data: carData });
-      console.log('Car created:', car);
-      res.status(201).json({ car });
     }
+
+    console.log('Final carData:', carData);
+    const car = await prisma.car.create({ data: carData });
+    console.log('Car created:', car);
+    res.status(201).json({ car });
   } catch (error) {
     console.error('Create car error:', error);
     res.status(500).json({ error: 'Erreur lors de la création du véhicule' });
@@ -493,114 +474,31 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.any(), async (r
       });
     }
     
-    // Handle FormData for file uploads
+    const carData = parseCarFormBody(req.body);
+
     if (req.files && req.files.length > 0) {
-      const data = req.body;
-      const files = req.files;
-      
-      const carData = {
-        make: data.make,
-        model: data.model,
-        year: Number(data.year),
-        price: Number(data.price),
-        stock: Number(data.stock),
-        description: data.description || null,
-        fuelType: data.fuelType,
-        transmission: data.transmission,
-        mileage: Number(data.mileage) || 0,
-        color: data.color || null,
-        power: data.power ? Number(data.power) : null,
-        category: data.category,
-        minSalary: data.minSalary ? Number(data.minSalary) : null,
-        featured: data.featured === 'true',
-        isActive: data.isActive !== 'false',
-        imageUrl: data.imageUrl || null,
-      };
-      
-      // Handle uploaded files - Upload to Supabase Storage
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const fileName = `${Date.now()}-${file.originalname}`;
-        
-        console.log(`Uploading file ${i + 1}:`, fileName);
-        
-        // Upload to Supabase Storage
-        const { data, error } = await supabase.storage
-          .from('cars')
-          .upload(fileName, file.buffer, {
-            contentType: file.mimetype
-          });
-        
-        if (error) {
-          console.error('Supabase upload error:', error);
-          return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
-        }
-        
-        // Get public URL
-        const { data: publicUrlData } = supabase.storage
-          .from('cars')
-          .getPublicUrl(fileName);
-        
-        const fieldName = i === 0 ? 'imageUrl' : `imageUrl${i + 1}`;
-        carData[fieldName] = publicUrlData.publicUrl;
-        
-        console.log(`File ${i + 1} uploaded successfully:`, publicUrlData.publicUrl);
-        console.log(`File ${i + 1} publicUrlData:`, publicUrlData);
+      try {
+        Object.assign(carData, await uploadCarImages(req.files));
+      } catch (uploadErr) {
+        console.error('Supabase upload error:', uploadErr);
+        return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
       }
-      
-      // Handle existing images that weren't deleted
-      if (req.body.existingImages) {
-        const existingImages = Array.isArray(req.body.existingImages) ? req.body.existingImages : [req.body.existingImages];
-        existingImages.forEach((url, idx) => {
-          const fieldName = idx === 0 ? 'imageUrl' : `imageUrl${idx + 1}`;
-          if (!carData[fieldName]) {
-            carData[fieldName] = url;
-          }
-        });
-      }
-      
-      console.log('Final carData:', carData);
-      
-      const car = await prisma.car.update({
-        where: { id: parseInt(id) },
-        data: carData
-      });
-      
-      console.log('Car updated:', car);
-      res.json({ car });
-    } else {
-      // Handle regular JSON data
-      const { make, model, year, price, stock, description, fuelType, transmission, mileage, color, power, category, minSalary, featured, isActive, imageUrl } = req.body;
-      
-      const carData = {
-        make,
-        model,
-        year: Number(year),
-        price: Number(price),
-        stock: Number(stock),
-        description: description || null,
-        fuelType,
-        transmission,
-        mileage: Number(mileage) || 0,
-        color: color || null,
-        power: power ? Number(power) : null,
-        category,
-        minSalary: minSalary ? Number(minSalary) : null,
-        featured: featured === 'true',
-        isActive: isActive !== 'false',
-        imageUrl: imageUrl || null,
-      };
-      
-      console.log('Final carData (JSON):', carData);
-      
-      const car = await prisma.car.update({
-        where: { id: parseInt(id) },
-        data: carData
-      });
-      
-      console.log('Car updated:', car);
-      res.json({ car });
     }
+
+    if (req.body.existingImages) {
+      const existingImages = Array.isArray(req.body.existingImages)
+        ? req.body.existingImages
+        : [req.body.existingImages];
+      existingImages.forEach((url, idx) => {
+        const fieldName = idx === 0 ? 'imageUrl' : `imageUrl${idx + 1}`;
+        if (!carData[fieldName]) carData[fieldName] = url;
+      });
+    }
+
+    console.log('Final carData:', carData);
+    const car = await prisma.car.update({ where: { id: carId }, data: carData });
+    console.log('Car updated:', car);
+    res.json({ car });
   } catch (error) {
     console.error('Update car error:', error);
     res.status(500).json({ error: 'Erreur lors de la mise à jour du véhicule' });

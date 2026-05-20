@@ -181,14 +181,14 @@ export default function AdminCarForm() {
       if (form.power !== undefined && form.power !== null) formData.append('power', form.power);
       if (form.category !== undefined && form.category !== null) formData.append('category', form.category);
       if (form.minSalary !== undefined && form.minSalary !== null) formData.append('minSalary', form.minSalary);
-      formData.append('featured', form.featured);
-      formData.append('isActive', form.isActive);
+      formData.append('featured', form.featured ? 'true' : 'false');
+      formData.append('isActive', form.isActive ? 'true' : 'false');
       if (form.imageUrl) formData.append('imageUrl', form.imageUrl);
       
-      // Add image files
-      imageFiles.forEach((file) => {
-        formData.append('images', file);
-      });
+      // Add image files (sorted so 1.webp, 2.webp… become image principale en premier)
+      [...imageFiles]
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+        .forEach((file) => formData.append('images', file));
       
       // Add existing image URLs that weren't deleted
       existingImages.forEach(img => {
@@ -212,7 +212,10 @@ export default function AdminCarForm() {
       navigate('/admin/cars');
     } catch (err) { 
       console.error('Submit error:', err);
-      addToast(err.response?.data?.error || 'Erreur', 'error'); 
+      const msg = err.code === 'ECONNABORTED'
+        ? 'Délai dépassé — trop d\'images ou connexion lente. Réessayez ou réduisez le nombre de photos.'
+        : (err.response?.data?.error || 'Erreur');
+      addToast(msg, 'error'); 
     }
     finally { setSaving(false); }
   };

@@ -37,12 +37,14 @@ export const carAPI = {
   getCategories: ()     => api.get('/cars/categories'),
   create:        (formData) => {
     return api.post('/cars', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000,
     });
   },
   update:        (id, formData) => {
     return api.put(`/cars/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000,
     });
   },
   toggle:        (id)   => api.patch(`/cars/${id}/toggle`),
