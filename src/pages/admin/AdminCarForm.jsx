@@ -65,6 +65,12 @@ export default function AdminCarForm() {
   const [existingImages, setExistingImages] = useState([]);
   const MAX_IMAGES = 20;
 
+  useEffect(() => () => {
+    previews.forEach(p => {
+      if (!p.isExisting && p.url?.startsWith('blob:')) URL.revokeObjectURL(p.url);
+    });
+  }, [previews]);
+
   useEffect(() => {
     if (isEdit) {
       carAPI.getById(id).then(r => {
@@ -158,6 +164,10 @@ export default function AdminCarForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isEdit && imageFiles.length === 0) {
+      addToast('Ajoutez au moins une image', 'error');
+      return;
+    }
     setSaving(true);
     try {
       console.log('=== Frontend Debug ===');
@@ -202,14 +212,22 @@ export default function AdminCarForm() {
         console.log(key, value);
       }
       
-      if (isEdit) { 
-        await carAPI.update(id, formData); 
-        addToast('Véhicule mis à jour', 'success'); 
-      } else { 
-        await carAPI.create(formData);    
-        addToast('Véhicule créé', 'success'); 
+      if (isEdit) {
+        await carAPI.update(id, formData);
+        navigate('/admin/cars', {
+          replace: true,
+          state: { successMessage: 'Véhicule mis à jour avec succès' },
+        });
+      } else {
+        await carAPI.create(formData);
+        previews.forEach(p => {
+          if (!p.isExisting && p.url?.startsWith('blob:')) URL.revokeObjectURL(p.url);
+        });
+        navigate('/admin/cars', {
+          replace: true,
+          state: { successMessage: 'Véhicule créé avec succès' },
+        });
       }
-      navigate('/admin/cars');
     } catch (err) { 
       console.error('Submit error:', err);
       const msg = err.code === 'ECONNABORTED'

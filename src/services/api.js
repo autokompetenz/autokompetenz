@@ -71,6 +71,7 @@ export const simAPI = {
 export const adminAPI = {
   stats:   () => api.get('/admin/stats'),
   clients: () => api.get('/admin/clients'),
+  getCars: () => api.get('/admin/cars'),
 };
 export const userAPI = {
   updateProfile:  (d) => api.put('/user/profile', d),

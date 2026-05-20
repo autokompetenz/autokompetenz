@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../../store';
 import AdminSidebar from '../../components/AdminSidebar';
+import AdminErrorBoundary from '../../components/AdminErrorBoundary';
 
 export default function AdminLayout() {
   const { isAuthenticated, isAdmin } = useAuthStore();
@@ -42,7 +43,9 @@ export default function AdminLayout() {
       <AdminSidebar mobileOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className="admin-main">
         <div className="admin-main-inner">
-          <Outlet />
+          <AdminErrorBoundary>
+            <Outlet />
+          </AdminErrorBoundary>
         </div>
       </main>
     </div>

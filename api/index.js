@@ -88,7 +88,7 @@ function parseCarFormBody(data) {
       ? Number(minSalaryRaw) : null,
     featured: data.featured === 'true' || data.featured === true,
     isActive: data.isActive !== 'false' && data.isActive !== false,
-    monthlyPayment: calculateMonthlyPayment(price),
+    monthlyPayment: Number.isFinite(price) && price > 0 ? calculateMonthlyPayment(price) : null,
     imageUrl: data.imageUrl || null,
   };
 }
@@ -346,6 +346,16 @@ app.get('/api/cars/categories', async (req, res) => {
       error: error.message || 'Erreur serveur',
       categories: []
     });
+  }
+});
+
+app.get('/api/admin/cars', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const cars = await prisma.car.findMany({ orderBy: { createdAt: 'desc' } });
+    res.json({ cars, total: cars.length });
+  } catch (error) {
+    console.error('Admin cars list error:', error);
+    res.status(500).json({ error: 'Erreur serveur', cars: [], total: 0 });
   }
 });
 
