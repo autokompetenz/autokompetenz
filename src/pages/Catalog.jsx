@@ -7,16 +7,7 @@ import { Loader } from '../components/UI';
 import { useLangStore } from '../store';
 import { t } from '../utils/i18n';
 import { useBreakpoint } from '../hooks/useBreakpoint';
-
-const CATEGORIES = ['Berline','SUV','Citadine','Break','Coupe','Cabriolet','Utilitaire'];
-const CAT_LABELS = {
-  fr:{Berline:'Berline',SUV:'SUV',Citadine:'Citadine',Break:'Break',Coupe:'Coupé',Cabriolet:'Cabriolet',Utilitaire:'Utilitaire'},
-  en:{Berline:'Saloon',SUV:'SUV',Citadine:'City Car',Break:'Estate',Coupe:'Coupé',Cabriolet:'Convertible',Utilitaire:'Van'},
-  de:{Berline:'Limousine',SUV:'SUV',Citadine:'Kleinwagen',Break:'Kombi',Coupe:'Coupé',Cabriolet:'Cabrio',Utilitaire:'Nutzfahrzeug'},
-  es:{Berline:'Berlina',SUV:'SUV',Citadine:'Utilitario',Break:'Familiar',Coupe:'Cupé',Cabriolet:'Descapotable',Utilitaire:'Furgoneta'},
-  it:{Berline:'Berlina',SUV:'SUV',Citadine:'Utilitaria',Break:'Station wagon',Coupe:'Coupé',Cabriolet:'Cabriolet',Utilitaire:'Furgone'},
-  pt:{Berline:'Sedan',SUV:'SUV',Citadine:'Utilitário',Break:'Perua',Coupe:'Coupé',Cabriolet:'Conversível',Utilitaire:'Furgão'},
-};
+import { CATEGORIES, CAT_LABELS } from '../utils/categories';
 
 export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();

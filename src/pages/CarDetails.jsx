@@ -7,6 +7,7 @@ import { useAuthStore, useCartStore, useToastStore, useLangStore, useThemeStore 
 import { formatEuro, calculateOrderTotals } from '../utils/helpers';
 import { Loader } from '../components/UI';
 import { t } from '../utils/i18n';
+import { CATEGORIES, CATEGORY_ICONS, getCategoryLabel } from '../utils/categories';
 
 const PAYMENT_OPTIONS = [
   { id: 'full',    icon: '💎', titleKey: 'payment_full',    badgeKey: 'discount_5' },
@@ -775,34 +776,35 @@ export default function CarDetails() {
                 {lang==='fr'?'Explorez notre gamme':lang==='en'?'Explore our range':lang==='de'?'Erkunden Sie unsere Auswahl':lang==='es'?'Explore nuestra gama':lang==='it'?'Esplora la nostra gamma':'Explore nossa gama'}
               </h2>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 16 }}>
-              {[
-                { type: lang==='fr'?'SUV':lang==='en'?'SUV':lang==='de'?'SUV':lang==='es'?'SUV':lang==='it'?'SUV':'SUV', icon: '🚙', count: 12 },
-                { type: lang==='fr'?'Berline':lang==='en'?'Sedan':lang==='de'?'Limousine':lang==='es'?'Sedán':lang==='it'?'Berlina':'Sedã', icon: '🚗', count: 8 },
-                { type: lang==='fr'?'Sportive':lang==='en'?'Sports':lang==='de'?'Sportwagen':lang==='es'?'Deportivo':lang==='it'?'Sportiva':'Esportivo', icon: '🏎️', count: 5 },
-                { type: lang==='fr'?'Électrique':lang==='en'?'Electric':lang==='de'?'Elektro':lang==='es'?'Eléctrico':lang==='it'?'Elettrico':'Elétrico', icon: '⚡', count: 6 },
-              ].map((item, i) => (
-                <Link 
-                  key={i}
-                  to="/catalog"
-                  style={{ 
-                    background: C.card, 
-                    border: `1px solid ${C.border}`, 
-                    borderRadius: 16, 
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: 16 }}>
+              {CATEGORIES.filter(cat => cat !== car.category).map(cat => (
+                <Link
+                  key={cat}
+                  to={`/catalog?category=${cat}`}
+                  style={{
+                    background: C.card,
+                    border: `1px solid ${C.border}`,
+                    borderRadius: 16,
                     padding: 24,
                     textDecoration: 'none',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: 12,
-                    transition: 'all 0.3s'
+                    transition: 'all 0.3s',
                   }}
                   onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(200,16,46,0.4)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
                   onMouseOut={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <div style={{ fontSize: 40 }}>{item.icon}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: C.text }}>{item.type}</div>
-                  <div style={{ fontSize: 13, color: C.text3 }}>{item.count} {lang==='fr'?'disponibles':lang==='en'?'available':lang==='de'?'verfügbar':lang==='es'?'disponibles':lang==='it'?'disponibili':'disponíveis'}</div>
+                  <div style={{ fontSize: 40 }}>{CATEGORY_ICONS[cat]}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.text }}>{getCategoryLabel(lang, cat)}</div>
+                  <div style={{ fontSize: 13, color: C.text3 }}>
+                    {lang === 'fr' ? 'Voir le catalogue →' :
+                     lang === 'en' ? 'View catalogue →' :
+                     lang === 'de' ? 'Katalog ansehen →' :
+                     lang === 'ar' ? 'عرض الكتالوج ←' :
+                     'Ver catálogo →'}
+                  </div>
                 </Link>
               ))}
             </div>
