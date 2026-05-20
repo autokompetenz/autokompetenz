@@ -7,8 +7,6 @@ const { createClient } = require('@supabase/supabase-js');
 const { prisma } = require('../lib/prisma.js');
 const { sendWelcomeEmail, sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } = require('../lib/mailer.js');
 const { calculateMonthlyPayment } = require('../lib/helpers.js');
-const { calculateMonthlyPayment } = require('../lib/helpers.js');
-const { calculateMonthlyPayment } = require('../lib/helpers.js');
 
 // Initialize Express app
 const app = express();
