@@ -724,17 +724,17 @@ export default function CarDetails() {
           >
             <div style={{ marginBottom: isMobile ? 24 : 32 }}>
               <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
-                {l==='fr'?'VOUS POURRIEZ AUSSI AIMER':l==='en'?'YOU MIGHT ALSO LIKE':l==='de'?'SIE KÖNNTEN AUCH GEFALLEN':l==='es'?'TAMBIÉN PODRÍA GUSTARLE':l==='it'?'POTREBBE PIACERTI ANCHE':'VOCÊ TAMBÉM PODE GOSTAR'}
+                {lang==='fr'?'VOUS POURRIEZ AUSSI AIMER':lang==='en'?'YOU MIGHT ALSO LIKE':lang==='de'?'SIE KÖNNTEN AUCH GEFALLEN':lang==='es'?'TAMBIÉN PODRÍA GUSTARLE':lang==='it'?'POTREBBE PIACERTI ANCHE':'VOCÊ TAMBÉM PODE GOSTAR'}
               </span>
               <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
-                {l==='fr'?'Véhicules similaires':l==='en'?'Similar Vehicles':l==='de'?'Ähnliche Fahrzeuge':l==='es'?'Vehículos Similares':l==='it'?'Veicoli Simili':'Veículos Similares'}
+                {lang==='fr'?'Véhicules similaires':lang==='en'?'Similar Vehicles':lang==='de'?'Ähnliche Fahrzeuge':lang==='es'?'Vehículos Similares':lang==='it'?'Veicoli Simili':'Veículos Similares'}
               </h2>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 16 : 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: isMobile ? 16 : 24 }}>
               {Array.from({ length: isMobile ? 2 : 3 }).map((_, i) => (
                 <div key={i} style={{ 
-                  background: 'var(--bg-card)', 
-                  border: '1px solid var(--border)', 
+                  background: C.card, 
+                  border: `1px solid ${C.border}`, 
                   borderRadius: 16, 
                   padding: 20,
                   minHeight: 280,
@@ -745,13 +745,13 @@ export default function CarDetails() {
                   <div style={{ 
                     width: '100%', 
                     height: 160, 
-                    background: 'var(--bg-card2)', 
+                    background: C.card2, 
                     borderRadius: 12,
                     animation: 'pulse 1.5s ease-in-out infinite'
                   }} />
-                  <div style={{ height: 20, background: 'var(--bg-card2)', borderRadius: 4, width: '70%' }} />
-                  <div style={{ height: 16, background: 'var(--bg-card2)', borderRadius: 4, width: '50%' }} />
-                  <div style={{ height: 24, background: 'var(--bg-card2)', borderRadius: 4, width: '40%', marginTop: 'auto' }} />
+                  <div style={{ height: 20, background: C.card2, borderRadius: 4, width: '70%' }} />
+                  <div style={{ height: 16, background: C.card2, borderRadius: 4, width: '50%' }} />
+                  <div style={{ height: 24, background: C.card2, borderRadius: 4, width: '40%', marginTop: 'auto' }} />
                 </div>
               ))}
             </div>
@@ -769,25 +769,25 @@ export default function CarDetails() {
           >
             <div style={{ marginBottom: isMobile ? 24 : 32 }}>
               <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.red }}>
-                {l==='fr'?'AUTRES TYPES DE VÉHICULES':l==='en'?'OTHER VEHICLE TYPES':l==='de'?'ANDERE FAHRZEUGTYPEN':l==='es'?'OTROS TIPOS DE VEHÍCULOS':l==='it'?'ALTRI TIPI DI VEICOLI':'OUTROS TIPOS DE VEÍCULOS'}
+                {lang==='fr'?'AUTRES TYPES DE VÉHICULES':lang==='en'?'OTHER VEHICLE TYPES':lang==='de'?'ANDERE FAHRZEUGTYPEN':lang==='es'?'OTROS TIPOS DE VEHÍCULOS':lang==='it'?'ALTRI TIPI DI VEICOLI':'OUTROS TIPOS DE VEÍCULOS'}
               </span>
               <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: isMobile ? 28 : 42, color: C.text, letterSpacing: '-0.02em', marginTop: 8 }}>
-                {l==='fr'?'Explorez notre gamme':l==='en'?'Explore our range':l==='de'?'Erkunden Sie unsere Auswahl':l==='es'?'Explore nuestra gama':l==='it'?'Esplora la nostra gamma':'Explore nossa gama'}
+                {lang==='fr'?'Explorez notre gamme':lang==='en'?'Explore our range':lang==='de'?'Erkunden Sie unsere Auswahl':lang==='es'?'Explore nuestra gama':lang==='it'?'Esplora la nostra gamma':'Explore nossa gama'}
               </h2>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 16 }}>
               {[
-                { type: l==='fr'?'SUV':l==='en'?'SUV':l==='de'?'SUV':l==='es'?'SUV':l==='it'?'SUV':'SUV', icon: '🚙', count: 12 },
-                { type: l==='fr'?'Berline':l==='en'?'Sedan':l==='de'?'Limousine':l==='es'?'Sedán':l==='it'?'Berlina':'Sedã', icon: '🚗', count: 8 },
-                { type: l==='fr'?'Sportive':l==='en'?'Sports':l==='de'?'Sportwagen':l==='es'?'Deportivo':l==='it'?'Sportiva':'Esportivo', icon: '🏎️', count: 5 },
-                { type: l==='fr'?'Électrique':l==='en'?'Electric':l==='de'?'Elektro':l==='es'?'Eléctrico':l==='it'?'Elettrico':'Elétrico', icon: '⚡', count: 6 },
+                { type: lang==='fr'?'SUV':lang==='en'?'SUV':lang==='de'?'SUV':lang==='es'?'SUV':lang==='it'?'SUV':'SUV', icon: '🚙', count: 12 },
+                { type: lang==='fr'?'Berline':lang==='en'?'Sedan':lang==='de'?'Limousine':lang==='es'?'Sedán':lang==='it'?'Berlina':'Sedã', icon: '🚗', count: 8 },
+                { type: lang==='fr'?'Sportive':lang==='en'?'Sports':lang==='de'?'Sportwagen':lang==='es'?'Deportivo':lang==='it'?'Sportiva':'Esportivo', icon: '🏎️', count: 5 },
+                { type: lang==='fr'?'Électrique':lang==='en'?'Electric':lang==='de'?'Elektro':lang==='es'?'Eléctrico':lang==='it'?'Elettrico':'Elétrico', icon: '⚡', count: 6 },
               ].map((item, i) => (
                 <Link 
                   key={i}
                   to="/catalog"
                   style={{ 
-                    background: 'var(--bg-card)', 
-                    border: '1px solid var(--border)', 
+                    background: C.card, 
+                    border: `1px solid ${C.border}`, 
                     borderRadius: 16, 
                     padding: 24,
                     textDecoration: 'none',
@@ -798,11 +798,11 @@ export default function CarDetails() {
                     transition: 'all 0.3s'
                   }}
                   onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(200,16,46,0.4)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                  onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                  onMouseOut={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
                   <div style={{ fontSize: 40 }}>{item.icon}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>{item.type}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-3)' }}>{item.count} {l==='fr'?'disponibles':l==='en'?'available':l==='de'?'verfügbar':l==='es'?'disponibles':l==='it'?'disponibili':'disponíveis'}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.text }}>{item.type}</div>
+                  <div style={{ fontSize: 13, color: C.text3 }}>{item.count} {lang==='fr'?'disponibles':lang==='en'?'available':lang==='de'?'verfügbar':lang==='es'?'disponibles':lang==='it'?'disponibili':'disponíveis'}</div>
                 </Link>
               ))}
             </div>
