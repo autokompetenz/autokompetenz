@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { carAPI } from '../services/api';
 import { formatEuro } from '../utils/helpers';
 import { useLangStore } from '../store';
@@ -30,6 +30,122 @@ const REVIEWS = [
   { name:'Anna Müller', rating:5, avatar:'AM', textFr:'Équipe très compétente ! Ont trouvé la Volkswagen parfaite pour moi.', textEn:'Very competent team! Found the perfect Volkswagen for me.', textDe:'Sehr kompetentes Team! Perfekten VW für mich gefunden.', textEs:'¡Equipo muy competente! Encontraron el Volkswagen perfecto.', textIt:'Team molto competente! Trovata la Volkswagen perfetta.', textPt:'Equipe muito competente! Encontraram o Volkswagen perfeito.' },
 ];
 
+// ── PURCHASE STEPS DATA ──────────────────────────────────────────────────────
+const getPurchaseSteps = (l) => [
+  {
+    icon: '🔍',
+    step: '01',
+    fr: { title: 'Sélection du véhicule', desc: 'Parcourez notre catalogue en ligne ou contactez-nous. Filtrez par marque, modèle, prix et kilométrage. Chaque fiche inclut photos HD, historique complet et rapport d\'inspection.' },
+    en: { title: 'Vehicle selection', desc: 'Browse our online catalog or contact us. Filter by brand, model, price and mileage. Each listing includes HD photos, full history and inspection report.' },
+    de: { title: 'Fahrzeugauswahl', desc: 'Durchsuchen Sie unseren Online-Katalog oder kontaktieren Sie uns. Filtern nach Marke, Modell, Preis und Kilometerstand. Jedes Inserat enthält HD-Fotos, vollständige Historie und Prüfbericht.' },
+    es: { title: 'Selección del vehículo', desc: 'Explore nuestro catálogo en línea o contáctenos. Filtre por marca, modelo, precio y kilometraje. Cada ficha incluye fotos HD, historial completo e informe de inspección.' },
+    it: { title: 'Selezione del veicolo', desc: 'Sfogliate il nostro catalogo online o contattateci. Filtrate per marca, modello, prezzo e chilometraggio. Ogni scheda include foto HD, storia completa e rapporto di ispezione.' },
+    pt: { title: 'Seleção do veículo', desc: 'Navegue pelo nosso catálogo online ou entre em contacto. Filtre por marca, modelo, preço e quilometragem. Cada ficha inclui fotos HD, histórico completo e relatório de inspeção.' },
+  },
+  {
+    icon: '💬',
+    step: '02',
+    fr: { title: 'Contact & Devis', desc: 'Contactez-nous par WhatsApp, email ou téléphone. Nous vous envoyons un devis détaillé sous 24h avec toutes les options disponibles, frais inclus et conditions de financement.' },
+    en: { title: 'Contact & Quote', desc: 'Reach us via WhatsApp, email or phone. We send you a detailed quote within 24h with all available options, included fees and financing conditions.' },
+    de: { title: 'Kontakt & Angebot', desc: 'Kontaktieren Sie uns per WhatsApp, E-Mail oder Telefon. Wir senden Ihnen innerhalb 24h ein detailliertes Angebot mit allen Optionen, inklusive Gebühren und Finanzierungsbedingungen.' },
+    es: { title: 'Contacto & Presupuesto', desc: 'Contáctenos por WhatsApp, email o teléfono. Le enviamos un presupuesto detallado en 24h con todas las opciones disponibles, tarifas incluidas y condiciones de financiación.' },
+    it: { title: 'Contatto & Preventivo', desc: 'Contattateci via WhatsApp, email o telefono. Vi inviamo un preventivo dettagliato entro 24h con tutte le opzioni disponibili, spese incluse e condizioni di finanziamento.' },
+    pt: { title: 'Contacto & Orçamento', desc: 'Entre em contacto via WhatsApp, email ou telefone. Enviamos-lhe um orçamento detalhado em 24h com todas as opções disponíveis, taxas incluídas e condições de financiamento.' },
+  },
+  {
+    icon: '📋',
+    step: '03',
+    fr: { title: 'Contrat & Financement', desc: 'Signature du bon de commande sécurisé. Si besoin, montage de votre dossier de financement avec nos partenaires bancaires. Réponse de principe sous 24h, taux compétitifs garantis.' },
+    en: { title: 'Contract & Financing', desc: 'Signing of the secure purchase order. If needed, we set up your financing file with our banking partners. Approval in principle within 24h, competitive rates guaranteed.' },
+    de: { title: 'Vertrag & Finanzierung', desc: 'Unterzeichnung des sicheren Kaufvertrags. Bei Bedarf erstellen wir Ihre Finanzierungsakte mit unseren Bankpartnern. Grundsatzbeschluss innerhalb 24h, wettbewerbsfähige Zinsen garantiert.' },
+    es: { title: 'Contrato & Financiación', desc: 'Firma del pedido seguro. Si es necesario, gestionamos su expediente de financiación con nuestros socios bancarios. Respuesta de principio en 24h, tasas competitivas garantizadas.' },
+    it: { title: 'Contratto & Finanziamento', desc: 'Firma dell\'ordine d\'acquisto sicuro. Se necessario, prepariamo il vostro fascicolo di finanziamento con i nostri partner bancari. Risposta di principio entro 24h, tassi competitivi garantiti.' },
+    pt: { title: 'Contrato & Financiamento', desc: 'Assinatura da ordem de compra segura. Se necessário, montamos o seu dossiê de financiamento com os nossos parceiros bancários. Resposta de princípio em 24h, taxas competitivas garantidas.' },
+  },
+  {
+    icon: '💳',
+    step: '04',
+    fr: { title: 'Paiement sécurisé', desc: 'Virement bancaire sécurisé ou paiement par étapes selon accord. Reçu officiel émis immédiatement. Transparence totale : aucun frais caché, tout est clairement indiqué dans le contrat.' },
+    en: { title: 'Secure payment', desc: 'Secure bank transfer or staged payment by agreement. Official receipt issued immediately. Full transparency: no hidden fees, everything clearly stated in the contract.' },
+    de: { title: 'Sichere Zahlung', desc: 'Sichere Banküberweisung oder Ratenzahlung nach Vereinbarung. Offizielle Quittung sofort ausgestellt. Volle Transparenz: keine versteckten Gebühren, alles klar im Vertrag angegeben.' },
+    es: { title: 'Pago seguro', desc: 'Transferencia bancaria segura o pago por etapas según acuerdo. Recibo oficial emitido inmediatamente. Transparencia total: sin cargos ocultos, todo claramente indicado en el contrato.' },
+    it: { title: 'Pagamento sicuro', desc: 'Bonifico bancario sicuro o pagamento a rate secondo accordo. Ricevuta ufficiale emessa immediatamente. Trasparenza totale: nessuna commissione nascosta, tutto chiaramente indicato nel contratto.' },
+    pt: { title: 'Pagamento seguro', desc: 'Transferência bancária segura ou pagamento faseado por acordo. Recibo oficial emitido imediatamente. Transparência total: sem taxas ocultas, tudo claramente indicado no contrato.' },
+  },
+  {
+    icon: '🔧',
+    step: '05',
+    fr: { title: 'Préparation du véhicule', desc: 'Votre véhicule est soigneusement préparé : nettoyage professionnel intérieur/extérieur, vérification technique finale, plein de carburant, documentation complète prête à remettre.' },
+    en: { title: 'Vehicle preparation', desc: 'Your vehicle is carefully prepared: professional interior/exterior cleaning, final technical check, full fuel tank, complete documentation ready to hand over.' },
+    de: { title: 'Fahrzeugvorbereitung', desc: 'Ihr Fahrzeug wird sorgfältig vorbereitet: professionelle Innen-/Außenreinigung, abschließende technische Prüfung, volles Tankfüllung, vollständige Unterlagen bereit zur Übergabe.' },
+    es: { title: 'Preparación del vehículo', desc: 'Su vehículo se prepara cuidadosamente: limpieza profesional interior/exterior, revisión técnica final, depósito lleno, documentación completa lista para entregar.' },
+    it: { title: 'Preparazione del veicolo', desc: 'Il vostro veicolo viene preparato con cura: pulizia professionale interna/esterna, controllo tecnico finale, serbatoio pieno, documentazione completa pronta per la consegna.' },
+    pt: { title: 'Preparação do veículo', desc: 'O seu veículo é cuidadosamente preparado: limpeza profissional interior/exterior, verificação técnica final, depósito cheio, documentação completa pronta para entrega.' },
+  },
+  {
+    icon: '🚚',
+    step: '06',
+    fr: { title: 'Livraison à domicile', desc: 'Transport sécurisé jusqu\'à votre porte partout en Allemagne et Europe. Suivi en temps réel via numéro de commande. Livraison soignée, documents remis en main propre. Votre aventure commence !' },
+    en: { title: 'Home delivery', desc: 'Secure transport to your door anywhere in Germany and Europe. Real-time tracking via order number. Careful delivery, documents handed over in person. Your adventure begins!' },
+    de: { title: 'Lieferung nach Hause', desc: 'Sicherer Transport bis zu Ihrer Haustür überall in Deutschland und Europa. Echtzeit-Tracking über Bestellnummer. Sorgfältige Lieferung, Unterlagen persönlich übergeben. Ihr Abenteuer beginnt!' },
+    es: { title: 'Entrega a domicilio', desc: 'Transporte seguro hasta su puerta en toda Alemania y Europa. Seguimiento en tiempo real mediante número de pedido. Entrega cuidadosa, documentos entregados en persona. ¡Su aventura comienza!' },
+    it: { title: 'Consegna a domicilio', desc: 'Trasporto sicuro fino alla vostra porta ovunque in Germania e in Europa. Tracciamento in tempo reale tramite numero d\'ordine. Consegna accurata, documenti consegnati di persona. La vostra avventura inizia!' },
+    pt: { title: 'Entrega ao domicílio', desc: 'Transporte seguro até à sua porta em toda a Alemanha e Europa. Rastreamento em tempo real através do número de pedido. Entrega cuidadosa, documentos entregues pessoalmente. A sua aventura começa!' },
+  },
+];
+
+// ── FAQ DATA ────────────────────────────────────────────────────────────────
+const getFAQ = (l) => [
+  {
+    fr: { q: 'Vos véhicules sont-ils garantis ?', a: 'Oui, absolument. Chaque véhicule vendu est couvert par notre garantie German Auto Cars d\'au moins 12 mois ou 10 000 km, incluant la protection moteur et boîte de vitesse. Des extensions jusqu\'à 36 mois sont disponibles à la commande.' },
+    en: { q: 'Are your vehicles guaranteed?', a: 'Yes, absolutely. Every vehicle sold comes with our German Auto Cars warranty of at least 12 months or 10,000 km, covering engine and transmission. Extensions up to 36 months are available at the time of order.' },
+    de: { q: 'Sind Ihre Fahrzeuge garantiert?', a: 'Ja, absolut. Jedes verkaufte Fahrzeug ist durch unsere German Auto Cars Garantie von mindestens 12 Monaten oder 10.000 km abgedeckt, einschließlich Motor- und Getriebeschutz. Verlängerungen bis zu 36 Monaten sind bei der Bestellung verfügbar.' },
+    es: { q: '¿Sus vehículos tienen garantía?', a: 'Sí, absolutamente. Cada vehículo vendido está cubierto por nuestra garantía German Auto Cars de al menos 12 meses o 10.000 km, incluida la protección del motor y la caja de cambios. Se pueden contratar extensiones de hasta 36 meses al hacer el pedido.' },
+    it: { q: 'I vostri veicoli sono garantiti?', a: 'Sì, assolutamente. Ogni veicolo venduto è coperto dalla nostra garanzia German Auto Cars di almeno 12 mesi o 10.000 km, che include la protezione del motore e del cambio. Sono disponibili estensioni fino a 36 mesi al momento dell\'ordine.' },
+    pt: { q: 'Os seus veículos têm garantia?', a: 'Sim, absolutamente. Cada veículo vendido é coberto pela nossa garantia German Auto Cars de pelo menos 12 meses ou 10.000 km, incluindo proteção de motor e caixa de velocidades. Extensões até 36 meses estão disponíveis no momento da encomenda.' },
+  },
+  {
+    fr: { q: 'Proposez-vous du financement ?', a: 'Oui. Nous travaillons avec plusieurs partenaires bancaires pour vous proposer des crédits auto sur mesure, à des taux compétitifs. Vous renseignez votre dossier, nous montons le financement et vous obtenez une réponse de principe sous 24h ouvrées.' },
+    en: { q: 'Do you offer financing?', a: 'Yes. We work with several banking partners to offer tailored car loans at competitive rates. You fill in your file, we arrange the financing and you get a decision in principle within 24 business hours.' },
+    de: { q: 'Bieten Sie Finanzierung an?', a: 'Ja. Wir arbeiten mit mehreren Bankpartnern zusammen, um Ihnen maßgeschneiderte Autokredite zu wettbewerbsfähigen Zinsen anzubieten. Sie reichen Ihre Unterlagen ein, wir arrangieren die Finanzierung und Sie erhalten innerhalb von 24 Wertstunden eine Grundsatzentscheidung.' },
+    es: { q: '¿Ofrecen financiación?', a: 'Sí. Trabajamos con varios socios bancarios para ofrecerle créditos de coche a medida, a tasas competitivas. Usted rellena su expediente, nosotros gestionamos la financiación y recibe una respuesta de principio en 24 horas hábiles.' },
+    it: { q: 'Offrite finanziamenti?', a: 'Sì. Collaboriamo con diversi partner bancari per offrirvi prestiti auto personalizzati a tassi competitivi. Compilate il vostro fascicolo, noi organizziamo il finanziamento e ricevete una risposta di principio entro 24 ore lavorative.' },
+    pt: { q: 'Oferecem financiamento?', a: 'Sim. Trabalhamos com vários parceiros bancários para lhe oferecer créditos automóvel personalizados a taxas competitivas. Preenche o seu dossiê, nós tratamos do financiamento e recebe uma resposta de princípio em 24 horas úteis.' },
+  },
+  {
+    fr: { q: 'Comment fonctionne la livraison ?', a: 'Nous livrons partout en Allemagne et dans toute l\'Europe. Le transport est sécurisé sur camion plateau. Vous recevez un numéro de suivi pour suivre votre véhicule en temps réel. La livraison se fait à domicile, véhicule propre, plein d\'essence et documents complets.' },
+    en: { q: 'How does delivery work?', a: 'We deliver throughout Germany and all of Europe. Transport is secured on a flatbed truck. You receive a tracking number to follow your vehicle in real time. Delivery is to your home, vehicle clean, full tank and complete documents.' },
+    de: { q: 'Wie funktioniert die Lieferung?', a: 'Wir liefern in ganz Deutschland und ganz Europa. Der Transport erfolgt gesichert auf einem Tieflader. Sie erhalten eine Tracking-Nummer, um Ihr Fahrzeug in Echtzeit zu verfolgen. Die Lieferung erfolgt nach Hause, Fahrzeug sauber, volles Tank und vollständige Unterlagen.' },
+    es: { q: '¿Cómo funciona la entrega?', a: 'Entregamos en toda Alemania y en toda Europa. El transporte se realiza de forma segura en camión plataforma. Recibe un número de seguimiento para rastrear su vehículo en tiempo real. La entrega se realiza a domicilio, vehículo limpio, depósito lleno y documentación completa.' },
+    it: { q: 'Come funziona la consegna?', a: 'Consegniamo in tutta la Germania e in tutta l\'Europa. Il trasporto avviene in modo sicuro su camion a pianale. Ricevete un numero di tracciamento per seguire il vostro veicolo in tempo reale. La consegna avviene a domicilio, veicolo pulito, serbatoio pieno e documenti completi.' },
+    pt: { q: 'Como funciona a entrega?', a: 'Entregamos em toda a Alemanha e em toda a Europa. O transporte é feito de forma segura em camião de plataforma. Recebe um número de rastreamento para seguir o seu veículo em tempo real. A entrega é feita ao domicílio, veículo limpo, depósito cheio e documentos completos.' },
+  },
+  {
+    fr: { q: 'Puis-je reprendre mon ancien véhicule ?', a: 'Oui, nous proposons un service de reprise. Envoyez-nous les informations de votre véhicule actuel (marque, modèle, année, kilométrage, état général) et nous vous faisons une estimation gratuite sous 24h. La valeur de reprise est déduite du prix de votre nouveau véhicule.' },
+    en: { q: 'Can I trade in my old vehicle?', a: 'Yes, we offer a trade-in service. Send us your current vehicle\'s details (brand, model, year, mileage, general condition) and we\'ll give you a free estimate within 24h. The trade-in value is deducted from the price of your new vehicle.' },
+    de: { q: 'Kann ich mein altes Fahrzeug in Zahlung geben?', a: 'Ja, wir bieten einen Ankaufsservice an. Schicken Sie uns die Daten Ihres aktuellen Fahrzeugs (Marke, Modell, Jahr, Kilometerstand, Allgemeinzustand) und wir geben Ihnen innerhalb 24h eine kostenlose Schätzung. Der Ankaufswert wird vom Preis Ihres neuen Fahrzeugs abgezogen.' },
+    es: { q: '¿Puedo canjear mi vehículo antiguo?', a: 'Sí, ofrecemos un servicio de canje. Envíenos los datos de su vehículo actual (marca, modelo, año, kilometraje, estado general) y le haremos una estimación gratuita en 24h. El valor de canje se deduce del precio de su nuevo vehículo.' },
+    it: { q: 'Posso permutare il mio vecchio veicolo?', a: 'Sì, offriamo un servizio di permuta. Inviateci i dati del vostro veicolo attuale (marca, modello, anno, chilometraggio, stato generale) e vi faremo una stima gratuita entro 24h. Il valore della permuta viene detratto dal prezzo del vostro nuovo veicolo.' },
+    pt: { q: 'Posso trocar o meu antigo veículo?', a: 'Sim, oferecemos um serviço de troca. Envie-nos os dados do seu veículo atual (marca, modelo, ano, quilometragem, estado geral) e daremos uma estimativa gratuita em 24h. O valor da troca é deduzido do preço do seu novo veículo.' },
+  },
+  {
+    fr: { q: 'Les véhicules ont-ils été accidentés ?', a: 'Tous nos véhicules font l\'objet d\'une inspection de 150 points et nous vérifions systématiquement leur historique complet. Nous vendons uniquement des véhicules sans accident grave ou avec une déclaration transparente de l\'historique. Le rapport Carfax ou équivalent est disponible sur demande.' },
+    en: { q: 'Have the vehicles been in accidents?', a: 'All our vehicles undergo a 150-point inspection and we systematically verify their full history. We only sell vehicles with no serious accident or with a transparent history disclosure. The Carfax report or equivalent is available on request.' },
+    de: { q: 'Waren die Fahrzeuge in Unfällen verwickelt?', a: 'Alle unsere Fahrzeuge werden einer 150-Punkte-Inspektion unterzogen und wir überprüfen systematisch ihre vollständige Geschichte. Wir verkaufen nur Fahrzeuge ohne schwerwiegenden Unfall oder mit transparenter Offenlegung der Geschichte. Der Carfax-Bericht oder ähnliches ist auf Anfrage erhältlich.' },
+    es: { q: '¿Los vehículos han tenido accidentes?', a: 'Todos nuestros vehículos pasan por una inspección de 150 puntos y verificamos sistemáticamente su historial completo. Solo vendemos vehículos sin accidente grave o con una declaración transparente del historial. El informe Carfax o equivalente está disponible bajo petición.' },
+    it: { q: 'I veicoli sono stati coinvolti in incidenti?', a: 'Tutti i nostri veicoli sono sottoposti a un\'ispezione di 150 punti e verifichiamo sistematicamente la loro storia completa. Vendiamo solo veicoli senza incidenti gravi o con una divulgazione trasparente della storia. Il rapporto Carfax o equivalente è disponibile su richiesta.' },
+    pt: { q: 'Os veículos estiveram envolvidos em acidentes?', a: 'Todos os nossos veículos são submetidos a uma inspeção de 150 pontos e verificamos sistematicamente o seu historial completo. Vendemos apenas veículos sem acidente grave ou com uma divulgação transparente do historial. O relatório Carfax ou equivalente está disponível a pedido.' },
+  },
+  {
+    fr: { q: 'Comment puis-je suivre ma commande ?', a: 'Dès la confirmation de votre commande, vous recevez un numéro de suivi unique. Rendez-vous dans la section "Suivre ma commande" de notre site, saisissez votre numéro et consultez l\'état de votre commande en temps réel : préparation, transport et livraison.' },
+    en: { q: 'How can I track my order?', a: 'As soon as your order is confirmed, you receive a unique tracking number. Go to the "Track my order" section of our site, enter your number and check the status of your order in real time: preparation, transport and delivery.' },
+    de: { q: 'Wie kann ich meine Bestellung verfolgen?', a: 'Sobald Ihre Bestellung bestätigt ist, erhalten Sie eine eindeutige Tracking-Nummer. Gehen Sie zum Abschnitt "Bestellung verfolgen" auf unserer Website, geben Sie Ihre Nummer ein und prüfen Sie den Status Ihrer Bestellung in Echtzeit: Vorbereitung, Transport und Lieferung.' },
+    es: { q: '¿Cómo puedo rastrear mi pedido?', a: 'En cuanto se confirma su pedido, recibe un número de seguimiento único. Vaya a la sección "Rastrear mi pedido" de nuestro sitio, introduzca su número y consulte el estado de su pedido en tiempo real: preparación, transporte y entrega.' },
+    it: { q: 'Come posso tracciare il mio ordine?', a: 'Non appena il vostro ordine viene confermato, ricevete un numero di tracciamento unico. Andate alla sezione "Traccia il mio ordine" del nostro sito, inserite il vostro numero e verificate lo stato del vostro ordine in tempo reale: preparazione, trasporto e consegna.' },
+    pt: { q: 'Como posso rastrear o meu pedido?', a: 'Assim que o seu pedido é confirmado, recebe um número de rastreamento único. Vá à secção "Rastrear o meu pedido" do nosso site, introduza o seu número e consulte o estado do seu pedido em tempo real: preparação, transporte e entrega.' },
+  },
+];
+
 function Stars({ n=5 }) {
   return <span style={{ display:'inline-flex', gap:2 }}>{Array.from({length:5}).map((_,i)=><span key={i} style={{ color:i<n?'#FFAA00':'var(--border-2)', fontSize:15 }}>★</span>)}</span>;
 }
@@ -50,6 +166,337 @@ function CookieBanner({ lang }) {
         <button onClick={accept} className="btn-gold" style={{ fontSize:13, padding:'9px 20px' }}>{accept_l[lang]||'Accepter'}</button>
       </div>
     </div>
+  );
+}
+
+// ── PURCHASE STEPS SECTION ───────────────────────────────────────────────────
+function PurchaseStepsSection({ l, isMobile }) {
+  const steps = getPurchaseSteps(l);
+  const getLang = (s) => s[l] || s.fr;
+
+  const sectionTitle = {
+    fr: "De la sélection\nà la livraison",
+    en: "From selection\nto delivery",
+    de: "Von der Auswahl\nbis zur Lieferung",
+    es: "De la selección\na la entrega",
+    it: "Dalla selezione\nalla consegna",
+    pt: "Da seleção\nà entrega",
+  };
+  const sectionEyebrow = {
+    fr: 'Comment ça marche', en: 'How it works', de: 'So funktioniert es',
+    es: 'Cómo funciona', it: 'Come funziona', pt: 'Como funciona',
+  };
+  const sectionSub = {
+    fr: 'Un processus simple et transparent, du choix du véhicule jusqu\'à sa livraison chez vous.',
+    en: 'A simple and transparent process, from choosing the vehicle to its delivery at your door.',
+    de: 'Ein einfacher und transparenter Prozess, von der Fahrzeugwahl bis zur Lieferung nach Hause.',
+    es: 'Un proceso sencillo y transparente, desde la elección del vehículo hasta su entrega en su puerta.',
+    it: 'Un processo semplice e trasparente, dalla scelta del veicolo alla sua consegna a domicilio.',
+    pt: 'Um processo simples e transparente, desde a escolha do veículo até à sua entrega na sua porta.',
+  };
+
+  return (
+    <section style={{ background:'var(--bg)', borderTop:'1px solid var(--border)' }} className="section-pad">
+      <div style={{ maxWidth:1200, margin:'0 auto' }}>
+        <div style={{ textAlign:'center', marginBottom:56 }}>
+          <div className="section-eyebrow" style={{ justifyContent:'center' }}>{sectionEyebrow[l] || sectionEyebrow.fr}</div>
+          <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:'var(--text)', letterSpacing:'-0.02em', whiteSpace:'pre-line' }}>
+            {sectionTitle[l] || sectionTitle.fr}
+          </h2>
+          <p style={{ fontSize:16, color:'var(--text-3)', marginTop:12, maxWidth:560, margin:'12px auto 0' }}>
+            {sectionSub[l] || sectionSub.fr}
+          </p>
+        </div>
+
+        {/* Desktop: alternating timeline */}
+        {!isMobile ? (
+          <div style={{ position:'relative' }}>
+            {/* Centre line */}
+            <div style={{ position:'absolute', left:'50%', top:0, bottom:0, width:2, background:'linear-gradient(to bottom, rgba(200,16,46,0.08), rgba(200,16,46,0.4), rgba(200,16,46,0.08))', transform:'translateX(-50%)', pointerEvents:'none' }} />
+
+            {steps.map((s, i) => {
+              const isLeft = i % 2 === 0;
+              const data = getLang(s);
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity:0, x: isLeft ? -40 : 40 }}
+                  whileInView={{ opacity:1, x:0 }}
+                  viewport={{ once:true }}
+                  transition={{ duration:0.6, delay:i * 0.1 }}
+                  style={{
+                    display:'grid',
+                    gridTemplateColumns:'1fr 80px 1fr',
+                    gap:0,
+                    alignItems:'center',
+                    marginBottom: i < steps.length - 1 ? 40 : 0,
+                  }}
+                >
+                  {/* Left content */}
+                  <div style={{ gridColumn:1, display:'flex', justifyContent:'flex-end', paddingRight:40 }}>
+                    {isLeft ? (
+                      <StepCard data={data} step={s.step} icon={s.icon} align="right" />
+                    ) : (
+                      <div />
+                    )}
+                  </div>
+
+                  {/* Centre dot */}
+                  <div style={{ gridColumn:2, display:'flex', justifyContent:'center', alignItems:'center', position:'relative', zIndex:2 }}>
+                    <div style={{
+                      width:56, height:56, borderRadius:'50%',
+                      background:'linear-gradient(135deg, #9B0B22, #C8102E)',
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      fontSize:22, boxShadow:'0 0 0 6px var(--bg), 0 0 0 8px rgba(200,16,46,0.2)',
+                    }}>
+                      {s.icon}
+                    </div>
+                  </div>
+
+                  {/* Right content */}
+                  <div style={{ gridColumn:3, paddingLeft:40 }}>
+                    {!isLeft ? (
+                      <StepCard data={data} step={s.step} icon={s.icon} align="left" />
+                    ) : (
+                      <div />
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        ) : (
+          /* Mobile: vertical list */
+          <div style={{ position:'relative', paddingLeft:52 }}>
+            <div style={{ position:'absolute', left:20, top:8, bottom:8, width:2, background:'linear-gradient(to bottom, rgba(200,16,46,0.08), rgba(200,16,46,0.4), rgba(200,16,46,0.08))' }} />
+            {steps.map((s, i) => {
+              const data = getLang(s);
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity:0, x:-20 }}
+                  whileInView={{ opacity:1, x:0 }}
+                  viewport={{ once:true }}
+                  transition={{ duration:0.5, delay:i * 0.08 }}
+                  style={{ position:'relative', marginBottom: i < steps.length - 1 ? 28 : 0 }}
+                >
+                  {/* Dot */}
+                  <div style={{
+                    position:'absolute', left:-42, top:16,
+                    width:36, height:36, borderRadius:'50%',
+                    background:'linear-gradient(135deg, #9B0B22, #C8102E)',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    fontSize:16, boxShadow:'0 0 0 4px var(--bg), 0 0 0 6px rgba(200,16,46,0.15)',
+                    zIndex:2,
+                  }}>
+                    {s.icon}
+                  </div>
+                  <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'18px 20px', boxShadow:'var(--shadow-sm)' }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+                      <span style={{ fontSize:10, fontWeight:800, letterSpacing:'0.25em', color:'var(--red)', background:'var(--red-bg)', border:'1px solid var(--red-border)', padding:'2px 8px', borderRadius:3 }}>
+                        {s.step}
+                      </span>
+                      <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:15, color:'var(--text)' }}>{data.title}</h3>
+                    </div>
+                    <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.65 }}>{data.desc}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function StepCard({ data, step, align }) {
+  return (
+    <div style={{
+      background:'var(--bg-card)',
+      border:'1px solid var(--border)',
+      borderRadius:14,
+      padding:'24px 28px',
+      boxShadow:'var(--shadow-sm)',
+      maxWidth:420,
+      textAlign: align,
+    }}>
+      <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:12, justifyContent: align === 'right' ? 'flex-end' : 'flex-start' }}>
+        <span style={{
+          fontSize:10, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase',
+          color:'var(--red)', background:'var(--red-bg)', border:'1px solid var(--red-border)',
+          padding:'3px 10px', borderRadius:3,
+          order: align === 'right' ? 2 : 1,
+        }}>
+          STEP {step}
+        </span>
+      </div>
+      <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:18, color:'var(--text)', marginBottom:10 }}>
+        {data.title}
+      </h3>
+      <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.7 }}>{data.desc}</p>
+    </div>
+  );
+}
+
+// ── FAQ ACCORDION SECTION ────────────────────────────────────────────────────
+function FAQSection({ l, isMobile }) {
+  const [openIndex, setOpenIndex] = useState(null);
+  const faqs = getFAQ(l);
+  const getLang = (item) => item[l] || item.fr;
+
+  const sectionTitle = {
+    fr: "Pourquoi nous choisir ?\nVos questions, nos réponses",
+    en: "Why choose us?\nYour questions, our answers",
+    de: "Warum uns wählen?\nIhre Fragen, unsere Antworten",
+    es: "¿Por qué elegirnos?\nSus preguntas, nuestras respuestas",
+    it: "Perché sceglierci?\nLe vostre domande, le nostre risposte",
+    pt: "Por que nos escolher?\nAs suas perguntas, as nossas respostas",
+  };
+  const sectionEyebrow = {
+    fr: 'FAQ', en: 'FAQ', de: 'FAQ', es: 'FAQ', it: 'FAQ', pt: 'FAQ',
+  };
+  const sectionSub = {
+    fr: 'Tout ce que vous devez savoir avant de passer commande. Une question ? Notre équipe est disponible 24/7.',
+    en: 'Everything you need to know before placing an order. A question? Our team is available 24/7.',
+    de: 'Alles, was Sie vor der Bestellung wissen müssen. Eine Frage? Unser Team ist 24/7 verfügbar.',
+    es: 'Todo lo que necesita saber antes de realizar un pedido. ¿Una pregunta? Nuestro equipo está disponible 24/7.',
+    it: 'Tutto quello che dovete sapere prima di effettuare un ordine. Una domanda? Il nostro team è disponibile 24/7.',
+    pt: 'Tudo o que precisa de saber antes de fazer uma encomenda. Uma pergunta? A nossa equipa está disponível 24/7.',
+  };
+
+  return (
+    <section style={{ background:'var(--bg-card2)', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }} className="section-pad">
+      <div style={{ maxWidth:900, margin:'0 auto' }}>
+        <div style={{ textAlign:'center', marginBottom:48 }}>
+          <div className="section-eyebrow" style={{ justifyContent:'center' }}>{sectionEyebrow[l]}</div>
+          <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(26px,4vw,50px)', color:'var(--text)', letterSpacing:'-0.02em', whiteSpace:'pre-line', lineHeight:1.1 }}>
+            {sectionTitle[l] || sectionTitle.fr}
+          </h2>
+          <p style={{ fontSize:15, color:'var(--text-3)', marginTop:14, maxWidth:580, margin:'14px auto 0' }}>
+            {sectionSub[l] || sectionSub.fr}
+          </p>
+        </div>
+
+        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          {faqs.map((item, i) => {
+            const data = getLang(item);
+            const isOpen = openIndex === i;
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity:0, y:16 }}
+                whileInView={{ opacity:1, y:0 }}
+                viewport={{ once:true }}
+                transition={{ duration:0.4, delay:i * 0.06 }}
+                style={{
+                  background:'var(--bg-card)',
+                  border:`1px solid ${isOpen ? 'rgba(200,16,46,0.35)' : 'var(--border)'}`,
+                  borderRadius:14,
+                  overflow:'hidden',
+                  boxShadow: isOpen ? '0 4px 24px rgba(200,16,46,0.08)' : 'var(--shadow-sm)',
+                  transition:'border-color 0.3s, box-shadow 0.3s',
+                }}
+              >
+                {/* Question row */}
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  style={{
+                    width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
+                    gap:16, padding: isMobile ? '18px 20px' : '22px 28px',
+                    background:'none', border:'none', cursor:'pointer', textAlign:'left',
+                  }}
+                >
+                  <div style={{ display:'flex', alignItems:'center', gap:14, flex:1 }}>
+                    <div style={{
+                      width:32, height:32, borderRadius:8, flexShrink:0,
+                      background: isOpen ? 'linear-gradient(135deg, #9B0B22, #C8102E)' : 'var(--red-bg)',
+                      border:`1px solid ${isOpen ? 'transparent' : 'var(--red-border)'}`,
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                      transition:'all 0.3s',
+                    }}>
+                      <span style={{ fontSize:14, fontWeight:900, color: isOpen ? '#fff' : 'var(--red)', fontFamily:"'Outfit',sans-serif" }}>
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <span style={{
+                      fontFamily:"'Outfit',sans-serif", fontWeight:700,
+                      fontSize: isMobile ? 14 : 16,
+                      color: isOpen ? 'var(--text)' : 'var(--text)',
+                      lineHeight:1.4,
+                    }}>
+                      {data.q}
+                    </span>
+                  </div>
+                  <div style={{
+                    width:28, height:28, borderRadius:'50%', flexShrink:0,
+                    background: isOpen ? 'rgba(200,16,46,0.12)' : 'var(--bg-card2)',
+                    border:'1px solid var(--border)',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    transition:'all 0.3s',
+                  }}>
+                    <span style={{
+                      fontSize:16, color: isOpen ? 'var(--red)' : 'var(--text-3)',
+                      transform: isOpen ? 'rotate(45deg)' : 'none',
+                      display:'inline-block', transition:'transform 0.3s', lineHeight:1,
+                    }}>+</span>
+                  </div>
+                </button>
+
+                {/* Answer */}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="answer"
+                      initial={{ height:0, opacity:0 }}
+                      animate={{ height:'auto', opacity:1 }}
+                      exit={{ height:0, opacity:0 }}
+                      transition={{ duration:0.35, ease:[0.4, 0, 0.2, 1] }}
+                      style={{ overflow:'hidden' }}
+                    >
+                      <div style={{
+                        padding: isMobile ? '0 20px 20px 66px' : '0 28px 24px 74px',
+                        borderTop:'1px solid var(--border)',
+                        paddingTop: 16,
+                      }}>
+                        <p style={{ fontSize: isMobile ? 13 : 14, color:'var(--text-2)', lineHeight:1.75 }}>
+                          {data.a}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* CTA sous la FAQ */}
+        <motion.div
+          initial={{ opacity:0, y:16 }}
+          whileInView={{ opacity:1, y:0 }}
+          viewport={{ once:true }}
+          transition={{ duration:0.5, delay:0.3 }}
+          style={{ marginTop:40, textAlign:'center', padding: isMobile ? '24px 20px' : '32px 40px', background:'linear-gradient(135deg,rgba(200,16,46,0.06),rgba(200,16,46,0.02))', border:'1px solid rgba(200,16,46,0.15)', borderRadius:16 }}
+        >
+          <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:700, fontSize: isMobile ? 15 : 17, color:'var(--text)', marginBottom:8 }}>
+            {l==='fr'?'Une autre question ?':l==='en'?'Another question?':l==='de'?'Noch eine Frage?':l==='es'?'¿Otra pregunta?':l==='it'?'Un\'altra domanda?':'Outra pergunta?'}
+          </p>
+          <p style={{ fontSize:14, color:'var(--text-3)', marginBottom:20 }}>
+            {l==='fr'?'Notre équipe répond sous 24h par WhatsApp ou email.':l==='en'?'Our team replies within 24h via WhatsApp or email.':l==='de'?'Unser Team antwortet innerhalb 24h per WhatsApp oder E-Mail.':l==='es'?'Nuestro equipo responde en 24h por WhatsApp o email.':l==='it'?'Il nostro team risponde entro 24h via WhatsApp o email.':'A nossa equipa responde em 24h por WhatsApp ou email.'}
+          </p>
+          <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
+            <a href="https://wa.me/4915788823274" target="_blank" rel="noopener noreferrer"
+              style={{ background:'#25D366', color:'#fff', textDecoration:'none', fontFamily:"'Outfit',sans-serif", fontSize:13, fontWeight:700, padding:'11px 22px', borderRadius:8, display:'inline-flex', alignItems:'center', gap:8 }}>
+              💬 WhatsApp
+            </a>
+            <a href="mailto:autoKompetenz@gmail.com" className="btn-ghost" style={{ fontSize:13 }}>
+              ✉ Email
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 }
 
@@ -198,44 +645,47 @@ export default function Home() {
             </div>
           ) : null}
             
-            {/* Mobile message to see details */}
-            {isMobile && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                style={{ 
-                  marginTop: 24, 
-                  padding: '16px 20px', 
-                  background: 'rgba(200,16,46,0.08)', 
-                  border: '1px solid rgba(200,16,46,0.2)', 
-                  borderRadius: 12, 
-                  textAlign: 'center' 
-                }}
-              >
-                <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 8 }}>
-                  {l==='fr'?'👆 Tapez sur une voiture pour voir les détails complets':
-                   l==='en'?'👆 Tap on a car to see full details':
-                   l==='de'?'👆 Tippen Sie auf ein Auto, um alle Details zu sehen':
-                   l==='es'?'👆 Toca un coche para ver todos los detalles':
-                   l==='it'?'👆 Tocca un\'auto per vedere tutti i dettagli':
-                   '👆 Toque em um carro para ver todos os detalhes'}
-                </p>
-                <Link to="/catalog" style={{ 
-                  fontSize: 13, 
-                  fontWeight: 700, 
-                  color: '#C8102E', 
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6
-                }}>
-                  {l==='fr'?'Voir tout le catalogue':l==='en'?'View full catalog':l==='de'?'Gesamten Katalog ansehen':l==='es'?'Ver catálogo completo':l==='it'?'Vedi catalogo completo':'Ver catálogo completo'} →
-                </Link>
-              </motion.div>
-            )}
-          </div>
-        </section>
+          {/* Mobile message to see details */}
+          {isMobile && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              style={{ 
+                marginTop: 24, 
+                padding: '16px 20px', 
+                background: 'rgba(200,16,46,0.08)', 
+                border: '1px solid rgba(200,16,46,0.2)', 
+                borderRadius: 12, 
+                textAlign: 'center' 
+              }}
+            >
+              <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 8 }}>
+                {l==='fr'?'👆 Tapez sur une voiture pour voir les détails complets':
+                 l==='en'?'👆 Tap on a car to see full details':
+                 l==='de'?'👆 Tippen Sie auf ein Auto, um alle Details zu sehen':
+                 l==='es'?'👆 Toca un coche para ver todos los detalles':
+                 l==='it'?'👆 Tocca un\'auto per vedere tutti i dettagli':
+                 '👆 Toque em um carro para ver todos os detalhes'}
+              </p>
+              <Link to="/catalog" style={{ 
+                fontSize: 13, 
+                fontWeight: 700, 
+                color: '#C8102E', 
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6
+              }}>
+                {l==='fr'?'Voir tout le catalogue':l==='en'?'View full catalog':l==='de'?'Gesamten Katalog ansehen':l==='es'?'Ver catálogo completo':l==='it'?'Vedi catalogo completo':'Ver catálogo completo'} →
+              </Link>
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* ── PURCHASE STEPS ── */}
+      <PurchaseStepsSection l={l} isMobile={isMobile} />
 
       {/* ── SERVICES ── */}
       <section style={{ background:'var(--bg-card2)', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }} className="section-pad">
@@ -263,7 +713,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── WHY CHOOSE US ── */}
+      {/* ── FAQ / POURQUOI NOUS CHOISIR ── */}
+      <FAQSection l={l} isMobile={isMobile} />
+
+      {/* ── WHY CHOOSE US (Stats + Q&A cards) ── */}
       <section className="section-pad">
         <div style={{ maxWidth:1300, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:48 }}>
@@ -271,7 +724,7 @@ export default function Home() {
               {l==='fr'?'Notre Force':l==='en'?'Our Strength':l==='de'?'Unsere Stärke':l==='es'?'Nuestra Fuerza':l==='it'?'La Nostra Forza':'Nossa Força'}
             </div>
             <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(28px,4vw,52px)', color:'var(--text)', letterSpacing:'-0.02em' }}>
-              {l==='fr'?'Pourquoi nous\nchoisir ?':l==='en'?'Why choose\nus?':l==='de'?'Warum uns\nwählen?':l==='es'?'¿Por qué\nelegirnos?':l==='it'?'Perché sceglierci':'Por que nos escolher?'}
+              {l==='fr'?'Ce qui nous\ndistingue':l==='en'?'What sets\nus apart':l==='de'?'Was uns\nauszeichnet':l==='es'?'Lo que nos\ndistingue':l==='it'?'Cosa ci\ndistingue':'O que nos\ndistingue'}
             </h2>
             <p style={{ fontSize:16, color:'var(--text-3)', marginTop:12, maxWidth:600, margin:'12px auto 0' }}>
               {l==='fr'?'Découvrez ce qui nous distingue et pourquoi des milliers de clients nous font confiance.':l==='en'?'Discover what sets us apart and why thousands of customers trust us.':l==='de'?'Entdecken Sie, was uns unterscheidet und warum uns tausende Kunden vertrauen.':l==='es'?'Descubre lo que nos distingue y por qué miles de clientes confían en nosotros.':l==='it'?'Scopri cosa ci distingue e perché migliaia di clienti si fidano di noi.':'Descubra o que nos diferencia e por que milhares de clientes confiam em nós.'}
@@ -279,106 +732,50 @@ export default function Home() {
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2,1fr)', gap: isMobile ? 24 : 32 }}>
-            {/* Q&A Item 1 */}
-            <motion.div initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
-              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
-              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80" alt="Quality" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-              </div>
-              <div style={{ flex:1 }}>
-                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
-                  {l==='fr'?'Véhicules certifiés et inspectés':l==='en'?'Certified and inspected vehicles':l==='de'?'Zertifizierte und geprüfte Fahrzeuge':l==='es'?'Vehículos certificados e inspeccionados':l==='it'?'Veicoli certificati e ispezionati':'Veículos certificados e inspecionados'}
-                </h3>
-                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
-                  {l==='fr'?'Chaque véhicule passe par une inspection de 150 points. Historique complet vérifié, garantie jusqu\'à 24 mois.':l==='en'?'Every vehicle undergoes a 150-point inspection. Complete verified history, warranty up to 24 months.':l==='de'?'Jedes Fahrzeug durchläuft eine 150-Punkte-Inspektion. Vollständig verifizierte Historie, Garantie bis zu 24 Monaten.':l==='es'?'Cada vehículo pasa por una inspección de 150 puntos. Historial completo verificado, garantía hasta 24 meses.':l==='it'?'Ogni veicolo subisce un\'ispezione di 150 punti. Storia completa verificata, garanzia fino a 24 mesi.'}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Q&A Item 2 */}
-            <motion.div initial={{ opacity:0, x:20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.1 }}
-              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
-              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
-                <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300&q=80" alt="Financing" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-              </div>
-              <div style={{ flex:1 }}>
-                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
-                  {l==='fr'?'Financement sur mesure':l==='en'?'Tailored financing':l==='de'?'Maßgeschneiderte Finanzierung':l==='es'?'Financiación a medida':l==='it'?'Finanziamento su misura':'Financiamento personalizado'}
-                </h3>
-                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
-                  {l==='fr'?'Taux compétitifs, réponse en 24h, options flexibles. Nous travaillons avec les meilleurs partenaires bancaires.':l==='en'?'Competitive rates, response in 24h, flexible options. We work with the best banking partners.':l==='de'?'Wettbewerbsfähige Zinsen, Antwort in 24h, flexible Optionen. Wir arbeiten mit den besten Bankpartnern.':l==='es'?'Tasas competitivas, respuesta en 24h, opciones flexibles. Trabajamos con los mejores socios bancarios.':l==='it'?'Tassi competitivi, risposta in 24h, opzioni flessibili. Lavoriamo con i migliori partner bancari.'}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Q&A Item 3 */}
-            <motion.div initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.2 }}
-              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
-              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
-                <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=300&q=80" alt="Delivery" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-              </div>
-              <div style={{ flex:1 }}>
-                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
-                  {l==='fr'?'Livraison partout en Europe':l==='en'?'Delivery across Europe':l==='de'?'Lieferung in ganz Europa':l==='es'?'Entrega en toda Europa':l==='it'?'Consegna in tutta Europa':'Entrega em toda a Europa'}
-                </h3>
-                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
-                  {l==='fr'?'Transport sécurisé, livraison à domicile, suivi en temps réel. Votre véhicule livré propre et avec plein.':l==='en'?'Secure transport, home delivery, real-time tracking. Your vehicle delivered clean and with full tank.':l==='de'?'Sicherer Transport, Hauslieferung, Echtzeit-Tracking. Ihr Fahrzeug sauber und vollgetankt geliefert.':l==='es'?'Transporte seguro, entrega a domicilio, seguimiento en tiempo real. Su vehículo entregado limpio y con depósito lleno.':l==='it'?'Trasporto sicuro, consegna a domicilio, tracciamento in tempo reale. Il vostro veicolo consegnato pulito e con il pieno.'}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Q&A Item 4 */}
-            <motion.div initial={{ opacity:0, x:20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.3 }}
-              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
-              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
-                <img src="https://images.unsplash.com/photo-1454117096348-e4abbeba002c?w=300&q=80" alt="Support" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-              </div>
-              <div style={{ flex:1 }}>
-                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
-                  {l==='fr'?'Support client 24/7':l==='en'?'24/7 customer support':l==='de'?'24/7 Kundensupport':l==='es'?'Soporte al cliente 24/7':l==='it'?'Supporto clienti 24/7':'Suporte ao cliente 24/7'}
-                </h3>
-                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
-                  {l==='fr'?'Équipe disponible par WhatsApp, email et téléphone. Assistance pour toutes vos questions, même après la vente.':l==='en'?'Team available via WhatsApp, email and phone. Assistance for all your questions, even after sale.':l==='de'?'Team verfügbar per WhatsApp, E-Mail und Telefon. Unterstützung für alle Ihre Fragen, auch nach dem Verkauf.':l==='es'?'Equipo disponible por WhatsApp, correo y teléfono. Asistencia para todas sus preguntas, incluso después de la venta.':l==='it'?'Team disponibile via WhatsApp, email e telefono. Assistenza per tutte le vostre domande, anche dopo la vendita.'}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Q&A Item 5 */}
-            <motion.div initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.4 }}
-              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
-              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
-                <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300&q=80" alt="Trade-in" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-              </div>
-              <div style={{ flex:1 }}>
-                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
-                  {l==='fr'?'Reprise de votre véhicule':l==='en'?'Trade-in your vehicle':l==='de'?'Ankauf Ihres Fahrzeugs':l==='es'?'Canje de su vehículo':l==='it'?'Permuta del vostro veicolo':'Troca do seu veículo'}
-                </h3>
-                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
-                  {l==='fr'?'Estimation gratuite en ligne, reprise au meilleur prix. Simplifiez votre achat avec notre service de reprise.':l==='en'?'Free online valuation, trade-in at best price. Simplify your purchase with our trade-in service.':l==='de'?'Kostenlose Online-Bewertung, Ankauf zum besten Preis. Vereinfachen Sie Ihren Kauf mit unserem Ankaufsservice.':l==='es'?'Valoración gratuita en línea, canje al mejor precio. Simplifique su compra con nuestro servicio de canje.':l==='it'?'Valutazione gratuita online, permuta al miglior prezzo. Semplificate il vostro acquisto con il nostro servizio di permuta.'}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Q&A Item 6 */}
-            <motion.div initial={{ opacity:0, x:20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.5 }}
-              style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
-              <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
-                <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=300&q=80" alt="Warranty" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
-              </div>
-              <div style={{ flex:1 }}>
-                <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
-                  {l==='fr'?'Garantie étendue incluse':l==='en'?'Extended warranty included':l==='de'?'Erweiterte Garantie enthalten':l==='es'?'Garantía extendida incluida':l==='it'?'Garanzia estesa inclusa':'Garantia estendida incluída'}
-                </h3>
-                <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
-                  {l==='fr'?'Protection moteur et transmission, assistance 24/7, options d\'extension jusqu\'à 36 mois. Roulez l\'esprit tranquille.':l==='en'?'Engine and transmission protection, 24/7 assistance, extension options up to 36 months. Drive with peace of mind.':l==='de'?'Motor- und Getriebeschutz, 24/7 Assistance, Erweiterungsoptionen bis zu 36 Monaten. Fahren Sie mit ruhigem Gewissen.':l==='es'?'Protección de motor y transmisión, asistencia 24/7, opciones de extensión hasta 36 meses. Conduzca con tranquilidad.':l==='it'?'Protezione motore e trasmissione, assistenza 24/7, opzioni di estensione fino a 36 mesi. Guidate con tranquillità.'}
-                </p>
-              </div>
-            </motion.div>
+            {[
+              { img:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80', alt:'Quality',
+                title:{ fr:'Véhicules certifiés et inspectés', en:'Certified and inspected vehicles', de:'Zertifizierte und geprüfte Fahrzeuge', es:'Vehículos certificados e inspeccionados', it:'Veicoli certificati e ispezionati', pt:'Veículos certificados e inspecionados' },
+                desc:{ fr:'Chaque véhicule passe par une inspection de 150 points. Historique complet vérifié, garantie jusqu\'à 24 mois.', en:'Every vehicle undergoes a 150-point inspection. Complete verified history, warranty up to 24 months.', de:'Jedes Fahrzeug durchläuft eine 150-Punkte-Inspektion. Vollständig verifizierte Historie, Garantie bis zu 24 Monaten.', es:'Cada vehículo pasa por una inspección de 150 puntos. Historial completo verificado, garantía hasta 24 meses.', it:'Ogni veicolo subisce un\'ispezione di 150 punti. Storia completa verificata, garanzia fino a 24 mesi.', pt:'Cada veículo passa por uma inspeção de 150 pontos. Histórico completo verificado, garantia até 24 meses.' }, dir:-20 },
+              { img:'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300&q=80', alt:'Financing',
+                title:{ fr:'Financement sur mesure', en:'Tailored financing', de:'Maßgeschneiderte Finanzierung', es:'Financiación a medida', it:'Finanziamento su misura', pt:'Financiamento personalizado' },
+                desc:{ fr:'Taux compétitifs, réponse en 24h, options flexibles. Nous travaillons avec les meilleurs partenaires bancaires.', en:'Competitive rates, response in 24h, flexible options. We work with the best banking partners.', de:'Wettbewerbsfähige Zinsen, Antwort in 24h, flexible Optionen. Wir arbeiten mit den besten Bankpartnern.', es:'Tasas competitivas, respuesta en 24h, opciones flexibles. Trabajamos con los mejores socios bancarios.', it:'Tassi competitivi, risposta in 24h, opzioni flessibili. Lavoriamo con i migliori partner bancari.', pt:'Taxas competitivas, resposta em 24h, opções flexíveis. Trabalhamos com os melhores parceiros bancários.' }, dir:20 },
+              { img:'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=300&q=80', alt:'Delivery',
+                title:{ fr:'Livraison partout en Europe', en:'Delivery across Europe', de:'Lieferung in ganz Europa', es:'Entrega en toda Europa', it:'Consegna in tutta Europa', pt:'Entrega em toda a Europa' },
+                desc:{ fr:'Transport sécurisé, livraison à domicile, suivi en temps réel. Votre véhicule livré propre et avec plein.', en:'Secure transport, home delivery, real-time tracking. Your vehicle delivered clean and with full tank.', de:'Sicherer Transport, Hauslieferung, Echtzeit-Tracking. Ihr Fahrzeug sauber und vollgetankt geliefert.', es:'Transporte seguro, entrega a domicilio, seguimiento en tiempo real. Su vehículo entregado limpio y con depósito lleno.', it:'Trasporto sicuro, consegna a domicilio, tracciamento in tempo reale. Il vostro veicolo consegnato pulito e con il pieno.', pt:'Transporte seguro, entrega ao domicílio, rastreamento em tempo real. O seu veículo entregue limpo e com depósito cheio.' }, dir:-20 },
+              { img:'https://images.unsplash.com/photo-1454117096348-e4abbeba002c?w=300&q=80', alt:'Support',
+                title:{ fr:'Support client 24/7', en:'24/7 customer support', de:'24/7 Kundensupport', es:'Soporte al cliente 24/7', it:'Supporto clienti 24/7', pt:'Suporte ao cliente 24/7' },
+                desc:{ fr:'Équipe disponible par WhatsApp, email et téléphone. Assistance pour toutes vos questions, même après la vente.', en:'Team available via WhatsApp, email and phone. Assistance for all your questions, even after sale.', de:'Team verfügbar per WhatsApp, E-Mail und Telefon. Unterstützung für alle Ihre Fragen, auch nach dem Verkauf.', es:'Equipo disponible por WhatsApp, correo y teléfono. Asistencia para todas sus preguntas, incluso después de la venta.', it:'Team disponibile via WhatsApp, email e telefono. Assistenza per tutte le vostre domande, anche dopo la vendita.', pt:'Equipe disponível por WhatsApp, email e telefone. Assistência para todas as suas perguntas, mesmo após a venda.' }, dir:20 },
+              { img:'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300&q=80', alt:'Trade-in',
+                title:{ fr:'Reprise de votre véhicule', en:'Trade-in your vehicle', de:'Ankauf Ihres Fahrzeugs', es:'Canje de su vehículo', it:'Permuta del vostro veicolo', pt:'Troca do seu veículo' },
+                desc:{ fr:'Estimation gratuite en ligne, reprise au meilleur prix. Simplifiez votre achat avec notre service de reprise.', en:'Free online valuation, trade-in at best price. Simplify your purchase with our trade-in service.', de:'Kostenlose Online-Bewertung, Ankauf zum besten Preis. Vereinfachen Sie Ihren Kauf mit unserem Ankaufsservice.', es:'Valoración gratuita en línea, canje al mejor precio. Simplifique su compra con nuestro servicio de canje.', it:'Valutazione gratuita online, permuta al miglior prezzo. Semplificate il vostro acquisto con il nostro servizio di permuta.', pt:'Avaliação gratuita online, troca ao melhor preço. Simplifique a sua compra com o nosso serviço de troca.' }, dir:-20 },
+              { img:'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=300&q=80', alt:'Warranty',
+                title:{ fr:'Garantie étendue incluse', en:'Extended warranty included', de:'Erweiterte Garantie enthalten', es:'Garantía extendida incluida', it:'Garanzia estesa inclusa', pt:'Garantia estendida incluída' },
+                desc:{ fr:'Protection moteur et transmission, assistance 24/7, options d\'extension jusqu\'à 36 mois. Roulez l\'esprit tranquille.', en:'Engine and transmission protection, 24/7 assistance, extension options up to 36 months. Drive with peace of mind.', de:'Motor- und Getriebeschutz, 24/7 Assistance, Erweiterungsoptionen bis zu 36 Monaten. Fahren Sie mit ruhigem Gewissen.', es:'Protección de motor y transmisión, asistencia 24/7, opciones de extensión hasta 36 meses. Conduzca con tranquilidad.', it:'Protezione motore e trasmissione, assistenza 24/7, opzioni di estensione fino a 36 mesi. Guidate con tranquillità.', pt:'Proteção de motor e transmissão, assistência 24/7, opções de extensão até 36 meses. Conduza com tranquilidade.' }, dir:20 },
+            ].map((item, i) => (
+              <motion.div key={i}
+                initial={{ opacity:0, x: item.dir }}
+                whileInView={{ opacity:1, x:0 }}
+                viewport={{ once:true }}
+                transition={{ duration:0.6, delay:i * 0.1 }}
+                style={{ display:'flex', gap:20, alignItems:'start', background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 20 : 28, boxShadow:'var(--shadow-sm)' }}>
+                <div style={{ width: isMobile ? 80 : 120, height: isMobile ? 80 : 120, borderRadius:12, overflow:'hidden', flexShrink:0 }}>
+                  <img src={item.img} alt={item.alt} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+                </div>
+                <div style={{ flex:1 }}>
+                  <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:8 }}>
+                    {item.title[l] || item.title.fr}
+                  </h3>
+                  <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.6 }}>
+                    {item.desc[l] || item.desc.fr}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
           {/* Stats Banner */}
           <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:0.6 }}
-            style={{ marginTop:48, padding: isMobile ? 28 : 36, background:'linear-gradient(135deg,rgba(200,16,46,0.08),rgba(200,16,46,0.03))', border:'2px solid rgba(200,16,46,0.2)', borderRadius:16, display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(4,1fr)', gap:24, textAlign:'center' }}>
+            style={{ marginTop:48, padding: isMobile ? 28 : 36, background:'linear-gradient(135deg,rgba(200,16,46,0.08),rgba(200,16,46,0.03))', border:'2px solid rgba(200,16,46,0.2)', borderRadius:16, display:'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4,1fr)', gap:24, textAlign:'center' }}>
             {[
               { value:'10+', label:l==='fr'?'Années d\'expérience':l==='en'?'Years experience':l==='de'?'Jahre Erfahrung':l==='es'?'Años de experiencia':l==='it'?'Anni di esperienza':'Anos de experiência' },
               { value:'5000+', label:l==='fr'?'Clients satisfaits':l==='en'?'Happy clients':l==='de'?'Zufriedene Kunden':l==='es'?'Clientes satisfechos':l==='it'?'Clienti soddisfatti':'Clientes satisfeitos' },
@@ -415,9 +812,7 @@ export default function Home() {
               style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 32, boxShadow:'var(--shadow-sm)', transition:'all 0.3s' }}
               onMouseOver={e=>{e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='var(--shadow-md)';}}
               onMouseOut={e=>{e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-sm)';}}>
-              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>
-                🛡️
-              </div>
+              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>🛡️</div>
               <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 18 : 20, color:'var(--text)', marginBottom:12 }}>
                 {l==='fr'?'Garantie German Auto Cars':l==='en'?'German Auto Cars Warranty':l==='de'?'German Auto Cars Garantie':l==='es'?'Garantía German Auto Cars':l==='it'?'Garanzia German Auto Cars':'Garantia German Auto Cars'}
               </h3>
@@ -425,24 +820,11 @@ export default function Home() {
                 {l==='fr'?'Incluse dans toutes les commandes. Valable 12 mois ou 10 000 km. Protection moteur, boîte de vitesse, hors pièces d\'usure.':l==='en'?'Included in all orders. Valid 12 months or 10,000 km. Engine and transmission protection, excluding wear parts.':l==='de'?'In allen Bestellungen enthalten. Gültig 12 Monate oder 10.000 km. Motor- und Getriebeschutz, Verschleißteile ausgeschlossen.':l==='es'?'Incluida en todos los pedidos. Válida 12 meses o 10.000 km. Protección de motor y transmisión, excluyendo piezas de desgaste.':l==='it'?'Inclusa in tutti gli ordini. Valida 12 mesi o 10.000 km. Protezione motore e trasmissione, esclusi pezzi di usura.':'Incluída em todos os pedidos. Válida 12 meses ou 10.000 km. Proteção de motor e transmissão, excluindo peças de desgaste.'}
               </p>
               <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:20 }}>
-                {[
-                  l==='fr'?'✓ 12 mois':l==='en'?'✓ 12 months':l==='de'?'✓ 12 Monate':l==='es'?'✓ 12 meses':l==='it'?'✓ 12 mesi':'✓ 12 meses',
-                  l==='fr'?'✓ 10 000 km':l==='en'?'✓ 10,000 km':l==='de'?'✓ 10.000 km':l==='es'?'✓ 10.000 km':l==='it'?'✓ 10.000 km':'✓ 10.000 km',
-                  l==='fr'?'✓ Moteur':l==='en'?'✓ Engine':l==='de'?'✓ Motor':l==='es'?'✓ Motor':l==='it'?'✓ Motore':'✓ Motor',
-                ].map((badge, i) => (
-                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
+                {[l==='fr'?'✓ 12 mois':l==='en'?'✓ 12 months':l==='de'?'✓ 12 Monate':'✓ 12 meses', l==='fr'?'✓ 10 000 km':'✓ 10,000 km', l==='fr'?'✓ Moteur':l==='en'?'✓ Engine':l==='de'?'✓ Motor':'✓ Motor'].map((b,i)=>(
+                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{b}</span>
                 ))}
               </div>
-              <Link to="/warranty" style={{ 
-                display:'inline-flex', 
-                alignItems:'center', 
-                gap:6, 
-                fontSize:13, 
-                fontWeight:700, 
-                color:'#C8102E', 
-                textDecoration:'none',
-                transition:'all 0.3s'
-              }}>
+              <Link to="/warranty" style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#C8102E', textDecoration:'none' }}>
                 {l==='fr'?'En savoir plus':l==='en'?'Learn more':l==='de'?'Mehr erfahren':l==='es'?'Saber más':l==='it'?'Scopri di più':'Saiba mais'} →
               </Link>
             </motion.div>
@@ -452,9 +834,7 @@ export default function Home() {
               style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 32, boxShadow:'var(--shadow-sm)', transition:'all 0.3s' }}
               onMouseOver={e=>{e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='var(--shadow-md)';}}
               onMouseOut={e=>{e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-sm)';}}>
-              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>
-                📅
-              </div>
+              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>📅</div>
               <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 18 : 20, color:'var(--text)', marginBottom:12 }}>
                 {l==='fr'?'Options d\'extension':l==='en'?'Extension options':l==='de'?'Erweiterungsoptionen':l==='es'?'Opciones de extensión':l==='it'?'Opzioni di estensione':'Opções de extensão'}
               </h3>
@@ -462,24 +842,11 @@ export default function Home() {
                 {l==='fr'?'Étendez votre protection jusqu\'à 36 mois. Options disponibles : assistance 24/7, véhicule de remplacement, garantie carrosserie.':l==='en'?'Extend your protection up to 36 months. Available options: 24/7 assistance, replacement vehicle, body warranty.':l==='de'?'Erweitern Sie Ihren Schutz bis zu 36 Monaten. Verfügbare Optionen: 24/7 Assistance, Ersatzfahrzeug, Karossergarantie.':l==='es'?'Amplíe su protección hasta 36 meses. Opciones disponibles: asistencia 24/7, vehículo de reemplazo, garantía de carrocería.':l==='it'?'Estendete la tua protezione fino a 36 mesi. Opzioni disponibili: assistenza 24/7, veicolo sostitutivo, garanzia carrozzeria.':'Estenda sua proteção até 36 meses. Opções disponíveis: assistência 24/7, veículo substituto, garantia de carroceria.'}
               </p>
               <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:20 }}>
-                {[
-                  l==='fr'?'✓ 24 mois':l==='en'?'✓ 24 months':l==='de'?'✓ 24 Monate':l==='es'?'✓ 24 meses':l==='it'?'✓ 24 mesi':'✓ 24 meses',
-                  l==='fr'?'✓ 36 mois':l==='en'?'✓ 36 months':l==='de'?'✓ 36 Monate':l==='es'?'✓ 36 meses':l==='it'?'✓ 36 mesi':'✓ 36 meses',
-                  l==='fr'?'✓ 24/7':l==='en'?'✓ 24/7':l==='de'?'✓ 24/7':l==='es'?'✓ 24/7':l==='it'?'✓ 24/7':'✓ 24/7',
-                ].map((badge, i) => (
-                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
+                {['✓ 24 mois','✓ 36 mois','✓ 24/7'].map((b,i)=>(
+                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{b}</span>
                 ))}
               </div>
-              <Link to="/warranty" style={{ 
-                display:'inline-flex', 
-                alignItems:'center', 
-                gap:6, 
-                fontSize:13, 
-                fontWeight:700, 
-                color:'#C8102E', 
-                textDecoration:'none',
-                transition:'all 0.3s'
-              }}>
+              <Link to="/warranty" style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#C8102E', textDecoration:'none' }}>
                 {l==='fr'?'En savoir plus':l==='en'?'Learn more':l==='de'?'Mehr erfahren':l==='es'?'Saber más':l==='it'?'Scopri di più':'Saiba mais'} →
               </Link>
             </motion.div>
@@ -489,9 +856,7 @@ export default function Home() {
               style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 32, boxShadow:'var(--shadow-sm)', transition:'all 0.3s' }}
               onMouseOver={e=>{e.currentTarget.style.borderColor='rgba(200,16,46,0.3)'; e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='var(--shadow-md)';}}
               onMouseOut={e=>{e.currentTarget.style.borderColor='var(--border)'; e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-sm)';}}>
-              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>
-                💳
-              </div>
+              <div style={{ width:56, height:56, borderRadius:12, background:'linear-gradient(135deg,rgba(200,16,46,0.15),rgba(200,16,46,0.05))', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, marginBottom:20 }}>💳</div>
               <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 18 : 20, color:'var(--text)', marginBottom:12 }}>
                 {l==='fr'?'Assurance véhicule':l==='en'?'Vehicle insurance':l==='de'?'Fahrzeugversicherung':l==='es'?'Seguro de vehículo':l==='it'?'Assicurazione veicolo':'Seguro veículo'}
               </h3>
@@ -499,12 +864,8 @@ export default function Home() {
                 {l==='fr'?'Solutions d\'assurance complètes : responsabilité civile, tous risques, protection contre le vol et les incendies.':l==='en'?'Comprehensive insurance solutions: liability, full coverage, theft and fire protection.':l==='de'?'Umfassende Versicherungslösungen: Haftpflicht, Vollkasko, Diebstahl- und Brandschutz.':l==='es'?'Soluciones de seguro completas: responsabilidad civil, cobertura total, protección contra robo e incendios.':l==='it'?'Soluzioni assicurative complete: responsabilità civile, copertura totale, protezione contro furto e incendio.':'Soluções de seguro abrangentes: responsabilidade civil, cobertura total, proteção contra roubo e incêndio.'}
               </p>
               <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:20 }}>
-                {[
-                  l==='fr'?'✓ RC':l==='en'?'✓ Liability':l==='de'?'✓ Haftpflicht':l==='es'?'✓ RC':l==='it'?'✓ RC':'✓ RC',
-                  l==='fr'?'✓ Tous risques':l==='en'?'✓ Full coverage':l==='de'?'✓ Vollkasko':l==='es'?'✓ Todo riesgo':l==='it'?'✓ Casco totale':'✓ Cobertura total',
-                  l==='fr'?'✓ Vol':l==='en'?'✓ Theft':l==='de'?'✓ Diebstahl':l==='es'?'✓ Robo':l==='it'?'✓ Furto':'✓ Roubo',
-                ].map((badge, i) => (
-                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{badge}</span>
+                {[l==='fr'?'✓ RC':l==='en'?'✓ Liability':'✓ RC', l==='fr'?'✓ Tous risques':l==='en'?'✓ Full coverage':'✓ RC', l==='fr'?'✓ Vol':l==='en'?'✓ Theft':'✓ Vol'].map((b,i)=>(
+                  <span key={i} style={{ fontSize:12, fontWeight:600, color:'var(--text-2)', background:'var(--bg-card2)', padding:'6px 12px', borderRadius:6 }}>{b}</span>
                 ))}
               </div>
               <Link to="/insurance" style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#C8102E', textDecoration:'none' }}>
@@ -516,12 +877,12 @@ export default function Home() {
           {/* Trust badges */}
           <div style={{ marginTop:40, display:'flex', justifyContent:'center', flexWrap:'wrap', gap:12 }}>
             {[
-              { text: l==='fr'?'✓ Garantie incluse':l==='en'?'✓ Warranty included':l==='de'?'✓ Garantie enthalten':l==='es'?'✓ Garantía incluida':l==='it'?'✓ Garanzia inclusa':'✓ Garantia incluída', color: '#C8102E' },
-              { text: l==='fr'?'✓ Protection étendue':l==='en'?'✓ Extended protection':l==='de'?'✓ Erweiterter Schutz':l==='es'?'✓ Protección extendida':l==='it'?'✓ Protezione estesa':'✓ Proteção estendida', color: '#C8102E' },
-              { text: l==='fr'?'✓ Assurance sur mesure':l==='en'?'✓ Tailored insurance':l==='de'?'✓ Maßgeschneiderte Versicherung':l==='es'?'✓ Seguro a medida':l==='it'?'✓ Assicurazione su misura':'✓ Seguro sob medida', color: '#C8102E' },
-              { text: l==='fr'?'✓ Assistance 24/7':l==='en'?'✓ 24/7 assistance':l==='de'?'✓ 24/7 Assistance':l==='es'?'✓ Asistencia 24/7':l==='it'?'✓ Assistenza 24/7':'✓ Assistência 24/7', color: '#C8102E' },
+              { text: l==='fr'?'✓ Garantie incluse':l==='en'?'✓ Warranty included':l==='de'?'✓ Garantie enthalten':l==='es'?'✓ Garantía incluida':l==='it'?'✓ Garanzia inclusa':'✓ Garantia incluída' },
+              { text: l==='fr'?'✓ Protection étendue':l==='en'?'✓ Extended protection':l==='de'?'✓ Erweiterter Schutz':l==='es'?'✓ Protección extendida':l==='it'?'✓ Protezione estesa':'✓ Proteção estendida' },
+              { text: l==='fr'?'✓ Assurance sur mesure':l==='en'?'✓ Tailored insurance':l==='de'?'✓ Maßgeschneiderte Versicherung':l==='es'?'✓ Seguro a medida':l==='it'?'✓ Assicurazione su misura':'✓ Seguro sob medida' },
+              { text: l==='fr'?'✓ Assistance 24/7':l==='en'?'✓ 24/7 assistance':l==='de'?'✓ 24/7 Assistance':l==='es'?'✓ Asistencia 24/7':l==='it'?'✓ Assistenza 24/7':'✓ Assistência 24/7' },
             ].map((badge, i) => (
-              <div key={i} style={{ padding:'10px 20px', background:'var(--bg-card2)', border:'1px solid rgba(200,16,46,0.2)', borderRadius:8, fontSize:13, fontWeight:700, color:badge.color }}>
+              <div key={i} style={{ padding:'10px 20px', background:'var(--bg-card2)', border:'1px solid rgba(200,16,46,0.2)', borderRadius:8, fontSize:13, fontWeight:700, color:'#C8102E' }}>
                 {badge.text}
               </div>
             ))}
@@ -530,7 +891,7 @@ export default function Home() {
       </section>
 
       {/* ── REVIEWS ── */}
-      <section className="section-pad">
+      <section className="section-pad" style={{ background:'var(--bg-card2)', borderTop:'1px solid var(--border)' }}>
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
             <div className="section-eyebrow" style={{ justifyContent:'center' }}>{t('reviews_label', l)}</div>
@@ -558,7 +919,7 @@ export default function Home() {
       </section>
 
       {/* ── CONTACT ── */}
-      <section style={{ background:'var(--bg-card2)', borderTop:'1px solid var(--border)' }} className="section-pad">
+      <section style={{ background:'var(--bg)', borderTop:'1px solid var(--border)' }} className="section-pad">
         <div style={{ maxWidth:1100, margin:'0 auto', display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 32 : 60, alignItems:'center' }}>
           <div>
             <div className="section-eyebrow">{t('contact_label', l)}</div>
@@ -632,19 +993,19 @@ export default function Home() {
                   {l==='fr'?'Informations légales':l==='en'?'Legal':l==='de'?'Rechtliches':l==='es'?'Legal':l==='it'?'Note legali':'Informações legais'}
                 </p>
                 {[
-                  { to:'/mentions-legales', fr:'Mentions légales', en:'Legal notice', de:'Impressum' },
-                  { to:'/politique-de-vente', fr:'Politique de vente', en:'Sales policy', de:'Verkaufspolitik' },
-                  { to:'/cgv', fr:'CGV', en:'Terms of sale', de:'AGB' },
-                  { to:'/politique-confidentialite', fr:'Confidentialité', en:'Privacy', de:'Datenschutz' },
-                  { to:'/cookies', fr:'Cookies', en:'Cookies', de:'Cookies' },
-                ].map(({ to, fr, en, de }) => {
-                  const label = l === 'fr' ? fr : l === 'en' ? en : l === 'de' ? de : l === 'es' ? fr : l === 'it' ? en : l === 'pt' ? en : fr;
+                  { to:'/mentions-legales', fr:'Mentions légales', en:'Legal notice', de:'Impressum', pt:'Aviso legal' },
+                  { to:'/politique-de-vente', fr:'Politique de vente', en:'Sales policy', de:'Verkaufspolitik', pt:'Política de vendas' },
+                  { to:'/cgv', fr:'CGV', en:'Terms of sale', de:'AGB', pt:'Termos de venda' },
+                  { to:'/politique-confidentialite', fr:'Confidentialité', en:'Privacy', de:'Datenschutz', pt:'Privacidade' },
+                  { to:'/cookies', fr:'Cookies', en:'Cookies', de:'Cookies', pt:'Cookies' },
+                ].map(({ to, fr, en, de, pt }) => {
+                  const label = l === 'fr' ? fr : l === 'en' ? en : l === 'de' ? de : l === 'pt' ? pt : l === 'es' ? fr : l === 'it' ? en : fr;
                   return (
-                  <Link key={to} to={to} style={{ display:'block', fontSize:14, color:'var(--text-3)', textDecoration:'none', marginBottom:8, transition:'color 0.2s' }}
-                    onMouseOver={e=>{ e.currentTarget.style.color='var(--red)'; }}
-                    onMouseOut={e=>{ e.currentTarget.style.color='var(--text-3)'; }}>
-                    {label}
-                  </Link>
+                    <Link key={to} to={to} style={{ display:'block', fontSize:14, color:'var(--text-3)', textDecoration:'none', marginBottom:8, transition:'color 0.2s' }}
+                      onMouseOver={e=>{ e.currentTarget.style.color='var(--red)'; }}
+                      onMouseOut={e=>{ e.currentTarget.style.color='var(--text-3)'; }}>
+                      {label}
+                    </Link>
                   );
                 })}
               </div>
