@@ -6,6 +6,7 @@ import { carAPI } from '../services/api';
 import { useAuthStore, useCartStore, useToastStore, useLangStore, useThemeStore } from '../store';
 import { formatEuro, calculateOrderTotals } from '../utils/helpers';
 import { Loader } from '../components/UI';
+import CarCard from '../components/CarCard';
 import { t } from '../utils/i18n';
 import { CATEGORIES, CATEGORY_ICONS, getCategoryLabel } from '../utils/categories';
 
@@ -41,6 +42,8 @@ export default function CarDetails() {
 
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [similarCars, setSimilarCars] = useState([]);
+  const [similarLoading, setSimilarLoading] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState('full');
   const [adding, setAdding] = useState(false);
@@ -69,6 +72,29 @@ export default function CarDetails() {
       .then(r => { setCar(r.data.car); setLoading(false); })
       .catch(() => { setLoading(false); navigate('/catalog'); });
   }, [id]);
+
+  useEffect(() => {
+    if (!car?.id) return;
+    const carId = Number(car.id);
+    setSimilarLoading(true);
+    setSimilarCars([]);
+
+    const pickOthers = (list) => list.filter(c => Number(c.id) !== carId);
+
+    carAPI.getAll({ category: car.category, limit: 12 })
+      .then(async (r) => {
+        let others = pickOthers(r.data.cars || []);
+        if (others.length < 3) {
+          const fallback = await carAPI.getAll({ limit: 12 });
+          const extra = pickOthers(fallback.data.cars || [])
+            .filter(c => !others.some(o => o.id === c.id));
+          others = [...others, ...extra];
+        }
+        setSimilarCars(others.slice(0, 3));
+      })
+      .catch(() => setSimilarCars([]))
+      .finally(() => setSimilarLoading(false));
+  }, [car?.id, car?.category]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) return navigate('/login');
@@ -715,7 +741,7 @@ export default function CarDetails() {
         </motion.div>
 
         {/* Related Vehicles */}
-        {car && (
+        {car && (similarLoading || similarCars.length > 0) && (
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -731,31 +757,17 @@ export default function CarDetails() {
                 {lang==='fr'?'Véhicules similaires':lang==='en'?'Similar Vehicles':lang==='de'?'Ähnliche Fahrzeuge':lang==='es'?'Vehículos Similares':lang==='it'?'Veicoli Simili':'Veículos Similares'}
               </h2>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: isMobile ? 16 : 24 }}>
-              {Array.from({ length: isMobile ? 2 : 3 }).map((_, i) => (
-                <div key={i} style={{ 
-                  background: C.card, 
-                  border: `1px solid ${C.border}`, 
-                  borderRadius: 16, 
-                  padding: 20,
-                  minHeight: 280,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 12
-                }}>
-                  <div style={{ 
-                    width: '100%', 
-                    height: 160, 
-                    background: C.card2, 
-                    borderRadius: 12,
-                    animation: 'pulse 1.5s ease-in-out infinite'
-                  }} />
-                  <div style={{ height: 20, background: C.card2, borderRadius: 4, width: '70%' }} />
-                  <div style={{ height: 16, background: C.card2, borderRadius: 4, width: '50%' }} />
-                  <div style={{ height: 24, background: C.card2, borderRadius: 4, width: '40%', marginTop: 'auto' }} />
-                </div>
-              ))}
-            </div>
+            {similarLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                <Loader />
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 16 : 24 }}>
+                {similarCars.slice(0, isMobile ? 2 : 3).map((similar, i) => (
+                  <CarCard key={similar.id} car={similar} index={i} />
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
 
