@@ -36,6 +36,18 @@ export default function Simulation() {
     if (v && v >= 500 && v <= 50000) setSalary(v);
   };
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const staggerWrap = {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: 0.12, delayChildren: 0.08 },
+    },
+  };
+
   const L = {
     label:       { fr:'Outil de simulation',    en:'Financing Simulator',       de:'Finanzierungsrechner',      es:'Simulador de financiación',       it:'Simulatore di finanziamento',   pt:'Simulador de financiamento' },
     title1:      { fr:'Simuler mon',            en:'Simulate my',               de:'Finanzierung',               es:'Simular mi',                      it:'Simula il mio',                 pt:'Simular meu' },
@@ -64,6 +76,17 @@ export default function Simulation() {
     introStep2D: { fr:'Vous avancez progressivement vers votre objectif, sans pression.', en:'You move progressively toward your goal, without pressure.', de:'Sie kommen schrittweise und ohne Druck Ihrem Ziel naher.', es:'Avanzas progresivamente hacia tu objetivo, sin presion.', it:'Avanzi progressivamente verso il tuo obiettivo, senza pressione.', pt:'Voce avanca progressivamente rumo ao seu objetivo, sem pressao.' },
     introStep3T: { fr:'3. Vous obtenez votre vehicule', en:'3. Receive your vehicle', de:'3. Fahrzeug erhalten', es:'3. Recibe tu vehiculo', it:'3. Ricevi il tuo veicolo', pt:'3. Receba seu veiculo' },
     introStep3D: { fr:'Quand les conditions sont atteintes, la livraison est organisee rapidement.', en:'Once conditions are met, delivery is arranged quickly.', de:'Sobald die Bedingungen erfullt sind, wird die Ubergabe schnell organisiert.', es:'Cuando se cumplen las condiciones, la entrega se organiza rapidamente.', it:'Quando le condizioni sono soddisfatte, la consegna viene organizzata rapidamente.', pt:'Quando as condicoes sao atingidas, a entrega e organizada rapidamente.' },
+    introExplainT:{ fr:'Comment cela fonctionne en detail', en:'How it works in detail', de:'So funktioniert es im Detail', es:'Como funciona en detalle', it:'Come funziona in dettaglio', pt:'Como funciona em detalhe' },
+    introExplainD:{ fr:'Vous commencez avec un montant mensuel confortable. Chaque mensualite vous rapproche de votre objectif, avec une lecture claire de votre progression et un accompagnement a chaque etape.', en:'You start with a comfortable monthly amount. Each payment brings you closer to your goal, with clear progress tracking and support at every step.', de:'Sie starten mit einem passenden Monatsbetrag. Jede Rate bringt Sie Ihrem Ziel naher, mit klarer Fortschrittsanzeige und Begleitung in jeder Phase.', es:'Empiezas con un importe mensual comodo. Cada cuota te acerca a tu objetivo, con una vision clara del progreso y acompanamiento en cada etapa.', it:'Inizi con un importo mensile sostenibile. Ogni rata ti avvicina al tuo obiettivo, con monitoraggio chiaro dei progressi e supporto continuo.', pt:'Comeca com um valor mensal confortavel. Cada parcela aproxima voce do objetivo, com visao clara do progresso e apoio em cada etapa.' },
+    introBenefit1T:{ fr:'Transparence totale', en:'Total transparency', de:'Volle Transparenz', es:'Transparencia total', it:'Trasparenza totale', pt:'Transparencia total' },
+    introBenefit1D:{ fr:'Montants, periodicite et etapes sont presentes clairement des le depart.', en:'Amounts, schedule, and milestones are clearly presented from day one.', de:'Betrage, Rhythmus und Schritte sind von Anfang an klar dargestellt.', es:'Importes, periodicidad y etapas se presentan claramente desde el inicio.', it:'Importi, periodicita e fasi sono chiare fin dall inizio.', pt:'Valores, periodicidade e etapas sao claros desde o inicio.' },
+    introBenefit2T:{ fr:'Rythme adapte', en:'Adapted pace', de:'Angepasstes Tempo', es:'Ritmo adaptado', it:'Ritmo adattato', pt:'Ritmo adaptado' },
+    introBenefit2D:{ fr:'Le plan mensuel suit votre capacite financiere pour rester serein.', en:'The monthly plan follows your financial capacity to keep things stress-free.', de:'Der Monatsplan orientiert sich an Ihrer finanziellen Moglichkeit fur mehr Gelassenheit.', es:'El plan mensual sigue tu capacidad financiera para mantener la tranquilidad.', it:'Il piano mensile segue la tua capacita finanziaria per restare sereno.', pt:'O plano mensal acompanha sua capacidade financeira para manter tranquilidade.' },
+    introBenefit3T:{ fr:'Accompagnement humain', en:'Human support', de:'Personliche Begleitung', es:'Acompanamiento humano', it:'Supporto umano', pt:'Acompanhamento humano' },
+    introBenefit3D:{ fr:'Notre equipe vous guide du premier versement jusqu a la livraison.', en:'Our team guides you from the first payment to delivery.', de:'Unser Team begleitet Sie von der ersten Zahlung bis zur Ubergabe.', es:'Nuestro equipo te acompana desde el primer pago hasta la entrega.', it:'Il nostro team ti segue dal primo pagamento fino alla consegna.', pt:'Nossa equipe acompanha voce do primeiro pagamento ate a entrega.' },
+    introTrust1:  { fr:'Aucune surprise sur les mensualites', en:'No surprises on monthly payments', de:'Keine Uberraschungen bei Monatsraten', es:'Sin sorpresas en las cuotas mensuales', it:'Nessuna sorpresa sulle rate mensili', pt:'Sem surpresas nas parcelas mensais' },
+    introTrust2:  { fr:'Suivi clair de votre progression', en:'Clear tracking of your progress', de:'Klarer Fortschrittsuberblick', es:'Seguimiento claro de su progreso', it:'Monitoraggio chiaro dei progressi', pt:'Acompanhamento claro do progresso' },
+    introTrust3:  { fr:'Livraison organisee des validation', en:'Delivery arranged once validation is complete', de:'Ubergabe nach abgeschlossener Prufung', es:'Entrega organizada tras validacion completa', it:'Consegna organizzata dopo convalida completa', pt:'Entrega organizada apos validacao completa' },
   };
 
   return (
@@ -84,31 +107,91 @@ export default function Simulation() {
 
       <div style={{ maxWidth:1100, margin:'0 auto', padding: isMobile ? '28px 4%' : '52px 6%' }}>
         {/* Financing intro */}
-        <section style={{ marginBottom:30 }}>
-          <div style={{ background:'var(--bg-card2)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? '20px 16px' : '28px 30px' }}>
-            <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)', marginBottom:10 }}>
+        <motion.section
+          style={{ marginBottom:30 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={staggerWrap}
+        >
+          <motion.div
+            variants={fadeUp}
+            transition={{ duration:0.55, ease:[0.16, 1, 0.3, 1] }}
+            style={{ background:'var(--bg-card2)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? '20px 16px' : '28px 30px' }}
+          >
+            <motion.p variants={fadeUp} transition={{ duration:0.45 }} style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)', marginBottom:10 }}>
               {L.introTag[l]}
-            </p>
-            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile ? 26 : 34, color:'var(--text)', lineHeight:1.2, marginBottom:10 }}>
+            </motion.p>
+            <motion.h2 variants={fadeUp} transition={{ duration:0.5 }} style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile ? 26 : 34, color:'var(--text)', lineHeight:1.2, marginBottom:10 }}>
               {L.introTitle[l]}
-            </h2>
-            <p style={{ fontSize: isMobile ? 14 : 16, color:'var(--text-3)', lineHeight:1.7, marginBottom:18 }}>
+            </motion.h2>
+            <motion.p variants={fadeUp} transition={{ duration:0.52 }} style={{ fontSize: isMobile ? 14 : 16, color:'var(--text-3)', lineHeight:1.7, marginBottom:18 }}>
               {L.introSub[l]}
-            </p>
-            <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,minmax(0,1fr))', gap:12 }}>
+            </motion.p>
+
+            <motion.div variants={staggerWrap} style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,minmax(0,1fr))', gap:12, marginBottom:16 }}>
               {[
                 { t: L.introStep1T[l], d: L.introStep1D[l] },
                 { t: L.introStep2T[l], d: L.introStep2D[l] },
                 { t: L.introStep3T[l], d: L.introStep3D[l] },
               ].map((item) => (
-                <div key={item.t} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 14 : 16 }}>
+                <motion.div
+                  key={item.t}
+                  variants={fadeUp}
+                  transition={{ duration:0.5 }}
+                  whileHover={{ y:-4, borderColor:'var(--red)' }}
+                  style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 14 : 16 }}
+                >
                   <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:15, color:'var(--text)', marginBottom:7 }}>{item.t}</p>
                   <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.6 }}>{item.d}</p>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
-        </section>
+            </motion.div>
+
+            <motion.div variants={fadeUp} transition={{ duration:0.52 }} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 14 : 18, marginBottom:16 }}>
+              <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 18 : 20, color:'var(--text)', marginBottom:8 }}>
+                {L.introExplainT[l]}
+              </p>
+              <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.75 }}>
+                {L.introExplainD[l]}
+              </p>
+            </motion.div>
+
+            <motion.div variants={staggerWrap} style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,minmax(0,1fr))', gap:12, marginBottom:16 }}>
+              {[
+                { t: L.introBenefit1T[l], d: L.introBenefit1D[l] },
+                { t: L.introBenefit2T[l], d: L.introBenefit2D[l] },
+                { t: L.introBenefit3T[l], d: L.introBenefit3D[l] },
+              ].map((item) => (
+                <motion.div
+                  key={item.t}
+                  variants={fadeUp}
+                  transition={{ duration:0.45 }}
+                  whileHover={{ scale: 1.01 }}
+                  style={{ background:'linear-gradient(135deg, var(--bg-card), var(--bg-card2))', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 14 : 16 }}
+                >
+                  <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:14, color:'var(--text)', marginBottom:6 }}>{item.t}</p>
+                  <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.6 }}>{item.d}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.div variants={staggerWrap} style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,minmax(0,1fr))', gap:10 }}>
+              {[L.introTrust1[l], L.introTrust2[l], L.introTrust3[l]].map((point) => (
+                <motion.div
+                  key={point}
+                  variants={fadeUp}
+                  transition={{ duration:0.42 }}
+                  whileHover={{ x: 3 }}
+                  style={{ display:'flex', alignItems:'center', gap:8, padding:'10px 12px', border:'1px dashed var(--border)', borderRadius:10, background:'rgba(255,255,255,0.01)' }}
+                >
+                  <span style={{ color:'var(--red)', fontWeight:900 }}>✓</span>
+                  <span style={{ fontSize:13, color:'var(--text-2)' }}>{point}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </motion.section>
 
         {/* Simulator card */}
         <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? '24px 20px' : '40px 44px', marginBottom:44, boxShadow:'var(--shadow-md)' }}>
