@@ -497,20 +497,10 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.any(), async (r
       const existingImages = Array.isArray(req.body.existingImages)
         ? req.body.existingImages
         : [req.body.existingImages];
-
-      const imageFields = [
-        'imageUrl','imageUrl2','imageUrl3','imageUrl4','imageUrl5',
-        'imageUrl6','imageUrl7','imageUrl8','imageUrl9','imageUrl10',
-        'imageUrl11','imageUrl12','imageUrl13','imageUrl14','imageUrl15',
-        'imageUrl16','imageUrl17','imageUrl18','imageUrl19','imageUrl20'
-      ];
-
-      let existingIndex = 0;
-      for (const field of imageFields) {
-        if (carData[field]) continue; // nouvelle image uploadée → on ne touche pas
-        carData[field] = existingImages[existingIndex] ?? null;
-        existingIndex++;
-      }
+      existingImages.forEach((url, idx) => {
+        const fieldName = idx === 0 ? 'imageUrl' : `imageUrl${idx + 1}`;
+        if (!carData[fieldName]) carData[fieldName] = url;
+      });
     }
 
     console.log('Final carData:', carData);
@@ -537,6 +527,30 @@ app.patch('/api/cars/:id/toggle', authenticateToken, requireAdmin, async (req, r
     res.json({ car });
   } catch (e) {
     res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Delete car
+app.delete('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const carId = parseInt(req.params.id);
+    if (isNaN(carId) || carId <= 0) {
+      return res.status(400).json({ error: 'ID invalide' });
+    }
+
+    const existing = await prisma.car.findUnique({ where: { id: carId } });
+    if (!existing) return res.status(404).json({ error: 'Voiture non trouvée' });
+
+    // Supprimer les dépendances puis la voiture dans une transaction
+    await prisma.$transaction([
+      prisma.cart.deleteMany({ where: { carId } }),
+      prisma.car.delete({ where: { id: carId } }),
+    ]);
+
+    res.json({ success: true, message: 'Véhicule supprimé' });
+  } catch (e) {
+    console.error('Delete car error:', e);
+    res.status(500).json({ error: 'Erreur lors de la suppression du véhicule' });
   }
 });
 
