@@ -497,10 +497,20 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.any(), async (r
       const existingImages = Array.isArray(req.body.existingImages)
         ? req.body.existingImages
         : [req.body.existingImages];
-      existingImages.forEach((url, idx) => {
-        const fieldName = idx === 0 ? 'imageUrl' : `imageUrl${idx + 1}`;
-        if (!carData[fieldName]) carData[fieldName] = url;
-      });
+
+      const imageFields = [
+        'imageUrl','imageUrl2','imageUrl3','imageUrl4','imageUrl5',
+        'imageUrl6','imageUrl7','imageUrl8','imageUrl9','imageUrl10',
+        'imageUrl11','imageUrl12','imageUrl13','imageUrl14','imageUrl15',
+        'imageUrl16','imageUrl17','imageUrl18','imageUrl19','imageUrl20'
+      ];
+
+      let existingIndex = 0;
+      for (const field of imageFields) {
+        if (carData[field]) continue; // nouvelle image uploadée → on ne touche pas
+        carData[field] = existingImages[existingIndex] ?? null;
+        existingIndex++;
+      }
     }
 
     console.log('Final carData:', carData);

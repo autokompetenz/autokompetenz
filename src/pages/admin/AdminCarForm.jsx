@@ -202,9 +202,7 @@ export default function AdminCarForm() {
       
       // Add existing image URLs that weren't deleted
       existingImages.forEach(img => {
-        if (img.field && form[img.field]) {
-          formData.append('existingImages', form[img.field]);
-        }
+        formData.append('existingImages', img.url);
       });
       
       console.log('FormData contents:');
