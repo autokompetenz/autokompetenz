@@ -541,9 +541,10 @@ app.delete('/api/cars/:id', authenticateToken, requireAdmin, async (req, res) =>
     const existing = await prisma.car.findUnique({ where: { id: carId } });
     if (!existing) return res.status(404).json({ error: 'Voiture non trouvée' });
 
-    // Supprimer les dépendances puis la voiture dans une transaction
+    // Supprimer toutes les dépendances puis la voiture dans une transaction
     await prisma.$transaction([
       prisma.cart.deleteMany({ where: { carId } }),
+      prisma.orderItem.deleteMany({ where: { carId } }),
       prisma.car.delete({ where: { id: carId } }),
     ]);
 
