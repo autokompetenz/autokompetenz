@@ -14,6 +14,103 @@ const PAYMENT_OPTIONS = [
   { id:'monthly', icon:'📅', labelKey:'payment_monthly', subFr:'60 mensualités à 6%/an', subEn:'60 monthly payments at 6%/yr', subDe:'60 Raten à 6%/Jahr' },
 ];
 
+const WARRANTY_OPTIONS = [
+  { id: 'none',    months: 0,  price: 0,   labelFr: 'Aucune garantie supplémentaire', labelEn: 'No additional warranty', labelDe: 'Keine zusätzliche Garantie' },
+  { id: '24months', months: 24, price: 360, labelFr: 'Garantie 24 mois', labelEn: '24-month warranty', labelDe: '24 Monate Garantie' },
+  { id: '36months', months: 36, price: 450, labelFr: 'Garantie 36 mois', labelEn: '36-month warranty', labelDe: '36 Monate Garantie' },
+];
+
+const REGISTRATION_SERVICE = {
+  id: 'registration',
+  price: 460,
+  labelFr: 'Service d\'immatriculation',
+  labelEn: 'Registration service',
+  labelDe: 'Zulassungsservice',
+};
+
+const ADDITIONAL_SERVICES = [
+  {
+    id: 'delivery',
+    price: 150,
+    labelFr: 'Livraison à domicile',
+    labelEn: 'Home delivery',
+    labelDe: 'Hauslieferung',
+    descriptionFr: 'Livraison du véhicule à votre adresse',
+    descriptionEn: 'Vehicle delivery to your address',
+    descriptionDe: 'Lieferung des Fahrzeugs an Ihre Adresse',
+  },
+  {
+    id: 'roadside_assistance',
+    price: 120,
+    labelFr: 'Assistance routière 24/7',
+    labelEn: '24/7 roadside assistance',
+    labelDe: '24/7 Pannenhilfe',
+    descriptionFr: 'Assistance dépannage 24h/24 et 7j/7',
+    descriptionEn: '24/7 breakdown assistance',
+    descriptionDe: '24/7 Pannenhilfe',
+  },
+  {
+    id: 'replacement_vehicle',
+    price: 200,
+    labelFr: 'Véhicule de remplacement',
+    labelEn: 'Replacement vehicle',
+    labelDe: 'Ersatzfahrzeug',
+    descriptionFr: 'Véhicule de prêt en cas de panne',
+    descriptionEn: 'Loan vehicle in case of breakdown',
+    descriptionDe: 'Leihfahrzeug bei Panne',
+  },
+  {
+    id: 'maintenance_pack',
+    price: 280,
+    labelFr: 'Pack entretien (2 révisions)',
+    labelEn: 'Maintenance pack (2 services)',
+    descriptionDe: 'Wartungspaket (2 Inspektionen)',
+    descriptionFr: 'Inclus 2 révisions complètes',
+    descriptionEn: 'Includes 2 full services',
+    descriptionDe: 'Inklusive 2 vollständige Inspektionen',
+  },
+  {
+    id: 'body_protection',
+    price: 180,
+    labelFr: 'Protection carrosserie',
+    labelEn: 'Body protection',
+    labelDe: 'Karosserieschutz',
+    descriptionFr: 'Traitement anti-rayures et protection',
+    descriptionEn: 'Anti-scratch treatment and protection',
+    descriptionDe: 'Kratzschutz und Schutzbehandlung',
+  },
+  {
+    id: 'interior_protection',
+    price: 120,
+    labelFr: 'Protection intérieure',
+    labelEn: 'Interior protection',
+    labelDe: 'Innenausstattungsschutz',
+    descriptionFr: 'Protection sièges et tapis',
+    descriptionEn: 'Seat and floor protection',
+    descriptionDe: 'Sitz- und Fußmattenschutz',
+  },
+  {
+    id: 'winter_pack',
+    price: 350,
+    labelFr: 'Pack hiver (pneus neige)',
+    labelEn: 'Winter pack (snow tires)',
+    labelDe: 'Winterpaket (Winterreifen)',
+    descriptionFr: '4 pneus hiver inclus',
+    descriptionEn: '4 winter tires included',
+    descriptionDe: '4 Winterreifen inklusive',
+  },
+  {
+    id: 'detailing',
+    price: 150,
+    labelFr: 'Nettoyage professionnel',
+    labelEn: 'Professional detailing',
+    labelDe: 'Professionelles Detailing',
+    descriptionFr: 'Nettoyage complet et polissage',
+    descriptionEn: 'Full cleaning and polishing',
+    descriptionDe: 'Vollständige Reinigung und Politur',
+  },
+];
+
 function getPaymentSub(opt, lang) {
   return opt[`sub${lang.charAt(0).toUpperCase() + lang.slice(1)}`] || opt.subFr;
 }
@@ -24,12 +121,126 @@ function CheckoutPanel({
   shippingAddress, setShippingAddress,
   notes, setNotes,
   placing, handleOrder,
+  selectedWarranty, setSelectedWarranty,
+  includeRegistration, setIncludeRegistration,
+  selectedAdditionalServices, setSelectedAdditionalServices,
 }) {
   const l = lang || 'fr';
-  const totals = calculateOrderTotals(total, selectedPayment);
+  
+  const warrantyPrice = WARRANTY_OPTIONS.find(w => w.id === selectedWarranty)?.price || 0;
+  const registrationPrice = includeRegistration ? REGISTRATION_SERVICE.price : 0;
+  const additionalServicesPrice = selectedAdditionalServices.reduce((sum, id) => {
+    const service = ADDITIONAL_SERVICES.find(s => s.id === id);
+    return sum + (service?.price || 0);
+  }, 0);
+  const servicesTotal = warrantyPrice + registrationPrice + additionalServicesPrice;
+  const totalWithServices = total + servicesTotal;
+  
+  const totals = calculateOrderTotals(totalWithServices, selectedPayment);
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+
+      {/* Services selector */}
+      <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, boxShadow:'var(--shadow-sm)' }}>
+        <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--red)', marginBottom:14 }}>
+          {l==='fr'?'Services supplémentaires':l==='en'?'Additional services':l==='de'?'Zusätzliche Dienste':'Servicios adicionales'}
+        </p>
+        
+        {/* Warranty options */}
+        <div style={{ marginBottom:16 }}>
+          <p style={{ fontSize:13, fontWeight:700, color:'var(--text)', marginBottom:8 }}>
+            {l==='fr'?'Garantie et assurance':l==='en'?'Warranty and insurance':l==='de'?'Garantie und Versicherung':'Garantía y seguro'}
+          </p>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {WARRANTY_OPTIONS.map(opt => (
+              <label key={opt.id} style={{
+                display:'flex', alignItems:'center', gap:12, padding:'12px 14px',
+                borderRadius:8, cursor:'pointer', transition:'all 0.2s',
+                border:`1.5px solid ${selectedWarranty===opt.id?'var(--red)':'var(--border)'}`,
+                background:selectedWarranty===opt.id?'var(--red-bg)':'transparent',
+              }}>
+                <input type="radio" name="warranty" value={opt.id}
+                  checked={selectedWarranty===opt.id}
+                  onChange={() => setSelectedWarranty(opt.id)}
+                  style={{ accentColor:'var(--red)', width:15, height:15, flexShrink:0 }} />
+                <div style={{ flex:1 }}>
+                  <p style={{ fontSize:14, fontWeight:700, color:'var(--text)' }}>
+                    {opt[`label${l.charAt(0).toUpperCase() + l.slice(1)}`] || opt.labelFr}
+                  </p>
+                  {opt.price > 0 && (
+                    <p style={{ fontSize:12, color:'var(--text-3)', marginTop:1 }}>
+                      {formatEuro(opt.price)}
+                    </p>
+                  )}
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Registration service */}
+        <div style={{ marginBottom:16 }}>
+          <label style={{
+            display:'flex', alignItems:'center', gap:12, padding:'12px 14px',
+            borderRadius:8, cursor:'pointer', transition:'all 0.2s',
+            border:`1.5px solid ${includeRegistration?'var(--red)':'var(--border)'}`,
+            background:includeRegistration?'var(--red-bg)':'transparent',
+          }}>
+            <input type="checkbox"
+              checked={includeRegistration}
+              onChange={(e) => setIncludeRegistration(e.target.checked)}
+              style={{ accentColor:'var(--red)', width:15, height:15, flexShrink:0 }} />
+            <div style={{ flex:1 }}>
+              <p style={{ fontSize:14, fontWeight:700, color:'var(--text)' }}>
+                {REGISTRATION_SERVICE[`label${l.charAt(0).toUpperCase() + l.slice(1)}`] || REGISTRATION_SERVICE.labelFr}
+              </p>
+              <p style={{ fontSize:12, color:'var(--text-3)', marginTop:1 }}>
+                {formatEuro(REGISTRATION_SERVICE.price)}
+              </p>
+            </div>
+          </label>
+        </div>
+
+        {/* Additional services */}
+        <div>
+          <p style={{ fontSize:13, fontWeight:700, color:'var(--text)', marginBottom:8 }}>
+            {l==='fr'?'Autres services':l==='en'?'Other services':l==='de'?'Weitere Dienste':'Otros servicios'}
+          </p>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {ADDITIONAL_SERVICES.map(service => (
+              <label key={service.id} style={{
+                display:'flex', alignItems:'center', gap:12, padding:'12px 14px',
+                borderRadius:8, cursor:'pointer', transition:'all 0.2s',
+                border:`1.5px solid ${selectedAdditionalServices.includes(service.id)?'var(--red)':'var(--border)'}`,
+                background:selectedAdditionalServices.includes(service.id)?'var(--red-bg)':'transparent',
+              }}>
+                <input type="checkbox"
+                  checked={selectedAdditionalServices.includes(service.id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedAdditionalServices([...selectedAdditionalServices, service.id]);
+                    } else {
+                      setSelectedAdditionalServices(selectedAdditionalServices.filter(id => id !== service.id));
+                    }
+                  }}
+                  style={{ accentColor:'var(--red)', width:15, height:15, flexShrink:0 }} />
+                <div style={{ flex:1 }}>
+                  <p style={{ fontSize:14, fontWeight:700, color:'var(--text)' }}>
+                    {service[`label${l.charAt(0).toUpperCase() + l.slice(1)}`] || service.labelFr}
+                  </p>
+                  <p style={{ fontSize:12, color:'var(--text-3)', marginTop:1 }}>
+                    {service[`description${l.charAt(0).toUpperCase() + l.slice(1)}`] || service.descriptionFr}
+                  </p>
+                </div>
+                <p style={{ fontSize:14, fontWeight:700, color:'var(--red)', whiteSpace:'nowrap' }}>
+                  {formatEuro(service.price)}
+                </p>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Payment selector */}
       <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:20, boxShadow:'var(--shadow-sm)' }}>
@@ -68,6 +279,30 @@ function CheckoutPanel({
             <span style={{ color:'var(--text-3)' }}>{t('subtotal', l)}</span>
             <span style={{ color:'var(--text)', fontWeight:600 }}>{formatEuro(total)}</span>
           </div>
+          {warrantyPrice > 0 && (
+            <div style={{ display:'flex', justifyContent:'space-between' }}>
+              <span style={{ color:'var(--text-3)' }}>
+                {l==='fr'?'Garantie':l==='en'?'Warranty':l==='de'?'Garantie':'Garantía'}
+              </span>
+              <span style={{ color:'var(--text)', fontWeight:600 }}>{formatEuro(warrantyPrice)}</span>
+            </div>
+          )}
+          {registrationPrice > 0 && (
+            <div style={{ display:'flex', justifyContent:'space-between' }}>
+              <span style={{ color:'var(--text-3)' }}>
+                {l==='fr'?'Immatriculation':l==='en'?'Registration':l==='de'?'Zulassung':'Matriculación'}
+              </span>
+              <span style={{ color:'var(--text)', fontWeight:600 }}>{formatEuro(registrationPrice)}</span>
+            </div>
+          )}
+          {additionalServicesPrice > 0 && (
+            <div style={{ display:'flex', justifyContent:'space-between' }}>
+              <span style={{ color:'var(--text-3)' }}>
+                {l==='fr'?'Autres services':l==='en'?'Other services':l==='de'?'Weitere Dienste':'Otros servicios'}
+              </span>
+              <span style={{ color:'var(--text)', fontWeight:600 }}>{formatEuro(additionalServicesPrice)}</span>
+            </div>
+          )}
           {selectedPayment==='full' && totals.discount && (
             <div style={{ display:'flex', justifyContent:'space-between', color:'var(--green)' }}>
               <span>{t('discount', l)}</span><span>− {formatEuro(totals.discount)}</span>
@@ -145,6 +380,9 @@ export default function Cart() {
   const navigate = useNavigate();
 
   const [selectedPayment, setSelectedPayment] = useState('full');
+  const [selectedWarranty, setSelectedWarranty] = useState('none');
+  const [includeRegistration, setIncludeRegistration] = useState(false);
+  const [selectedAdditionalServices, setSelectedAdditionalServices] = useState([]);
   const [shippingAddress, setShippingAddress] = useState('');
   const [notes, setNotes] = useState('');
   const [placing, setPlacing] = useState(false);
@@ -166,7 +404,31 @@ export default function Cart() {
     }
     try {
       setPlacing(true);
-      const { data } = await orderAPI.create({ paymentType: selectedPayment, shippingAddress, notes });
+      const warrantyOption = WARRANTY_OPTIONS.find(w => w.id === selectedWarranty);
+      const additionalServicesData = selectedAdditionalServices.map(id => {
+        const service = ADDITIONAL_SERVICES.find(s => s.id === id);
+        return {
+          id: service.id,
+          price: service.price,
+          label: service.labelFr
+        };
+      });
+      const orderData = {
+        paymentType: selectedPayment,
+        shippingAddress,
+        notes,
+        warranty: selectedWarranty !== 'none' ? {
+          id: selectedWarranty,
+          months: warrantyOption?.months,
+          price: warrantyOption?.price
+        } : null,
+        registration: includeRegistration ? {
+          id: REGISTRATION_SERVICE.id,
+          price: REGISTRATION_SERVICE.price
+        } : null,
+        additionalServices: additionalServicesData.length > 0 ? additionalServicesData : null
+      };
+      const { data } = await orderAPI.create(orderData);
       fetchCart();
       navigate(`/order-confirm/${data.orderNumber}`);
     } catch (err) {
@@ -266,6 +528,12 @@ export default function Cart() {
                 setNotes={setNotes}
                 placing={placing}
                 handleOrder={handleOrder}
+                selectedWarranty={selectedWarranty}
+                setSelectedWarranty={setSelectedWarranty}
+                includeRegistration={includeRegistration}
+                setIncludeRegistration={setIncludeRegistration}
+                selectedAdditionalServices={selectedAdditionalServices}
+                setSelectedAdditionalServices={setSelectedAdditionalServices}
               />
             </div>
           </div>

@@ -36,6 +36,7 @@ export default function OrderConfirm() {
     bcLabel:  { fr:'Numéro de bon de commande', en:'Order number',           de:'Bestellnummer',              es:'Número de pedido',            it:'Numero ordine',               pt:'Número do pedido' },
     placed:   { fr:'Passée le',               en:'Placed on',                de:'Bestellt am',                es:'Realizado el',                it:'Effettuato il',               pt:'Realizado em' },
     vehicles: { fr:'Véhicules commandés',      en:'Ordered vehicles',        de:'Bestellte Fahrzeuge',        es:'Vehículos pedidos',           it:'Veicoli ordinati',            pt:'Veículos pedidos' },
+    services: { fr:'Services supplémentaires', en:'Additional services',      de:'Zusätzliche Dienste',       es:'Servicios adicionales',       it:'Servizi aggiuntivi',          pt:'Serviços adicionais' },
     finance:  { fr:'Récapitulatif financier',  en:'Financial summary',       de:'Finanzübersicht',            es:'Resumen financiero',          it:'Riepilogo finanziario',       pt:'Resumo financeiro' },
     mode:     { fr:'Mode de paiement',         en:'Payment method',          de:'Zahlungsart',                es:'Método de pago',              it:'Metodo di pagamento',         pt:'Método de pagamento' },
     discount: { fr:'Remise appliquée',         en:'Discount applied',        de:'Rabatt',                     es:'Descuento aplicado',          it:'Sconto applicato',            pt:'Desconto aplicado' },
@@ -125,6 +126,53 @@ export default function OrderConfirm() {
             ))}
           </div>
         </div>
+
+        {/* Additional Services */}
+        {(order.warranty || order.registration || order.additionalServices) && (
+          <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 18 : 24, marginBottom:16, boxShadow:'var(--shadow-sm)' }}>
+            <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:18 }}>
+              {L.services[l]}
+            </p>
+            <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+              {order.warranty && (
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 16px', background:'var(--bg-card2)', borderRadius:8 }}>
+                  <div>
+                    <p style={{ fontWeight:700, color:'var(--text)', fontSize: isMobile ? 14 : 15 }}>
+                      {l==='fr'?'Garantie':l==='en'?'Warranty':l==='de'?'Garantie':'Garantía'} - {order.warranty.months} {l==='fr'?'mois':l==='en'?'months':l==='de'?'Monate':'meses'}
+                    </p>
+                  </div>
+                  <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--red)' }}>
+                    {formatEuro(order.warranty.price)}
+                  </p>
+                </div>
+              )}
+              {order.registration && (
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 16px', background:'var(--bg-card2)', borderRadius:8 }}>
+                  <div>
+                    <p style={{ fontWeight:700, color:'var(--text)', fontSize: isMobile ? 14 : 15 }}>
+                      {l==='fr'?'Service d\'immatriculation':l==='en'?'Registration service':l==='de'?'Zulassungsservice':'Servicio de matriculación'}
+                    </p>
+                  </div>
+                  <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--red)' }}>
+                    {formatEuro(order.registration.price)}
+                  </p>
+                </div>
+              )}
+              {order.additionalServices && order.additionalServices.map(service => (
+                <div key={service.id} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 16px', background:'var(--bg-card2)', borderRadius:8 }}>
+                  <div>
+                    <p style={{ fontWeight:700, color:'var(--text)', fontSize: isMobile ? 14 : 15 }}>
+                      {service.label || service.id}
+                    </p>
+                  </div>
+                  <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--red)' }}>
+                    {formatEuro(service.price)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Financial summary */}
         <div style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding: isMobile ? 18 : 24, marginBottom:32, boxShadow:'var(--shadow-sm)' }}>
