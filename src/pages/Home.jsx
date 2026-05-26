@@ -604,6 +604,196 @@ export default function Home() {
         </form>
       </div>
 
+      {/* ── COMMENT ÇA MARCHE ── */}
+      <section style={{ background:'var(--bg)', borderBottom:'1px solid var(--border)' }} className="section-pad">
+        <div style={{ maxWidth:1200, margin:'0 auto' }}>
+
+          {/* Header */}
+          <div style={{ textAlign:'center', marginBottom: isMobile ? 36 : 52 }}>
+            <div className="section-eyebrow" style={{ justifyContent:'center' }}>
+              {l==='fr'?'Comment ça marche':l==='en'?'How it works':l==='de'?'So funktioniert es':l==='es'?'Cómo funciona':l==='it'?'Come funziona':'Como funciona'}
+            </div>
+            <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(26px,4vw,52px)', color:'var(--text)', letterSpacing:'-0.02em', lineHeight:1.05, marginBottom:12 }}>
+              {l==='fr'?'De la connexion\nà la livraison':l==='en'?'From login\nto delivery':l==='de'?'Von der Anmeldung\nbis zur Lieferung':l==='es'?'Del inicio de sesión\na la entrega':l==='it'?'Dal login\nalla consegna':'Do login\nà entrega'}
+            </h2>
+            <p style={{ fontSize:15, color:'var(--text-3)', maxWidth:520, margin:'0 auto' }}>
+              {l==='fr'?'Commandez votre véhicule en quelques minutes, suivez chaque étape depuis votre email.':l==='en'?'Order your vehicle in minutes, track every step from your email.':l==='de'?'Bestellen Sie Ihr Fahrzeug in wenigen Minuten und verfolgen Sie jeden Schritt per E-Mail.':l==='es'?'Pida su vehículo en pocos minutos y siga cada paso desde su email.':l==='it'?'Ordinate il vostro veicolo in pochi minuti e seguite ogni passo dalla vostra email.':'Encomende o seu veículo em poucos minutos e siga cada passo pelo email.'}
+            </p>
+          </div>
+
+          {/* Steps */}
+          {isMobile ? (
+            /* ── Mobile: vertical list ── */
+            <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
+              {[
+                {
+                  step:'01', icon:'👤',
+                  fr:{ title:'Créer un compte', desc:'Inscrivez-vous gratuitement en moins de 2 minutes. Si vous avez déjà un compte, connectez-vous simplement.' },
+                  en:{ title:'Create an account', desc:'Sign up for free in under 2 minutes. If you already have an account, simply log in.' },
+                  de:{ title:'Konto erstellen', desc:'Registrieren Sie sich kostenlos in weniger als 2 Minuten. Falls Sie bereits ein Konto haben, melden Sie sich einfach an.' },
+                  es:{ title:'Crear una cuenta', desc:'Regístrese gratis en menos de 2 minutos. Si ya tiene una cuenta, inicie sesión directamente.' },
+                  it:{ title:'Crea un account', desc:'Registratevi gratuitamente in meno di 2 minuti. Se avete già un account, effettuate il login.' },
+                  pt:{ title:'Criar uma conta', desc:'Registe-se gratuitamente em menos de 2 minutos. Se já tiver uma conta, inicie sessão.' },
+                },
+                {
+                  step:'02', icon:'🔍',
+                  fr:{ title:'Choisir votre véhicule', desc:'Parcourez le catalogue, filtrez par catégorie, budget ou carburant. Consultez chaque fiche avec photos et caractéristiques.' },
+                  en:{ title:'Choose your vehicle', desc:'Browse the catalogue, filter by category, budget or fuel. View each listing with photos and full specs.' },
+                  de:{ title:'Fahrzeug wählen', desc:'Durchsuchen Sie den Katalog, filtern Sie nach Kategorie, Budget oder Kraftstoff. Jedes Inserat mit Fotos und Details.' },
+                  es:{ title:'Elegir su vehículo', desc:'Explore el catálogo, filtre por categoría, presupuesto o combustible. Consulte cada ficha con fotos y especificaciones.' },
+                  it:{ title:'Scegliere il veicolo', desc:'Sfogliate il catalogo, filtrate per categoria, budget o carburante. Visualizzate ogni scheda con foto e specifiche.' },
+                  pt:{ title:'Escolher o veículo', desc:'Navegue pelo catálogo, filtre por categoria, orçamento ou combustível. Consulte cada ficha com fotos e especificações.' },
+                },
+                {
+                  step:'03', icon:'🛒',
+                  fr:{ title:'Ajouter au panier & commander', desc:'Ajoutez le véhicule au panier, choisissez votre mode de financement (intégral, acompte ou mensualités) et confirmez.' },
+                  en:{ title:'Add to cart & order', desc:'Add the vehicle to your cart, choose your payment method (full, deposit or monthly) and confirm.' },
+                  de:{ title:'In den Warenkorb & bestellen', desc:'Legen Sie das Fahrzeug in den Warenkorb, wählen Sie Ihre Zahlungsmethode (komplett, Anzahlung oder monatlich) und bestätigen Sie.' },
+                  es:{ title:'Añadir al carrito & pedir', desc:'Añada el vehículo al carrito, elija su modo de pago (completo, depósito o mensualidades) y confirme.' },
+                  it:{ title:'Aggiungere al carrello & ordinare', desc:'Aggiungete il veicolo al carrello, scegliete il metodo di pagamento (completo, acconto o rate) e confermate.' },
+                  pt:{ title:'Adicionar ao carrinho & encomendar', desc:'Adicione o veículo ao carrinho, escolha o seu modo de pagamento (total, depósito ou mensalidades) e confirme.' },
+                },
+                {
+                  step:'04', icon:'📧',
+                  fr:{ title:'Bon de commande par email', desc:'Dès la confirmation, vous recevez instantanément par email votre bon de commande avec un numéro unique de suivi.' },
+                  en:{ title:'Order confirmation by email', desc:'Upon confirmation, you instantly receive your purchase order by email with a unique tracking number.' },
+                  de:{ title:'Kaufvertrag per E-Mail', desc:'Nach der Bestätigung erhalten Sie sofort per E-Mail Ihren Kaufvertrag mit einer einzigartigen Tracking-Nummer.' },
+                  es:{ title:'Orden de compra por email', desc:'Tras la confirmación, recibe instantáneamente por email su orden de compra con un número único de seguimiento.' },
+                  it:{ title:'Ordine per email', desc:'Alla conferma, ricevete istantaneamente per email il vostro ordine d\'acquisto con un numero di tracking unico.' },
+                  pt:{ title:'Nota de encomenda por email', desc:'Após a confirmação, recebe instantaneamente por email a sua nota de encomenda com um número único de seguimento.' },
+                },
+                {
+                  step:'05', icon:'📍',
+                  fr:{ title:'Suivre votre commande', desc:'Rendez-vous sur autokompetenz.vercel.app/track ou dans votre espace client pour suivre chaque étape en temps réel jusqu\'à la livraison.' },
+                  en:{ title:'Track your order', desc:'Visit autokompetenz.vercel.app/track or your customer space to follow every step in real time until delivery.' },
+                  de:{ title:'Bestellung verfolgen', desc:'Besuchen Sie autokompetenz.vercel.app/track oder Ihren Kundenbereich, um jeden Schritt bis zur Lieferung in Echtzeit zu verfolgen.' },
+                  es:{ title:'Seguir su pedido', desc:'Visite autokompetenz.vercel.app/track o su espacio de cliente para seguir cada etapa en tiempo real hasta la entrega.' },
+                  it:{ title:'Tracciare l\'ordine', desc:'Visitate autokompetenz.vercel.app/track o il vostro spazio cliente per seguire ogni fase in tempo reale fino alla consegna.' },
+                  pt:{ title:'Seguir a encomenda', desc:'Aceda a autokompetenz.vercel.app/track ou ao seu espaço de cliente para seguir cada etapa em tempo real até à entrega.' },
+                },
+              ].map((s, i, arr) => {
+                const data = s[l] || s.fr;
+                const isLast = i === arr.length - 1;
+                return (
+                  <motion.div key={i} initial={{ opacity:0, x:-20 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ duration:0.4, delay:i*0.08 }}
+                    style={{ display:'flex', gap:16, paddingBottom: isLast ? 0 : 28, position:'relative' }}>
+                    {/* Left: number + line */}
+                    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0 }}>
+                      <div style={{ width:44, height:44, borderRadius:12, background:'linear-gradient(135deg,#9B0B22,#C8102E)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 16px rgba(200,16,46,0.35)', flexShrink:0 }}>
+                        <span style={{ fontSize:20 }}>{s.icon}</span>
+                      </div>
+                      {!isLast && <div style={{ width:2, flex:1, background:'linear-gradient(to bottom, rgba(200,16,46,0.4), rgba(200,16,46,0.05))', marginTop:8, minHeight:24 }} />}
+                    </div>
+                    {/* Right: content */}
+                    <div style={{ paddingTop:4, paddingBottom: isLast ? 0 : 8 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+                        <span style={{ fontSize:9, fontWeight:800, letterSpacing:'0.3em', color:'var(--red)', background:'var(--red-bg)', border:'1px solid var(--red-border)', padding:'2px 8px', borderRadius:3 }}>ÉTAPE {s.step}</span>
+                      </div>
+                      <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:17, color:'var(--text)', marginBottom:5, lineHeight:1.2 }}>{data.title}</h3>
+                      <p style={{ fontSize:14, color:'var(--text-3)', lineHeight:1.65, margin:0 }}>{data.desc}</p>
+                      {data.link && (
+                        <a href={data.link} target="_blank" rel="noopener noreferrer"
+                          style={{ display:'inline-flex', alignItems:'center', gap:6, marginTop:10, fontSize:12, fontWeight:700, color:'var(--red)', textDecoration:'none', background:'var(--red-bg)', border:'1px solid var(--red-border)', padding:'6px 14px', borderRadius:6 }}>
+                          📍 {l==='fr'?'Suivre ma commande':l==='en'?'Track my order':l==='de'?'Bestellung verfolgen':l==='es'?'Seguir mi pedido':l==='it'?'Traccia ordine':'Seguir encomenda'}
+                        </a>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          ) : (
+            /* ── Desktop: horizontal flow ── */
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:0, position:'relative' }}>
+              {/* Connecting line */}
+              <div style={{ position:'absolute', top:34, left:'10%', right:'10%', height:2, background:'linear-gradient(to right, rgba(200,16,46,0.6), rgba(200,16,46,0.1), rgba(200,16,46,0.6))', zIndex:0 }} />
+
+              {[
+                {
+                  step:'01', icon:'👤',
+                  fr:{ title:'Créer un compte', desc:'Inscription gratuite en moins de 2 minutes ou connexion directe.' },
+                  en:{ title:'Create account', desc:'Free sign-up in under 2 min or log in directly.' },
+                  de:{ title:'Konto erstellen', desc:'Kostenlose Anmeldung in unter 2 Min. oder direktes Login.' },
+                  es:{ title:'Crear cuenta', desc:'Registro gratuito en menos de 2 min o conexión directa.' },
+                  it:{ title:'Crea account', desc:'Registrazione gratuita in meno di 2 min o accesso diretto.' },
+                  pt:{ title:'Criar conta', desc:'Registo gratuito em menos de 2 min ou login direto.' },
+                },
+                {
+                  step:'02', icon:'🔍',
+                  fr:{ title:'Choisir un véhicule', desc:'Parcourez le catalogue, filtrez et consultez chaque fiche en détail.' },
+                  en:{ title:'Choose a vehicle', desc:'Browse the catalogue, filter and view every listing in detail.' },
+                  de:{ title:'Fahrzeug wählen', desc:'Katalog durchsuchen, filtern und jedes Inserat im Detail ansehen.' },
+                  es:{ title:'Elegir un vehículo', desc:'Explore el catálogo, filtre y consulte cada ficha en detalle.' },
+                  it:{ title:'Scegliere un veicolo', desc:'Sfogliate il catalogo, filtrate e consultate ogni scheda in dettaglio.' },
+                  pt:{ title:'Escolher um veículo', desc:'Navegue pelo catálogo, filtre e consulte cada ficha em detalhe.' },
+                },
+                {
+                  step:'03', icon:'🛒',
+                  fr:{ title:'Commander', desc:'Ajoutez au panier, choisissez le financement et validez en 1 clic.' },
+                  en:{ title:'Order', desc:'Add to cart, choose your payment plan and confirm in 1 click.' },
+                  de:{ title:'Bestellen', desc:'In den Warenkorb, Finanzierung wählen und in 1 Klick bestätigen.' },
+                  es:{ title:'Pedir', desc:'Añada al carrito, elija la financiación y confirme en 1 clic.' },
+                  it:{ title:'Ordinare', desc:'Aggiungete al carrello, scegliete il finanziamento e confermate in 1 clic.' },
+                  pt:{ title:'Encomendar', desc:'Adicione ao carrinho, escolha o financiamento e confirme em 1 clique.' },
+                },
+                {
+                  step:'04', icon:'📧',
+                  fr:{ title:'Email de confirmation', desc:'Reçevez votre bon de commande avec numéro unique directement par email.' },
+                  en:{ title:'Confirmation email', desc:'Receive your purchase order with unique number directly by email.' },
+                  de:{ title:'Bestätigungs-E-Mail', desc:'Erhalten Sie Ihren Kaufvertrag mit eindeutiger Nummer per E-Mail.' },
+                  es:{ title:'Email de confirmación', desc:'Reciba su orden de compra con número único directamente por email.' },
+                  it:{ title:'Email di conferma', desc:'Ricevete il vostro ordine con numero unico direttamente per email.' },
+                  pt:{ title:'Email de confirmação', desc:'Receba a sua nota de encomenda com número único diretamente por email.' },
+                },
+                {
+                  step:'05', icon:'📍',
+                  fr:{ title:'Suivre votre commande', desc:'Suivez chaque étape en temps réel sur notre page de suivi.' },
+                  en:{ title:'Track your order', desc:'Follow every step in real time on our tracking page.' },
+                  de:{ title:'Bestellung verfolgen', desc:'Verfolgen Sie jeden Schritt in Echtzeit auf unserer Tracking-Seite.' },
+                  es:{ title:'Seguir su pedido', desc:'Siga cada etapa en tiempo real en nuestra página de seguimiento.' },
+                  it:{ title:'Tracciare l\'ordine', desc:'Seguite ogni fase in tempo reale sulla nostra pagina di tracking.' },
+                  pt:{ title:'Seguir a encomenda', desc:'Siga cada etapa em tempo real na nossa página de seguimento.' },
+                },
+              ].map((s, i) => {
+                const data = s[l] || s.fr;
+                return (
+                  <motion.div key={i} initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay:i*0.1 }}
+                    style={{ display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', padding:'0 12px', position:'relative', zIndex:1 }}>
+                    {/* Icon circle */}
+                    <div style={{ width:68, height:68, borderRadius:16, background:'linear-gradient(135deg,#9B0B22,#C8102E)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 6px 24px rgba(200,16,46,0.4)', marginBottom:16, border:'3px solid var(--bg)' }}>
+                      <span style={{ fontSize:28 }}>{s.icon}</span>
+                    </div>
+                    {/* Step badge */}
+                    <span style={{ fontSize:9, fontWeight:800, letterSpacing:'0.3em', color:'var(--red)', background:'var(--red-bg)', border:'1px solid var(--red-border)', padding:'3px 10px', borderRadius:3, marginBottom:10 }}>
+                      ÉTAPE {s.step}
+                    </span>
+                    <h3 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize:15, color:'var(--text)', marginBottom:8, lineHeight:1.25 }}>{data.title}</h3>
+                    <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.6, margin:0 }}>{data.desc}</p>
+                    {data.link && (
+                      <a href={data.link} target="_blank" rel="noopener noreferrer"
+                        style={{ display:'inline-flex', alignItems:'center', gap:6, marginTop:12, fontSize:11, fontWeight:700, color:'var(--red)', textDecoration:'none', background:'var(--red-bg)', border:'1px solid var(--red-border)', padding:'6px 12px', borderRadius:6, whiteSpace:'nowrap' }}>
+                        {l==='fr'?'Suivre →':l==='en'?'Track →':l==='de'?'Verfolgen →':l==='es'?'Seguir →':l==='it'?'Traccia →':'Seguir →'}
+                      </a>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Bottom CTA */}
+          <motion.div initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay:0.4 }}
+            style={{ marginTop: isMobile ? 36 : 52, display:'flex', gap: isMobile ? 10 : 14, justifyContent:'center', flexWrap:'wrap' }}>
+            <Link to="/register" className="btn-primary" style={{ fontSize:14 }}>
+              {l==='fr'?'Créer mon compte gratuit':l==='en'?'Create my free account':l==='de'?'Kostenloses Konto erstellen':l==='es'?'Crear mi cuenta gratuita':l==='it'?'Crea il mio account gratuito':'Criar a minha conta gratuita'} →
+            </Link>
+            <Link to="/catalog" className="btn-outline" style={{ fontSize:14 }}>
+              {l==='fr'?'Voir le catalogue':l==='en'?'Browse catalogue':l==='de'?'Katalog ansehen':l==='es'?'Ver catálogo':l==='it'?'Vedi catalogo':'Ver catálogo'}
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── FEATURED VEHICLES ── */}
       <section className="section-pad">
         <div style={{ maxWidth:1400, margin:'0 auto' }}>
