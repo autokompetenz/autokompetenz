@@ -143,9 +143,10 @@ export default function Navbar() {
         {/* Desktop nav links */}
         {!isMobile && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 28, position: 'relative', zIndex: 1 }}>
-            <NavLink to="/catalog"    label={t('nav_vehicles', lang)} />
-            <NavLink to="/simulation" label={t('nav_financing', lang)} />
-            <NavLink to="/track"      label={t('nav_track', lang)} />
+            <NavLink to="/catalog"     label={t('nav_vehicles', lang)} />
+            <NavLink to="/camping-car" label="Camping Car" />
+            <NavLink to="/simulation"  label={t('nav_financing', lang)} />
+            <NavLink to="/track"       label={t('nav_track', lang)} />
           </div>
         )}
 
@@ -244,9 +245,10 @@ export default function Navbar() {
                   {isMobile && (
                     <div style={{ marginBottom: 20 }}>
                       {[
-                        { to: '/catalog',    icon: '🚗', label: t('nav_vehicles', lang) },
-                        { to: '/simulation', icon: '💳', label: t('nav_financing', lang) },
-                        { to: '/track',      icon: '📍', label: t('nav_track', lang) },
+                        { to: '/catalog',     icon: '🚗', label: t('nav_vehicles', lang) },
+                        { to: '/camping-car', icon: '🚐', label: 'Camping Car' },
+                        { to: '/simulation',  icon: '💳', label: t('nav_financing', lang) },
+                        { to: '/track',       icon: '📍', label: t('nav_track', lang) },
                       ].map(({ to, icon, label }) => (
                         <Link key={to} to={to} onClick={() => setMenuOpen(false)}
                           style={{

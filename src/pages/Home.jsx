@@ -503,9 +503,10 @@ function FAQSection({ l, isMobile }) {
 export default function Home() {
   const { lang } = useLangStore();
   const { isMobile, isTablet } = useBreakpoint();
-  const [featured, setFeatured] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [trackNum, setTrackNum] = useState('');
+  const [featured, setFeatured]         = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [campingCars, setCampingCars]   = useState([]);
+  const [trackNum, setTrackNum]         = useState('');
   const heroRef = useRef(null);
   const navigate = useNavigate();
   const l = lang || 'fr';
@@ -518,6 +519,9 @@ export default function Home() {
     carAPI.getAll({ featured:'true', limit:12 })
       .then(r => { setFeatured(r.data.cars||[]); setLoading(false); })
       .catch(() => { setLoading(false); });
+    carAPI.getAll({ campingCar:'true', limit:3 })
+      .then(r => setCampingCars(r.data.cars||[]))
+      .catch(() => {});
   }, []);
 
   const handleTrack = (e) => {
@@ -683,6 +687,56 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* ── CAMPING CARS ── */}
+      {campingCars.length > 0 && (
+        <section style={{ background:'var(--bg-card2)', borderTop:'1px solid var(--border)', borderBottom:'1px solid var(--border)' }} className="section-pad">
+          <div style={{ maxWidth:1400, margin:'0 auto' }}>
+            {/* Header */}
+            <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', flexWrap:'wrap', gap:16, marginBottom:36 }}>
+              <div>
+                <div style={{ display:'inline-flex', alignItems:'center', gap:10, background:'rgba(200,16,46,0.08)', border:'1px solid rgba(200,16,46,0.2)', borderRadius:4, padding:'5px 14px', marginBottom:12 }}>
+                  <span style={{ fontSize:18 }}>🚐</span>
+                  <span style={{ fontSize:10, fontWeight:800, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--red)' }}>CAMPING CAR</span>
+                </div>
+                <h2 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:'clamp(26px,4vw,50px)', color:'var(--text)', letterSpacing:'-0.02em', lineHeight:1.05 }}>
+                  {l==='fr'?'Nos Camping Cars':l==='en'?'Our Motorhomes':l==='de'?'Unsere Wohnmobile':l==='es'?'Nuestras Autocaravanas':l==='it'?'I Nostri Camper':'As Nossas Autocaravanas'}
+                </h2>
+                <p style={{ fontSize:15, color:'var(--text-3)', marginTop:8, maxWidth:480 }}>
+                  {l==='fr'?'Partez à l\'aventure avec nos véhicules aménagés, prêts à prendre la route.':l==='en'?'Hit the road with our fitted vehicles, ready for any adventure.':l==='de'?'Starten Sie mit unseren ausgestatteten Fahrzeugen in ein neues Abenteuer.':l==='es'?'Emprenda la aventura con nuestros vehículos equipados, listos para la carretera.':l==='it'?'Partite all\'avventura con i nostri veicoli attrezzati, pronti per la strada.':'Parta à aventura com os nossos veículos equipados, prontos para a estrada.'}
+                </p>
+              </div>
+              <Link to="/camping-car" className="btn-outline">
+                {l==='fr'?'Voir tous les camping cars':l==='en'?'See all motorhomes':l==='de'?'Alle Wohnmobile anzeigen':l==='es'?'Ver todas las autocaravanas':l==='it'?'Vedi tutti i camper':'Ver todas as autocaravanas'} →
+              </Link>
+            </div>
+
+            {/* Cards */}
+            <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 14 : 22 }}>
+              <AnimatePresence>
+                {campingCars.map((car, i) => <CarCard key={car.id} car={car} index={i} />)}
+              </AnimatePresence>
+            </div>
+
+            {/* Banner CTA */}
+            <motion.div
+              initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5, delay:0.3 }}
+              style={{ marginTop:32, padding: isMobile ? '24px 20px' : '28px 40px', background:'linear-gradient(135deg,rgba(200,16,46,0.07),rgba(200,16,46,0.02))', border:'1px solid rgba(200,16,46,0.15)', borderRadius:16, display:'flex', alignItems:'center', justifyContent:'space-between', gap:20, flexWrap:'wrap' }}>
+              <div>
+                <p style={{ fontFamily:"'Outfit',sans-serif", fontWeight:800, fontSize: isMobile ? 16 : 18, color:'var(--text)', marginBottom:4 }}>
+                  🚐 {l==='fr'?"L'aventure commence ici":l==='en'?'The adventure starts here':l==='de'?'Das Abenteuer beginnt hier':l==='es'?'La aventura empieza aquí':l==='it'?"L'avventura inizia qui":'A aventura começa aqui'}
+                </p>
+                <p style={{ fontSize:14, color:'var(--text-3)' }}>
+                  {l==='fr'?"Découvrez toute notre gamme de camping cars disponibles à la vente.":l==='en'?'Browse our full range of motorhomes available for sale.':l==='de'?'Entdecken Sie unser komplettes Sortiment an Wohnmobilen.':l==='es'?'Descubra toda nuestra gama de autocaravanas disponibles.':l==='it'?'Scopri la nostra gamma completa di camper disponibili.':'Descubra toda a nossa gama de autocaravanas disponíveis.'}
+                </p>
+              </div>
+              <Link to="/camping-car" className="btn-primary" style={{ fontSize:13, whiteSpace:'nowrap' }}>
+                {l==='fr'?'Voir le catalogue':l==='en'?'View catalogue':l==='de'?'Katalog anzeigen':l==='es'?'Ver catálogo':l==='it'?'Vedi catalogo':'Ver catálogo'} →
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ── PURCHASE STEPS ── */}
       <PurchaseStepsSection l={l} isMobile={isMobile} />

@@ -290,12 +290,13 @@ app.get('/api/cars', async (req, res) => {
     console.log('=== GET /api/cars ===');
     console.log('Query params:', req.query);
     
-    const { category, search, featured, limit, page = 1 } = req.query;
+    const { category, search, featured, campingCar, limit, page = 1 } = req.query;
     const take = limit ? parseInt(limit) : undefined;
     const skip = page ? (parseInt(page) - 1) * (take || 12) : 0;
     const where = { isActive: true };
-    
+
     if (category) where.category = category;
+    if (campingCar === 'true') where.model = { contains: 'camping car', mode: 'insensitive' };
     if (search) where.OR = [
       { make: { contains: search, mode: 'insensitive' } },
       { model: { contains: search, mode: 'insensitive' } },
