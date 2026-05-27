@@ -7,6 +7,7 @@ import { useLangStore } from '../store';
 import { t } from '../utils/i18n';
 import CarCard from '../components/CarCard';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { ALL_REVIEWS } from '../utils/reviews';
 
 const SERVICES = [
   { icon:'🚗', fr:'Voitures Neuves',       en:'New Cars',           de:'Neuwagen',          es:'Coches Nuevos',       it:'Auto Nuove',         pt:'Carros Novos',       tag:'2024 Models',
@@ -23,12 +24,6 @@ const SERVICES = [
     descFr:'Livraison à domicile, transport sécurisé, toute l\'Allemagne.', descEn:'Home delivery, secure transport, all of Germany.', descDe:'Lieferung nach Hause, sicherer Transport, ganz Deutschland.', descEs:'Entrega a domicilio, transporte seguro, toda Alemania.', descIt:'Consegna a domicilio, trasporto sicuro, tutta la Germania.', descPt:'Entrega em casa, transporte seguro, toda a Alemanha.' },
 ];
 
-const REVIEWS = [
-  { name:'Marcus Hoffmann', rating:5, avatar:'MH', textFr:'Excellent service ! Trouvé ma BMW idéale, financement au meilleur taux. Recommandé !', textEn:'Excellent service! Found my ideal BMW, best financing rate. Recommended!', textDe:'Exzellenter Service! Meinen BMW gefunden, beste Finanzierung.', textEs:'¡Excelente servicio! Encontré mi BMW ideal, mejor tasa de financiación.', textIt:'Servizio eccellente! Trovata la mia BMW ideale, miglior tasso.', textPt:'Excelente serviço! Encontrei meu BMW ideal, melhor taxa.' },
-  { name:'Sophie Becker', rating:5, avatar:'SB', textFr:'Super concessionnaire ! Très professionnel, large choix, équipe très disponible.', textEn:'Great dealership! Very professional, wide choice, very helpful team.', textDe:'Super Autohaus! Sehr professionell, große Auswahl.', textEs:'¡Gran concesionario! Muy profesional, amplia selección.', textIt:'Ottimo concessionario! Molto professionale, ampia scelta.', textPt:'Ótimo revendedor! Muito profissional, ampla seleção.' },
-  { name:'Thomas Reinhardt', rating:5, avatar:'TR', textFr:'Vendeur honnête et fiable ! Voiture de qualité, prix juste, livraison rapide.', textEn:'Honest and reliable seller! Quality car, fair price, fast delivery.', textDe:'Ehrlicher Verkäufer! Qualitätsauto, fairer Preis, schnelle Lieferung.', textEs:'¡Vendedor honesto! Coche de calidad, precio justo, entrega rápida.', textIt:'Venditore onesto! Auto di qualità, prezzo giusto, consegna rapida.', textPt:'Vendedor honesto! Carro de qualidade, preço justo, entrega rápida.' },
-  { name:'Anna Müller', rating:5, avatar:'AM', textFr:'Équipe très compétente ! Ont trouvé la Volkswagen parfaite pour moi.', textEn:'Very competent team! Found the perfect Volkswagen for me.', textDe:'Sehr kompetentes Team! Perfekten VW für mich gefunden.', textEs:'¡Equipo muy competente! Encontraron el Volkswagen perfecto.', textIt:'Team molto competente! Trovata la Volkswagen perfetta.', textPt:'Equipe muito competente! Encontraram o Volkswagen perfeito.' },
-];
 
 // ── PURCHASE STEPS DATA ──────────────────────────────────────────────────────
 const getPurchaseSteps = (l) => [
@@ -1143,8 +1138,8 @@ export default function Home() {
               {l==='fr'?'Ce que disent\nnos clients':l==='en'?'What our\ncustomers say':l==='de'?'Was unsere Kunden\nsagen':l==='es'?'Lo que dicen\nnuestros clientes':l==='it'?'Cosa dicono\ni nostri clienti':'O que dizem\nnosssos clientes'}
             </h2>
           </div>
-          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(2,1fr)', gap: isMobile ? 12 : 20 }}>
-            {REVIEWS.map((r, i) => (
+          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3,1fr)', gap: isMobile ? 12 : 20 }}>
+            {ALL_REVIEWS.slice(0, 6).map((r, i) => (
               <motion.div key={i} initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.08, duration:0.5 }}
                 style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:12, padding:'22px 24px', boxShadow:'var(--shadow-sm)' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14 }}>
@@ -1158,6 +1153,11 @@ export default function Home() {
                 <p style={{ fontSize:14, color:'var(--text-2)', lineHeight:1.7 }}>"{getReviewText(r)}"</p>
               </motion.div>
             ))}
+          </div>
+          <div style={{ textAlign:'center', marginTop:36 }}>
+            <Link to="/avis" className="btn-outline" style={{ fontSize:14, padding:'13px 32px' }}>
+              {l==='fr'?'Voir tous les avis →':l==='en'?'See all reviews →':l==='de'?'Alle Bewertungen →':l==='es'?'Ver todas las opiniones →':l==='it'?'Vedi tutte le recensioni →':'Ver todas as avaliações →'}
+            </Link>
           </div>
         </div>
       </section>

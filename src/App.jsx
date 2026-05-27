@@ -23,6 +23,7 @@ import Legal        from './pages/Legal';
 import Warranty     from './pages/Warranty';
 import Insurance    from './pages/Insurance';
 import CampingCar   from './pages/CampingCar';
+import Reviews      from './pages/Reviews';
 
 // Admin
 import AdminLayout      from './pages/admin/AdminLayout';
@@ -76,6 +77,7 @@ export default function App() {
         <Route path="/warranty"   element={<MainLayout><Warranty /></MainLayout>} />
         <Route path="/insurance"  element={<MainLayout><Insurance /></MainLayout>} />
         <Route path="/camping-car" element={<MainLayout><CampingCar /></MainLayout>} />
+        <Route path="/avis"        element={<MainLayout><Reviews /></MainLayout>} />
 
         {/* Legal pages */}
         <Route path="/mentions-legales"         element={<MainLayout><Legal /></MainLayout>} />
