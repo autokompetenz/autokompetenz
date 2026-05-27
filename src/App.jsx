@@ -86,8 +86,8 @@ export default function App() {
         <Route path="/cookies"                   element={<MainLayout><Legal /></MainLayout>} />
 
         {/* Auth */}
-        <Route path="/login"    element={<GuestOnly><Login /></GuestOnly>} />
-        <Route path="/register" element={<GuestOnly><Register /></GuestOnly>} />
+        <Route path="/login"    element={<GuestOnly><MainLayout><Login /></MainLayout></GuestOnly>} />
+        <Route path="/register" element={<GuestOnly><MainLayout><Register /></MainLayout></GuestOnly>} />
 
         {/* Protected */}
         <Route path="/cart"     element={<RequireAuth><MainLayout><Cart /></MainLayout></RequireAuth>} />
