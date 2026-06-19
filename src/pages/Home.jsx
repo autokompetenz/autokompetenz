@@ -485,7 +485,7 @@ function FAQSection({ l, isMobile }) {
               style={{ background:'#25D366', color:'#fff', textDecoration:'none', fontFamily:"'Outfit',sans-serif", fontSize:13, fontWeight:700, padding:'11px 22px', borderRadius:8, display:'inline-flex', alignItems:'center', gap:8 }}>
               💬 WhatsApp
             </a>
-            <a href="mailto:autoKompetenz@gmail.com" className="btn-ghost" style={{ fontSize:13 }}>
+            <a href="mailto:info@autokompetenz.com" className="btn-ghost" style={{ fontSize:13 }}>
               ✉ Email
             </a>
           </div>
@@ -1178,7 +1178,7 @@ export default function Home() {
                 style={{ background:'#25D366', color:'#fff', textDecoration:'none', fontFamily:"'Outfit',sans-serif", fontSize:14, fontWeight:700, padding:'13px 24px', borderRadius:8, display:'inline-flex', alignItems:'center', gap:8 }}>
                 💬 WhatsApp
               </a>
-              <a href="mailto:autoKompetenz@gmail.com" className="btn-ghost" style={{ fontSize:13 }}>
+              <a href="mailto:info@autokompetenz.com" className="btn-ghost" style={{ fontSize:13 }}>
                 ✉ Email
               </a>
             </div>
@@ -1228,7 +1228,7 @@ export default function Home() {
                 <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)', marginBottom:12 }}>Contact</p>
                 <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.8 }}>
                   📞 +49 157 888 232 74<br/>
-                  ✉ autoKompetenz@gmail.com<br/>
+                  ✉ info@autokompetenz.com<br/>
                   💬 <a href="https://wa.me/4915788823274" style={{ color:'var(--red)', textDecoration:'none' }}>WhatsApp</a>
                 </p>
               </div>

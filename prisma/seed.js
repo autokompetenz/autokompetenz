@@ -13,10 +13,10 @@ async function main() {
   // Admin
   const adminPwd = await bcrypt.hash('password', 12);
   await prisma.user.upsert({
-    where: { email: 'autoKompetenz@gmail.com' },
+    where: { email: 'info@autokompetenz.com' },
     update: {},
     create: {
-      username: 'admin', email: 'autoKompetenz@gmail.com',
+      username: 'admin', email: 'info@autokompetenz.com',
       password: adminPwd, firstName: 'Admin', lastName: 'Kompetenz',
       role: 'ADMIN', emailVerified: true,
     },
@@ -54,7 +54,7 @@ async function main() {
     });
   }
 
-  console.log('✅ Admin:  autoKompetenz@gmail.com / password');
+  console.log('✅ Admin:  info@autokompetenz.com / password');
   console.log('✅ Client: client@autokompetenz.com / password');
   console.log('✅ 10 véhicules créés');
   console.log('🎉 Seeding terminé !');

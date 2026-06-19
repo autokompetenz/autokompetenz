@@ -11,7 +11,7 @@ const LEGAL_PAGES = {
 Neuenkirchener Str. 127<br/>
 48282 Emsdetten, Allemagne<br/>
 WhatsApp : +49 157 888 232 74<br/>
-Email : autoKompetenz@gmail.com</p>
+Email : info@autokompetenz.com</p>
 <h2>Forme juridique</h2>
 <p>Gesellschaft mit beschränkter Haftung (GmbH) — société à responsabilité limitée de droit allemand.</p>
 <h2>Hébergement</h2>
@@ -22,35 +22,35 @@ Email : autoKompetenz@gmail.com</p>
 <p>Droit allemand (TMG). Juridiction compétente : Osnabrück.</p>` },
     en: { title: 'Legal Notice', content: `
 <h2>Publisher</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Germany<br/>WhatsApp: +49 157 888 232 74 — autoKompetenz@gmail.com</p>
+<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Germany<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
 <h2>Hosting</h2>
 <p>Vercel Inc., San Francisco, USA. Database: Supabase Inc., Singapore.</p>
 <h2>Applicable Law</h2>
 <p>German law (TMG). Courts of Osnabrück.</p>` },
     de: { title: 'Impressum', content: `
 <h2>Angaben gemäß § 5 TMG</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten<br/>WhatsApp: +49 157 888 232 74 — autoKompetenz@gmail.com</p>
+<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
 <h2>Hosting</h2>
 <p>Vercel Inc., San Francisco, USA. Datenbank: Supabase Inc., Singapur.</p>
 <h2>Gerichtsstand</h2>
 <p>Deutsches Recht. Gerichtsstand: Osnabrück.</p>` },
     es: { title: 'Aviso Legal', content: `
 <h2>Editor</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Alemania<br/>WhatsApp: +49 157 888 232 74 — autoKompetenz@gmail.com</p>
+<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Alemania<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
 <h2>Alojamiento</h2>
 <p>Vercel Inc., San Francisco, EE.UU. Base de datos: Supabase Inc., Singapur.</p>
 <h2>Ley aplicable</h2>
 <p>Derecho alemán (TMG). Tribunales de Osnabrück.</p>` },
     it: { title: 'Note Legali', content: `
 <h2>Editore</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Germania<br/>WhatsApp: +49 157 888 232 74 — autoKompetenz@gmail.com</p>
+<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Germania<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
 <h2>Hosting</h2>
 <p>Vercel Inc., San Francisco, USA. Database: Supabase Inc., Singapore.</p>
 <h2>Legge applicabile</h2>
 <p>Diritto tedesco (TMG). Tribunali di Osnabrück.</p>` },
     pt: { title: 'Aviso Legal', content: `
 <h2>Editor</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Alemanha<br/>WhatsApp: +49 157 888 232 74 — autoKompetenz@gmail.com</p>
+<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Alemanha<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
 <h2>Hospedagem</h2>
 <p>Vercel Inc., São Francisco, EUA. Base de dados: Supabase Inc., Singapura.</p>
 <h2>Lei aplicável</h2>
@@ -60,54 +60,54 @@ Email : autoKompetenz@gmail.com</p>
   '/politique-confidentialite': {
     fr: { title: 'Politique de Confidentialité', content: `
 <h2>1. Responsable du traitement</h2>
-<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — autoKompetenz@gmail.com</p>
+<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — info@autokompetenz.com</p>
 <h2>2. Données collectées</h2>
 <ul><li>Nom, prénom, email, téléphone, adresse</li><li>Salaire mensuel (simulation financement)</li><li>Historique des commandes</li></ul>
 <h2>3. Base légale (RGPD)</h2>
 <ul><li>Exécution du contrat — Art. 6(1)(b)</li><li>Consentement — Art. 6(1)(a)</li><li>Intérêt légitime — Art. 6(1)(f)</li></ul>
 <h2>4. Vos droits</h2>
-<p>Accès, rectification, effacement, portabilité, opposition. Contact : autoKompetenz@gmail.com</p>
+<p>Accès, rectification, effacement, portabilité, opposition. Contact : info@autokompetenz.com</p>
 <h2>5. Sécurité</h2>
 <p>Mots de passe chiffrés (bcrypt), JWT avec expiration, connexions HTTPS.</p>` },
     en: { title: 'Privacy Policy', content: `
 <h2>1. Data Controller</h2>
-<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — autoKompetenz@gmail.com</p>
+<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — info@autokompetenz.com</p>
 <h2>2. Data Collected</h2>
 <ul><li>Name, email, phone, address</li><li>Monthly salary (financing simulation)</li><li>Order history</li></ul>
 <h2>3. Legal Basis (GDPR)</h2>
 <ul><li>Contract performance — Art. 6(1)(b)</li><li>Consent — Art. 6(1)(a)</li><li>Legitimate interest — Art. 6(1)(f)</li></ul>
 <h2>4. Your Rights</h2>
-<p>Access, rectify, erase, port, object. Contact: autoKompetenz@gmail.com</p>` },
+<p>Access, rectify, erase, port, object. Contact: info@autokompetenz.com</p>` },
     de: { title: 'Datenschutzerklärung', content: `
 <h2>1. Verantwortlicher</h2>
-<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — autoKompetenz@gmail.com</p>
+<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — info@autokompetenz.com</p>
 <h2>2. Erhobene Daten</h2>
 <ul><li>Name, E-Mail, Telefon, Adresse</li><li>Monatsgehalt (Finanzierungssimulation)</li><li>Bestellhistorie</li></ul>
 <h2>3. Rechtsgrundlage (DSGVO)</h2>
 <ul><li>Vertragserfüllung — Art. 6 Abs. 1 lit. b</li><li>Einwilligung — Art. 6 Abs. 1 lit. a</li></ul>
 <h2>4. Ihre Rechte</h2>
-<p>Auskunft, Berichtigung, Löschung, Widerspruch. Kontakt: autoKompetenz@gmail.com</p>` },
+<p>Auskunft, Berichtigung, Löschung, Widerspruch. Kontakt: info@autokompetenz.com</p>` },
     es: { title: 'Política de Privacidad', content: `
 <h2>1. Responsable</h2>
-<p>Auto Kompetenz GmbH — autoKompetenz@gmail.com</p>
+<p>Auto Kompetenz GmbH — info@autokompetenz.com</p>
 <h2>2. Datos recopilados</h2>
 <ul><li>Nombre, email, teléfono, dirección</li><li>Salario mensual (simulación)</li><li>Historial de pedidos</li></ul>
 <h2>3. Sus derechos (RGPD)</h2>
-<p>Acceso, rectificación, supresión, portabilidad, oposición. Contacto: autoKompetenz@gmail.com</p>` },
+<p>Acceso, rectificación, supresión, portabilidad, oposición. Contacto: info@autokompetenz.com</p>` },
     it: { title: 'Informativa sulla Privacy', content: `
 <h2>1. Titolare del trattamento</h2>
-<p>Auto Kompetenz GmbH — autoKompetenz@gmail.com</p>
+<p>Auto Kompetenz GmbH — info@autokompetenz.com</p>
 <h2>2. Dati raccolti</h2>
 <ul><li>Nome, email, telefono, indirizzo</li><li>Stipendio mensile (simulazione)</li><li>Storico ordini</li></ul>
 <h2>3. I vostri diritti (GDPR)</h2>
-<p>Accesso, rettifica, cancellazione, portabilità, opposizione. Contatto: autoKompetenz@gmail.com</p>` },
+<p>Accesso, rettifica, cancellazione, portabilità, opposizione. Contatto: info@autokompetenz.com</p>` },
     pt: { title: 'Política de Privacidade', content: `
 <h2>1. Responsável</h2>
-<p>Auto Kompetenz GmbH — autoKompetenz@gmail.com</p>
+<p>Auto Kompetenz GmbH — info@autokompetenz.com</p>
 <h2>2. Dados recolhidos</h2>
 <ul><li>Nome, email, telefone, endereço</li><li>Salário mensal (simulação)</li><li>Histórico de pedidos</li></ul>
 <h2>3. Os seus direitos (RGPD)</h2>
-<p>Acesso, retificação, eliminação, portabilidade, oposição. Contacto: autoKompetenz@gmail.com</p>` },
+<p>Acesso, retificação, eliminação, portabilidade, oposição. Contacto: info@autokompetenz.com</p>` },
   },
 
   '/cgv': {
@@ -176,7 +176,7 @@ Email : autoKompetenz@gmail.com</p>
 <h2>Gestion</h2>
 <p>Via la bannière à la première visite ou via les paramètres de votre navigateur.</p>
 <h2>Contact</h2>
-<p>autoKompetenz@gmail.com</p>` },
+<p>info@autokompetenz.com</p>` },
     en: { title: 'Cookie Policy', content: `
 <h2>Cookies used</h2>
 <ul>
