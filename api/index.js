@@ -3,7 +3,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
-const { createClient } = require('@supabase/supabase-js');
+const cloudinary = require('cloudinary').v2;
 const { prisma } = require('../lib/prisma.js');
 const { sendWelcomeEmail, sendOrderConfirmationEmail, sendOrderStatusUpdateEmail } = require('../lib/mailer.js');
 const { calculateMonthlyPayment } = require('../lib/helpers.js');
@@ -11,20 +11,23 @@ const { calculateMonthlyPayment } = require('../lib/helpers.js');
 // Initialize Express app
 const app = express();
 
-// Verify Supabase environment variables
-if (!process.env.SUPABASE_URL) {
-  throw new Error('SUPABASE_URL manquant');
-}
-
-if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error('SUPABASE_SERVICE_ROLE_KEY manquant');
-}
-
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+// Cloudinary : stockage des images véhicules
+const cloudinaryConfigured = Boolean(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
 );
+
+if (!cloudinaryConfigured) {
+  console.warn('⚠️  Cloudinary non configuré : les uploads d\'images seront refusés.');
+}
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 // Configure multer for file uploads (memory storage for Vercel compatibility)
 const upload = multer({
@@ -44,21 +47,34 @@ const upload = multer({
 });
 
 async function uploadCarImages(files) {
+  if (!cloudinaryConfigured) {
+    throw new Error('Cloudinary non configuré : variables CLOUDINARY_* manquantes');
+  }
+
   const sorted = [...files].sort((a, b) =>
     a.originalname.localeCompare(b.originalname, undefined, { numeric: true })
   );
 
   const results = await Promise.all(
-    sorted.map(async (file, index) => {
-      const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const fileName = `${Date.now()}-${index}-${safeName}`;
-      const { error } = await supabase.storage
-        .from('cars')
-        .upload(fileName, file.buffer, { contentType: file.mimetype });
-      if (error) throw error;
-      const { data: publicUrlData } = supabase.storage.from('cars').getPublicUrl(fileName);
-      return { index, url: publicUrlData.publicUrl };
-    })
+    sorted.map((file, index) => new Promise((resolve, reject) => {
+      const safeName = file.originalname
+        .replace(/\.[^.]+$/, '')
+        .replace(/[^a-zA-Z0-9._-]/g, '_')
+        .slice(0, 60);
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'autokompetenz',
+          public_id: `${Date.now()}-${index}-${safeName}`,
+          resource_type: 'image',
+          overwrite: false,
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve({ index, url: result.secure_url, publicId: result.public_id });
+        }
+      );
+      uploadStream.end(file.buffer);
+    }))
   );
 
   const urls = {};
@@ -93,13 +109,18 @@ function parseCarFormBody(data) {
   };
 }
 
-// CORS configuration
+// CORS configuration — domaines autorisés via ALLOWED_ORIGINS (séparés par des virgules)
+const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
+  'https://autokompetenz.vercel.app,http://localhost:5173,http://localhost:3000')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 const corsOptions = {
-  origin: [
-    'https://autokompetenz.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:3000',
-  ],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Origine refusée par CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -434,7 +455,7 @@ app.post('/api/cars', authenticateToken, requireAdmin, upload.any(), async (req,
         const imageUrls = await uploadCarImages(req.files);
         Object.assign(carData, imageUrls);
       } catch (uploadErr) {
-        console.error('Supabase upload error:', uploadErr);
+        console.error('Cloudinary upload error:', uploadErr);
         return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
       }
     }
@@ -489,7 +510,7 @@ app.put('/api/cars/:id', authenticateToken, requireAdmin, upload.any(), async (r
       try {
         Object.assign(carData, await uploadCarImages(req.files));
       } catch (uploadErr) {
-        console.error('Supabase upload error:', uploadErr);
+        console.error('Cloudinary upload error:', uploadErr);
         return res.status(500).json({ error: 'Erreur lors de l\'upload des images' });
       }
     }
