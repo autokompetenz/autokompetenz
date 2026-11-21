@@ -19,7 +19,8 @@ export default function AdminDashboard() {
   if (loading) return <div style={{ padding:40 }}><Loader text="Chargement du tableau de bord..." /></div>;
   if (!data) return null;
 
-  const { stats, recentOrders } = data;
+  const { recentOrders } = data;
+  const stats = data.stats || data; // compatibilité avec l'ancien format de l'API
 
   const statCards = [
     { icon:'👥', label:'Clients', value:stats?.totalClients || 0, color:'#60A5FA', sub:'Total inscrits' },
