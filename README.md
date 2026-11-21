@@ -1,4 +1,4 @@
-# Auto Kompetenz GmbH — autokompetenz.vercel.app
+# Auto Kompetenz GmbH — www.autokompetenz.com
 
 ## Structure (monorepo unifié pour Vercel)
 ```
@@ -50,8 +50,9 @@ git push -u origin main
 | `DATABASE_URL` | postgresql://postgres.XXX:PWD@pooler.supabase.com:6543/postgres?pgbouncer=true |
 | `DIRECT_URL` | postgresql://postgres.XXX:PWD@pooler.supabase.com:5432/postgres |
 | `JWT_SECRET` | (chaîne aléatoire 64+ caractères) |
+| `ALLOWED_ORIGINS` | (optionnel) domaines CORS supplémentaires séparés par des virgules — `https://www.autokompetenz.com` et les domaines `*.vercel.app` sont déjà autorisés par le code |
 
-5. Deploy → ✅ https://autokompetenz.vercel.app
+5. Deploy → ✅ https://www.autokompetenz.com
 
 ### 4. Seeder (une seule fois)
 Dans Supabase → SQL Editor, exécuter le seed manuellement, ou:

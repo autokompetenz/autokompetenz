@@ -109,17 +109,40 @@ function parseCarFormBody(data) {
   };
 }
 
-// CORS configuration — domaines autorisés via ALLOWED_ORIGINS (séparés par des virgules)
-const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
-  'https://autokompetenz.vercel.app,http://localhost:5173,http://localhost:3000')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+// CORS configuration — domaines autorisés (ALLOWED_ORIGINS peut en ajouter, séparés par des virgules)
+const DEFAULT_ALLOWED_ORIGINS = [
+  'https://www.autokompetenz.com',
+  'https://autokompetenz.com',
+  'https://autokompetenz.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+
+const allowedOrigins = new Set([
+  ...DEFAULT_ALLOWED_ORIGINS,
+  ...(process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim().replace(/\/$/, ''))
+    .filter(Boolean),
+]);
+
+function isAllowedOrigin(origin) {
+  const clean = String(origin).replace(/\/$/, '');
+  if (allowedOrigins.has(clean)) return true;
+  try {
+    const hostname = new URL(clean).hostname;
+    return hostname === 'localhost' || hostname.endsWith('.vercel.app');
+  } catch (_) {
+    return false;
+  }
+}
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('Origine refusée par CORS'));
+    if (!origin || isAllowedOrigin(origin)) return callback(null, true);
+    console.warn('Origine refusée par CORS:', origin);
+    // Pas d'erreur Express (500) : on omet simplement les headers CORS.
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
