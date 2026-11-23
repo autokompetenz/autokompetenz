@@ -1256,13 +1256,27 @@ export default function Home() {
             </div>
           </div>
           <div style={{ height:1, background:'var(--border)', margin:'28px 0 20px' }} />
+
+          {/* Identité légale — mise en évidence */}
+          <div style={{
+            background:'var(--red-bg)',
+            border:'1px solid var(--red-border)',
+            borderRadius:8,
+            padding: isMobile ? '12px 14px' : '14px 18px',
+            marginBottom:20,
+            fontSize: isMobile ? 12 : 13,
+            fontWeight:700,
+            lineHeight:1.7,
+            letterSpacing:'0.01em',
+            color:'var(--text-2)',
+          }}>
+            Handelsregister: <span style={{ color:'var(--red)' }}>HRA 8002</span>
+            {' · '}Registergericht: <span style={{ color:'var(--red)' }}>Amtsgericht Arnsberg</span>
+            {' | '}USt-IdNr.: <span style={{ color:'var(--red)' }}>DE308146822</span>
+          </div>
+
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10 }}>
-            <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-              <p style={{ fontSize:12, color:'var(--text-3)' }}>© {new Date().getFullYear()} Auto-Kompetenz-Center Dreisbach e.K. {t('copyright', l)}</p>
-              <p style={{ fontSize:11, color:'var(--text-3)' }}>
-                Handelsregister: HRA 8002 · Registergericht: Amtsgericht Arnsberg | USt-IdNr.: DE308146822
-              </p>
-            </div>
+            <p style={{ fontSize:12, color:'var(--text-3)' }}>© {new Date().getFullYear()} Auto-Kompetenz-Center Dreisbach e.K. {t('copyright', l)}</p>
             <p style={{ fontSize:12, color:'var(--text-3)' }}>{t('made_in', l)}</p>
           </div>
         </div>
