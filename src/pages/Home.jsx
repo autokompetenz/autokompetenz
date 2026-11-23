@@ -495,6 +495,16 @@ function FAQSection({ l, isMobile }) {
   );
 }
 
+// ── INFOS ENTREPRISE (footer) ────────────────────────────────────────────────
+const COMPANY_INFO_LABELS = {
+  fr: { title:'Informations entreprise', name:'Raison sociale', address:'Adresse',     owner:'Titulaire' },
+  en: { title:'Company information',    name:'Company name',   address:'Address',     owner:'Owner' },
+  de: { title:'Unternehmensangaben',    name:'Firmenname',     address:'Adresse',     owner:'Inhaber' },
+  es: { title:'Datos de la empresa',    name:'Razón social',   address:'Dirección',   owner:'Titular' },
+  it: { title:'Dati aziendali',         name:'Ragione sociale',address:'Indirizzo',   owner:'Titolare' },
+  pt: { title:'Informações da empresa', name:'Nome da empresa',address:'Morada',      owner:'Titular' },
+};
+
 export default function Home() {
   const { lang } = useLangStore();
   const { isMobile, isTablet } = useBreakpoint();
@@ -505,6 +515,7 @@ export default function Home() {
   const heroRef = useRef(null);
   const navigate = useNavigate();
   const l = lang || 'fr';
+  const ci = COMPANY_INFO_LABELS[l] || COMPANY_INFO_LABELS.fr;
   const { scrollYProgress } = useScroll({ target:heroRef, offset:['start start','end start'] });
   const heroY = useTransform(scrollYProgress, [0,1], ['0%','25%']);
   const heroO = useTransform(scrollYProgress, [0,0.7], [1,0]);
@@ -1257,22 +1268,40 @@ export default function Home() {
           </div>
           <div style={{ height:1, background:'var(--border)', margin:'28px 0 20px' }} />
 
-          {/* Identité légale — mise en évidence */}
+          {/* Identité de l'entreprise — libellés et valeurs alignés */}
           <div style={{
             background:'var(--red-bg)',
             border:'1px solid var(--red-border)',
-            borderRadius:8,
-            padding: isMobile ? '12px 14px' : '14px 18px',
+            borderRadius:10,
+            padding: isMobile ? '16px' : '20px 24px',
             marginBottom:20,
-            fontSize: isMobile ? 12 : 13,
-            fontWeight:700,
-            lineHeight:1.7,
-            letterSpacing:'0.01em',
-            color:'var(--text-2)',
           }}>
-            Handelsregister: <span style={{ color:'var(--red)' }}>HRA 8002</span>
-            {' · '}Registergericht: <span style={{ color:'var(--red)' }}>Amtsgericht Arnsberg</span>
-            {' | '}USt-IdNr.: <span style={{ color:'var(--red)' }}>DE308146822</span>
+            <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.22em', textTransform:'uppercase', color:'var(--red)', marginBottom:14 }}>
+              {ci.title}
+            </p>
+            <div style={{
+              display:'grid',
+              gridTemplateColumns:'max-content 1fr',
+              columnGap: isMobile ? 12 : 20,
+              rowGap:9,
+              fontSize: isMobile ? 12 : 13,
+              lineHeight:1.55,
+            }}>
+              <span style={{ color:'var(--text-3)', fontWeight:600 }}>{ci.name}</span>
+              <span style={{ color:'var(--text)', fontWeight:800 }}>Auto-Kompetenz-Center Dreisbach e.K.</span>
+
+              <span style={{ color:'var(--text-3)', fontWeight:600 }}>{ci.address}</span>
+              <span style={{ color:'var(--text-2)' }}>Wisbyring 10, 59494 Soest, Allemagne</span>
+
+              <span style={{ color:'var(--text-3)', fontWeight:600 }}>{ci.owner}</span>
+              <span style={{ color:'var(--text-2)' }}>Massimiliano Cobianchi</span>
+
+              <span style={{ color:'var(--text-3)', fontWeight:600 }}>Handelsregister</span>
+              <span style={{ color:'var(--red)', fontWeight:800 }}>HRA 8002 · Registergericht: Amtsgericht Arnsberg</span>
+
+              <span style={{ color:'var(--text-3)', fontWeight:600 }}>USt-IdNr.</span>
+              <span style={{ color:'var(--red)', fontWeight:800, letterSpacing:'0.02em' }}>DE308146822</span>
+            </div>
           </div>
 
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10 }}>
