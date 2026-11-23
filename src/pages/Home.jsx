@@ -551,7 +551,7 @@ export default function Home() {
 
           <motion.h1 initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.9, delay:0.2 }}
             style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile ? 'clamp(38px,10vw,56px)' : 'clamp(52px,6vw,88px)', color:'#fff', letterSpacing:'-0.03em', lineHeight:1.0, marginBottom:22 }}>
-            Auto<br/><span style={{ color:'#C8102E' }}>Kompetenz</span><br/>GmbH
+            Auto<br/><span style={{ color:'#C8102E' }}>Kompetenz</span><br/>e.K.
           </motion.h1>
 
           <motion.p initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.35 }}
@@ -1197,8 +1197,8 @@ export default function Home() {
             ))}
             <div style={{ marginTop:20, padding:'14px 18px', background:'var(--red-bg)', border:'1px solid var(--red-border)', borderRadius:8 }}>
               <p style={{ fontSize:13, color:'var(--text-2)', lineHeight:1.6 }}>
-                📍 Neuenkirchener Str. 127, 48282 Emsdetten<br/>
-                📞 <a href="tel:+4915788823274" style={{ color:'var(--red)', textDecoration:'none', fontWeight:600 }}>+49 157 888 232 74</a>
+                📍 Wisbyring 10, 59494 Soest<br/>
+                📞 <a href="tel:+4915788823274" style={{ color:'var(--red)', textDecoration:'none', fontWeight:600 }}>+49 1578 8823274</a>
               </p>
             </div>
           </div>
@@ -1211,7 +1211,7 @@ export default function Home() {
           <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'auto 1fr auto', gap: isMobile ? 24 : 40, alignItems:'start' }}>
             <div>
               <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:16, fontWeight:900, color:'var(--text)', letterSpacing:'0.05em' }}>AUTO KOMPETENZ</div>
-              <div style={{ fontSize:9, letterSpacing:'0.4em', color:'var(--red)', textTransform:'uppercase', marginTop:3, marginBottom:12 }}>GmbH · Emsdetten</div>
+              <div style={{ fontSize:9, letterSpacing:'0.4em', color:'var(--red)', textTransform:'uppercase', marginTop:3, marginBottom:12 }}>e.K. · Soest</div>
               <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.6, maxWidth:240 }}>
                 {l==='fr'?'Votre partenaire automobile de confiance en Allemagne.':l==='en'?'Your trusted car partner in Germany.':l==='de'?'Ihr vertrauenswürdiger Autopartner in Deutschland.':l==='es'?'Su socio de confianza en Alemania.':l==='it'?'Il vostro partner automobilistico di fiducia in Germania.':'Seu parceiro automobilístico de confiança na Alemanha.'}
               </p>
@@ -1227,7 +1227,7 @@ export default function Home() {
               <div>
                 <p style={{ fontSize:11, fontWeight:800, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--red)', marginBottom:12 }}>Contact</p>
                 <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.8 }}>
-                  📞 +49 157 888 232 74<br/>
+                  📞 +49 1578 8823274<br/>
                   ✉ info@autokompetenz.com<br/>
                   💬 <a href="https://wa.me/4915788823274" style={{ color:'var(--red)', textDecoration:'none' }}>WhatsApp</a>
                 </p>
@@ -1257,7 +1257,12 @@ export default function Home() {
           </div>
           <div style={{ height:1, background:'var(--border)', margin:'28px 0 20px' }} />
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10 }}>
-            <p style={{ fontSize:12, color:'var(--text-3)' }}>© {new Date().getFullYear()} Auto Kompetenz GmbH. {t('copyright', l)}.</p>
+            <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+              <p style={{ fontSize:12, color:'var(--text-3)' }}>© {new Date().getFullYear()} Auto-Kompetenz-Center Dreisbach e.K. {t('copyright', l)}</p>
+              <p style={{ fontSize:11, color:'var(--text-3)' }}>
+                Handelsregister: HRA 8002 · Registergericht: Amtsgericht Arnsberg | USt-IdNr.: DE308146822
+              </p>
+            </div>
             <p style={{ fontSize:12, color:'var(--text-3)' }}>{t('made_in', l)}</p>
           </div>
         </div>

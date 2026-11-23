@@ -7,7 +7,7 @@ function pmt(price, months = 60, rate = 0.06) {
 }
 
 async function main() {
-  console.log('🌱 Seeding Auto Kompetenz GmbH...');
+  console.log('🌱 Seeding Auto-Kompetenz-Center Dreisbach e.K....');
 
   // Admin
   const adminPwd = await bcrypt.hash('password', 12);

@@ -47,7 +47,7 @@ export default function Register() {
         <div style={{ textAlign:'center', marginBottom:32 }}>
           <div style={{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg,#9B0B22,#C8102E)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, margin:'0 auto 16px', boxShadow:'0 8px 28px rgba(200,16,46,0.3)' }}>🚗</div>
           <h1 style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize:28, color:'var(--text)', marginBottom:8 }}>{t('register_title', l)}</h1>
-          <p style={{ fontSize:14, color:'var(--text-3)' }}>Auto Kompetenz GmbH</p>
+          <p style={{ fontSize:14, color:'var(--text-3)' }}>Auto-Kompetenz-Center Dreisbach e.K.</p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 22 : 36, boxShadow:'var(--shadow-md)', display:'flex', flexDirection:'column', gap:16 }}>

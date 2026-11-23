@@ -1,4 +1,4 @@
--- Auto Kompetenz GmbH — Supabase Schema
+-- Auto-Kompetenz-Center Dreisbach e.K. — Supabase Schema
 -- Run this in Supabase SQL Editor if Prisma migrate fails
 
 CREATE TYPE "Role"         AS ENUM ('CLIENT', 'ADMIN');

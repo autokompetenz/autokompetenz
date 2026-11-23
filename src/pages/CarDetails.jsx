@@ -342,7 +342,7 @@ export default function CarDetails() {
               </div>
               <div>
                 <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: isMobile ? 18 : 22, color: C.text, marginBottom: 4 }}>
-                  {lang === 'fr' ? 'Garantie basique AUTO KOMPETENZ GmbH' : lang === 'en' ? 'AUTO KOMPETENZ GmbH Basic Warranty' : lang === 'de' ? 'AUTO KOMPETENZ GmbH Basisgarantie' : 'ضمان AUTO KOMPETENZ GmbH الأساسي'}
+                  {lang === 'fr' ? 'Garantie basique AUTO KOMPETENZ e.K.' : lang === 'en' ? 'AUTO KOMPETENZ e.K. Basic Warranty' : lang === 'de' ? 'AUTO KOMPETENZ e.K. Basisgarantie' : 'ضمان AUTO KOMPETENZ e.K. الأساسي'}
                 </h3>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(200,16,46,0.1)', border: '1px solid rgba(200,16,46,0.25)', padding: '4px 12px', borderRadius: 6 }}>
                   <span style={{ fontSize: 12, fontWeight: 700, color: '#C8102E' }}>
@@ -587,7 +587,7 @@ export default function CarDetails() {
               <span style={{ fontSize: 48 }}>✓</span>
               <div style={{ textAlign: 'left' }}>
                 <div style={{ fontSize: 14, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#C8102E' }}>
-                  {lang === 'fr' ? 'Certifié AUTO KOMPETENZ GmbH' : lang === 'en' ? 'Certified AUTO KOMPETENZ GmbH' : lang === 'de' ? 'Zertifiziert AUTO KOMPETENZ GmbH' : 'معتمد من AUTO KOMPETENZ GmbH'}
+                  {lang === 'fr' ? 'Certifié AUTO KOMPETENZ e.K.' : lang === 'en' ? 'Certified AUTO KOMPETENZ e.K.' : lang === 'de' ? 'Zertifiziert AUTO KOMPETENZ e.K.' : 'معتمد من AUTO KOMPETENZ e.K.'}
                 </div>
                 <p style={{ fontSize: isMobile ? 16 : 18, fontWeight: 700, color: C.text, marginTop: 4 }}>
                   {lang === 'fr' ? 'Ce véhicule a validé notre contrôle qualité complet.' : lang === 'en' ? 'This vehicle has passed our complete quality control.' : lang === 'de' ? 'Dieses Fahrzeug hat unsere vollständige Qualitätskontrolle bestanden.' : 'اجتازت هذه المركبة فحص الجودة الكامل لدينا.'}

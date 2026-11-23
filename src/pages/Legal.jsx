@@ -7,60 +7,124 @@ const LEGAL_PAGES = {
   '/mentions-legales': {
     fr: { title: 'Mentions Légales', content: `
 <h2>Éditeur du site</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>
-Neuenkirchener Str. 127<br/>
-48282 Emsdetten, Allemagne<br/>
-WhatsApp : +49 157 888 232 74<br/>
-Email : info@autokompetenz.com</p>
+<p><strong>Auto-Kompetenz-Center Dreisbach e.K.</strong><br/>
+Wisbyring 10<br/>
+59494 Soest, Allemagne<br/>
+Téléphone WhatsApp : +49 1578 8823274<br/>
+Email : info@autokompetenz.com<br/>
+Site internet : https://www.autokompetenz.com</p>
 <h2>Forme juridique</h2>
-<p>Gesellschaft mit beschränkter Haftung (GmbH) — société à responsabilité limitée de droit allemand.</p>
+<p>Entreprise individuelle enregistrée (Einzelkaufmann — e.K.) de droit allemand.</p>
+<h2>Titulaire</h2>
+<p>Massimiliano Cobianchi</p>
+<h2>Immatriculation</h2>
+<p>Numéro d'immatriculation (Handelsregister) : HRA 8002<br/>
+Tribunal d'enregistrement (Registergericht) : Amtsgericht Arnsberg, Allemagne</p>
+<h2>Numéro de TVA</h2>
+<p>USt-IdNr. : DE308146822</p>
+<h2>Activité principale</h2>
+<p>Entretien et réparation de véhicules automobiles, vente et montage de pneus, vente de pièces détachées et prestations de services automobiles.</p>
 <h2>Hébergement</h2>
 <p>Vercel Inc., 340 Pine Street, San Francisco, CA 94104, USA.<br/>Base de données : Supabase Inc., Singapore.</p>
 <h2>Propriété intellectuelle</h2>
-<p>Tout le contenu est la propriété exclusive d'Auto Kompetenz GmbH. Reproduction interdite sans autorisation.</p>
+<p>Tout le contenu est la propriété exclusive d'Auto-Kompetenz-Center Dreisbach e.K. Reproduction interdite sans autorisation.</p>
 <h2>Droit applicable</h2>
-<p>Droit allemand (TMG). Juridiction compétente : Osnabrück.</p>` },
+<p>Droit allemand (TMG). Tribunal d'enregistrement : Amtsgericht Arnsberg.</p>` },
     en: { title: 'Legal Notice', content: `
 <h2>Publisher</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Germany<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
+<p><strong>Auto-Kompetenz-Center Dreisbach e.K.</strong><br/>Wisbyring 10, 59494 Soest, Germany<br/>WhatsApp: +49 1578 8823274 — info@autokompetenz.com<br/>Website: https://www.autokompetenz.com</p>
+<h2>Legal form</h2>
+<p>Registered sole proprietorship (Einzelkaufmann — e.K.) under German law.</p>
+<h2>Owner</h2>
+<p>Massimiliano Cobianchi</p>
+<h2>Registration</h2>
+<p>Commercial register (Handelsregister): HRA 8002<br/>Register court (Registergericht): Amtsgericht Arnsberg, Germany</p>
+<h2>VAT number</h2>
+<p>USt-IdNr.: DE308146822</p>
+<h2>Main activity</h2>
+<p>Motor vehicle maintenance and repair, sale and fitting of tyres, sale of spare parts and automotive services.</p>
 <h2>Hosting</h2>
 <p>Vercel Inc., San Francisco, USA. Database: Supabase Inc., Singapore.</p>
+<h2>Intellectual property</h2>
+<p>All content is the exclusive property of Auto-Kompetenz-Center Dreisbach e.K. Reproduction without authorisation is prohibited.</p>
 <h2>Applicable Law</h2>
-<p>German law (TMG). Courts of Osnabrück.</p>` },
+<p>German law (TMG). Register court: Amtsgericht Arnsberg.</p>` },
     de: { title: 'Impressum', content: `
 <h2>Angaben gemäß § 5 TMG</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
+<p><strong>Auto-Kompetenz-Center Dreisbach e.K.</strong><br/>Wisbyring 10<br/>59494 Soest<br/>WhatsApp: +49 1578 8823274 — info@autokompetenz.com<br/>Website: https://www.autokompetenz.com</p>
+<h2>Rechtsform</h2>
+<p>Eingetragener Einzelkaufmann (e.K.) nach deutschem Recht.</p>
+<h2>Inhaber</h2>
+<p>Massimiliano Cobianchi</p>
+<h2>Handelsregister</h2>
+<p>Handelsregister: HRA 8002<br/>Registergericht: Amtsgericht Arnsberg</p>
+<h2>Umsatzsteuer-Identifikationsnummer</h2>
+<p>USt-IdNr.: DE308146822</p>
+<h2>Gegenstand des Unternehmens</h2>
+<p>Wartung und Reparatur von Kraftfahrzeugen, Verkauf und Montage von Reifen, Verkauf von Ersatzteilen sowie Kraftfahrzeugdienstleistungen.</p>
 <h2>Hosting</h2>
 <p>Vercel Inc., San Francisco, USA. Datenbank: Supabase Inc., Singapur.</p>
+<h2>Urheberrecht</h2>
+<p>Alle Inhalte sind Eigentum von Auto-Kompetenz-Center Dreisbach e.K. Eine Vervielfältigung ohne Genehmigung ist untersagt.</p>
 <h2>Gerichtsstand</h2>
-<p>Deutsches Recht. Gerichtsstand: Osnabrück.</p>` },
+<p>Deutsches Recht (TMG). Registergericht: Amtsgericht Arnsberg.</p>` },
     es: { title: 'Aviso Legal', content: `
 <h2>Editor</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Alemania<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
+<p><strong>Auto-Kompetenz-Center Dreisbach e.K.</strong><br/>Wisbyring 10, 59494 Soest, Alemania<br/>WhatsApp: +49 1578 8823274 — info@autokompetenz.com<br/>Sitio web: https://www.autokompetenz.com</p>
+<h2>Forma jurídica</h2>
+<p>Empresario individual registrado (Einzelkaufmann — e.K.) de derecho alemán.</p>
+<h2>Titular</h2>
+<p>Massimiliano Cobianchi</p>
+<h2>Inscripción</h2>
+<p>Registro mercantil (Handelsregister): HRA 8002<br/>Tribunal de registro: Amtsgericht Arnsberg, Alemania</p>
+<h2>Número de IVA</h2>
+<p>USt-IdNr.: DE308146822</p>
+<h2>Actividad principal</h2>
+<p>Mantenimiento y reparación de vehículos, venta e instalación de neumáticos, venta de recambios y servicios automovilísticos.</p>
 <h2>Alojamiento</h2>
 <p>Vercel Inc., San Francisco, EE.UU. Base de datos: Supabase Inc., Singapur.</p>
 <h2>Ley aplicable</h2>
-<p>Derecho alemán (TMG). Tribunales de Osnabrück.</p>` },
+<p>Derecho alemán (TMG). Tribunal de registro: Amtsgericht Arnsberg.</p>` },
     it: { title: 'Note Legali', content: `
 <h2>Editore</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Germania<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
+<p><strong>Auto-Kompetenz-Center Dreisbach e.K.</strong><br/>Wisbyring 10, 59494 Soest, Germania<br/>WhatsApp: +49 1578 8823274 — info@autokompetenz.com<br/>Sito web: https://www.autokompetenz.com</p>
+<h2>Forma giuridica</h2>
+<p>Imprenditore individuale registrato (Einzelkaufmann — e.K.) di diritto tedesco.</p>
+<h2>Titolare</h2>
+<p>Massimiliano Cobianchi</p>
+<h2>Registrazione</h2>
+<p>Registro commerciale (Handelsregister): HRA 8002<br/>Tribunale di registro: Amtsgericht Arnsberg, Germania</p>
+<h2>Partita IVA</h2>
+<p>USt-IdNr.: DE308146822</p>
+<h2>Attività principale</h2>
+<p>Manutenzione e riparazione di veicoli, vendita e montaggio di pneumatici, vendita di ricambi e servizi automobilistici.</p>
 <h2>Hosting</h2>
 <p>Vercel Inc., San Francisco, USA. Database: Supabase Inc., Singapore.</p>
 <h2>Legge applicabile</h2>
-<p>Diritto tedesco (TMG). Tribunali di Osnabrück.</p>` },
+<p>Diritto tedesco (TMG). Tribunale di registro: Amtsgericht Arnsberg.</p>` },
     pt: { title: 'Aviso Legal', content: `
 <h2>Editor</h2>
-<p><strong>Auto Kompetenz GmbH</strong><br/>Neuenkirchener Str. 127, 48282 Emsdetten, Alemanha<br/>WhatsApp: +49 157 888 232 74 — info@autokompetenz.com</p>
+<p><strong>Auto-Kompetenz-Center Dreisbach e.K.</strong><br/>Wisbyring 10, 59494 Soest, Alemanha<br/>WhatsApp: +49 1578 8823274 — info@autokompetenz.com<br/>Site: https://www.autokompetenz.com</p>
+<h2>Forma jurídica</h2>
+<p>Empresário individual registado (Einzelkaufmann — e.K.) de direito alemão.</p>
+<h2>Titular</h2>
+<p>Massimiliano Cobianchi</p>
+<h2>Registo</h2>
+<p>Registo comercial (Handelsregister): HRA 8002<br/>Tribunal de registo: Amtsgericht Arnsberg, Alemanha</p>
+<h2>Número de IVA</h2>
+<p>USt-IdNr.: DE308146822</p>
+<h2>Atividade principal</h2>
+<p>Manutenção e reparação de veículos, venda e montagem de pneus, venda de peças e serviços automóveis.</p>
 <h2>Hospedagem</h2>
 <p>Vercel Inc., São Francisco, EUA. Base de dados: Supabase Inc., Singapura.</p>
 <h2>Lei aplicável</h2>
-<p>Direito alemão (TMG). Tribunais de Osnabrück.</p>` },
+<p>Direito alemão (TMG). Tribunal de registo: Amtsgericht Arnsberg.</p>` },
   },
 
   '/politique-confidentialite': {
     fr: { title: 'Politique de Confidentialité', content: `
 <h2>1. Responsable du traitement</h2>
-<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — info@autokompetenz.com</p>
+<p>Auto-Kompetenz-Center Dreisbach e.K., Wisbyring 10, 59494 Soest — info@autokompetenz.com</p>
 <h2>2. Données collectées</h2>
 <ul><li>Nom, prénom, email, téléphone, adresse</li><li>Salaire mensuel (simulation financement)</li><li>Historique des commandes</li></ul>
 <h2>3. Base légale (RGPD)</h2>
@@ -71,7 +135,7 @@ Email : info@autokompetenz.com</p>
 <p>Mots de passe chiffrés (bcrypt), JWT avec expiration, connexions HTTPS.</p>` },
     en: { title: 'Privacy Policy', content: `
 <h2>1. Data Controller</h2>
-<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — info@autokompetenz.com</p>
+<p>Auto-Kompetenz-Center Dreisbach e.K., Wisbyring 10, 59494 Soest — info@autokompetenz.com</p>
 <h2>2. Data Collected</h2>
 <ul><li>Name, email, phone, address</li><li>Monthly salary (financing simulation)</li><li>Order history</li></ul>
 <h2>3. Legal Basis (GDPR)</h2>
@@ -80,7 +144,7 @@ Email : info@autokompetenz.com</p>
 <p>Access, rectify, erase, port, object. Contact: info@autokompetenz.com</p>` },
     de: { title: 'Datenschutzerklärung', content: `
 <h2>1. Verantwortlicher</h2>
-<p>Auto Kompetenz GmbH, Neuenkirchener Str. 127, 48282 Emsdetten — info@autokompetenz.com</p>
+<p>Auto-Kompetenz-Center Dreisbach e.K., Wisbyring 10, 59494 Soest — info@autokompetenz.com</p>
 <h2>2. Erhobene Daten</h2>
 <ul><li>Name, E-Mail, Telefon, Adresse</li><li>Monatsgehalt (Finanzierungssimulation)</li><li>Bestellhistorie</li></ul>
 <h2>3. Rechtsgrundlage (DSGVO)</h2>
@@ -89,21 +153,21 @@ Email : info@autokompetenz.com</p>
 <p>Auskunft, Berichtigung, Löschung, Widerspruch. Kontakt: info@autokompetenz.com</p>` },
     es: { title: 'Política de Privacidad', content: `
 <h2>1. Responsable</h2>
-<p>Auto Kompetenz GmbH — info@autokompetenz.com</p>
+<p>Auto-Kompetenz-Center Dreisbach e.K. — info@autokompetenz.com</p>
 <h2>2. Datos recopilados</h2>
 <ul><li>Nombre, email, teléfono, dirección</li><li>Salario mensual (simulación)</li><li>Historial de pedidos</li></ul>
 <h2>3. Sus derechos (RGPD)</h2>
 <p>Acceso, rectificación, supresión, portabilidad, oposición. Contacto: info@autokompetenz.com</p>` },
     it: { title: 'Informativa sulla Privacy', content: `
 <h2>1. Titolare del trattamento</h2>
-<p>Auto Kompetenz GmbH — info@autokompetenz.com</p>
+<p>Auto-Kompetenz-Center Dreisbach e.K. — info@autokompetenz.com</p>
 <h2>2. Dati raccolti</h2>
 <ul><li>Nome, email, telefono, indirizzo</li><li>Stipendio mensile (simulazione)</li><li>Storico ordini</li></ul>
 <h2>3. I vostri diritti (GDPR)</h2>
 <p>Accesso, rettifica, cancellazione, portabilità, opposizione. Contatto: info@autokompetenz.com</p>` },
     pt: { title: 'Política de Privacidade', content: `
 <h2>1. Responsável</h2>
-<p>Auto Kompetenz GmbH — info@autokompetenz.com</p>
+<p>Auto-Kompetenz-Center Dreisbach e.K. — info@autokompetenz.com</p>
 <h2>2. Dados recolhidos</h2>
 <ul><li>Nome, email, telefone, endereço</li><li>Salário mensal (simulação)</li><li>Histórico de pedidos</li></ul>
 <h2>3. Os seus direitos (RGPD)</h2>
@@ -113,7 +177,7 @@ Email : info@autokompetenz.com</p>
   '/cgv': {
     fr: { title: 'Conditions Générales de Vente', content: `
 <h2>Article 1 — Objet</h2>
-<p>Les présentes CGV régissent les relations entre Auto Kompetenz GmbH et tout acheteur via le site.</p>
+<p>Les présentes CGV régissent les relations entre Auto-Kompetenz-Center Dreisbach e.K. et tout acheteur via le site.</p>
 <h2>Article 2 — Prix</h2>
 <p>Prix en Euros (€) TTC. Modifiables à tout moment.</p>
 <h2>Article 3 — Paiement</h2>
@@ -121,42 +185,42 @@ Email : info@autokompetenz.com</p>
 <h2>Article 4 — Rétractation</h2>
 <p>14 jours à compter de la réception (directive 2011/83/UE).</p>
 <h2>Article 5 — Droit applicable</h2>
-<p>Droit allemand. Juridiction : Osnabrück.</p>` },
+<p>Droit allemand. Juridiction : Amtsgericht Arnsberg.</p>` },
     en: { title: 'Terms and Conditions', content: `
 <h2>Article 1 — Subject</h2>
-<p>These T&Cs govern purchases from Auto Kompetenz GmbH.</p>
+<p>These T&Cs govern purchases from Auto-Kompetenz-Center Dreisbach e.K..</p>
 <h2>Article 2 — Payment</h2>
 <ul><li>Full payment: 5% discount</li><li>25% deposit: balance on delivery</li><li>Monthly: 60 instalments at 6%/year</li></ul>
 <h2>Article 3 — Withdrawal</h2>
 <p>14-day right of withdrawal (EU Directive 2011/83/EU).</p>
 <h2>Article 4 — Applicable Law</h2>
-<p>German law. Courts of Osnabrück.</p>` },
+<p>German law. Courts of Amtsgericht Arnsberg.</p>` },
     de: { title: 'Allgemeine Geschäftsbedingungen', content: `
 <h2>§ 1 Geltungsbereich</h2>
-<p>Diese AGB gelten für alle Verträge mit Auto Kompetenz GmbH.</p>
+<p>Diese AGB gelten für alle Verträge mit Auto-Kompetenz-Center Dreisbach e.K..</p>
 <h2>§ 2 Zahlung</h2>
 <ul><li>Vollzahlung: 5% Rabatt</li><li>Anzahlung 25%: Rest bei Lieferung</li><li>Ratenzahlung: 60 Monate, 6% p.a.</li></ul>
 <h2>§ 3 Widerrufsrecht</h2>
 <p>14 Tage Widerrufsrecht gemäß § 312g BGB.</p>
 <h2>§ 4 Gerichtsstand</h2>
-<p>Deutsches Recht. Gerichtsstand: Osnabrück.</p>` },
+<p>Deutsches Recht. Gerichtsstand: Amtsgericht Arnsberg.</p>` },
     es: { title: 'Condiciones Generales de Venta', content: `
 <h2>Artículo 1 — Objeto</h2>
-<p>Estas CGV rigen las compras a Auto Kompetenz GmbH.</p>
+<p>Estas CGV rigen las compras a Auto-Kompetenz-Center Dreisbach e.K..</p>
 <h2>Artículo 2 — Pago</h2>
 <ul><li>Pago completo: 5% descuento</li><li>Señal 25%: resto en entrega</li><li>Cuotas: 60 meses al 6%/año</li></ul>
 <h2>Artículo 3 — Desistimiento</h2>
 <p>14 días desde la recepción (Directiva 2011/83/UE).</p>` },
     it: { title: 'Condizioni Generali di Vendita', content: `
 <h2>Articolo 1 — Oggetto</h2>
-<p>Le presenti CGV regolano gli acquisti da Auto Kompetenz GmbH.</p>
+<p>Le presenti CGV regolano gli acquisti da Auto-Kompetenz-Center Dreisbach e.K..</p>
 <h2>Articolo 2 — Pagamento</h2>
 <ul><li>Pagamento completo: 5% sconto</li><li>Acconto 25%: saldo alla consegna</li><li>Rate: 60 mesi al 6%/anno</li></ul>
 <h2>Articolo 3 — Recesso</h2>
 <p>14 giorni dalla ricezione (Direttiva 2011/83/UE).</p>` },
     pt: { title: 'Condições Gerais de Venda', content: `
 <h2>Artigo 1 — Objeto</h2>
-<p>Estas CGV regem as compras à Auto Kompetenz GmbH.</p>
+<p>Estas CGV regem as compras à Auto-Kompetenz-Center Dreisbach e.K..</p>
 <h2>Artigo 2 — Pagamento</h2>
 <ul><li>Pagamento integral: 5% desconto</li><li>Entrada 25%: saldo na entrega</li><li>Prestações: 60 meses a 6%/ano</li></ul>
 <h2>Artigo 3 — Desistência</h2>
@@ -231,6 +295,9 @@ Email : info@autokompetenz.com</p>
   },
 };
 
+// Alias historique : le footer et le dashboard renvoient vers /politique-de-vente
+LEGAL_PAGES['/politique-de-vente'] = LEGAL_PAGES['/cgv'];
+
 const LANG_LABELS = { fr:'🇫🇷 FR', en:'🇬🇧 EN', de:'🇩🇪 DE', es:'🇪🇸 ES', it:'🇮🇹 IT', pt:'🇵🇹 PT' };
 
 export default function Legal() {
@@ -279,7 +346,7 @@ export default function Legal() {
 
       {/* Content */}
       <div style={{ maxWidth:820, margin:'0 auto', padding: isMobile ? '28px 5% 60px' : '52px 6% 80px' }}>
-        <div dangerouslySetInnerHTML={{ __html: content.content }} />
+        <div className="legal-body" dangerouslySetInnerHTML={{ __html: content.content }} />
       </div>
 
       <style>{`

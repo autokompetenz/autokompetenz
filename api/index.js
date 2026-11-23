@@ -239,7 +239,7 @@ function requireAdmin(req, res, next) {
 app.get('/api', (req, res) => {
   res.json({ 
     status: 'ok', 
-    service: 'Auto Kompetenz GmbH API', 
+    service: 'Auto-Kompetenz-Center Dreisbach e.K. API', 
     version: '2.0.0', 
     time: new Date().toISOString() 
   });
