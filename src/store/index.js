@@ -33,17 +33,20 @@ export const useLangStore = create((set) => ({
 export const useAuthStore = create((set, get) => ({
   user: JSON.parse(localStorage.getItem('ak_user') || 'null'),
   token: localStorage.getItem('ak_token') || null,
+  refreshToken: localStorage.getItem('ak_refresh_token') || null,
   isAuthenticated: !!localStorage.getItem('ak_token'),
 
-  login: (user, token) => {
+  login: (user, token, refreshToken) => {
     localStorage.setItem('ak_token', token);
+    if (refreshToken) localStorage.setItem('ak_refresh_token', refreshToken);
     localStorage.setItem('ak_user', JSON.stringify(user));
-    set({ user, token, isAuthenticated: true });
+    set({ user, token, refreshToken: refreshToken || null, isAuthenticated: true });
   },
   logout: () => {
     localStorage.removeItem('ak_token');
+    localStorage.removeItem('ak_refresh_token');
     localStorage.removeItem('ak_user');
-    set({ user: null, token: null, isAuthenticated: false });
+    set({ user: null, token: null, refreshToken: null, isAuthenticated: false });
   },
   updateUser: (updates) => {
     const updated = { ...get().user, ...updates };
@@ -52,6 +55,20 @@ export const useAuthStore = create((set, get) => ({
   },
   isAdmin: () => get().user?.role === 'ADMIN',
 }));
+
+// Synchronise le store avec le renouvellement automatique du token (voir services/api.js)
+window.addEventListener('ak:tokens', (e) => {
+  const { token, refreshToken, user } = e.detail || {};
+  useAuthStore.setState({
+    token: token || null,
+    refreshToken: refreshToken || null,
+    user: user || useAuthStore.getState().user,
+    isAuthenticated: Boolean(token),
+  });
+});
+window.addEventListener('ak:unauthorized', () => {
+  useAuthStore.setState({ user: null, token: null, refreshToken: null, isAuthenticated: false });
+});
 
 // ─── Cart Store ────────────────────────────────────────────────────────────
 export const useCartStore = create((set, get) => ({

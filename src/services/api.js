@@ -6,6 +6,21 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+const AUTH_PATHS = ['/auth/login', '/auth/register', '/auth/refresh'];
+let refreshPromise = null;
+
+function clearSession() {
+  localStorage.removeItem('ak_token');
+  localStorage.removeItem('ak_refresh_token');
+  localStorage.removeItem('ak_user');
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('ak:unauthorized'));
+    if (!window.location.pathname.includes('/login')) {
+      window.location.assign('/login?reason=session');
+    }
+  }
+}
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('ak_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -14,15 +29,47 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
-    if (err.response?.status === 401) {
-      localStorage.removeItem('ak_token');
-      localStorage.removeItem('ak_user');
-      if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/login';
-      }
+  async (err) => {
+    const original = err.config;
+
+    if (
+      err.response?.status !== 401 ||
+      !original ||
+      original._retry ||
+      AUTH_PATHS.some((p) => (original.url || '').includes(p))
+    ) {
+      return Promise.reject(err);
     }
-    return Promise.reject(err);
+    original._retry = true;
+
+    const refreshToken = localStorage.getItem('ak_refresh_token');
+    if (!refreshToken) {
+      clearSession();
+      return Promise.reject(err);
+    }
+
+    try {
+      // Une seule requête de refresh pour les appels simultanés
+      if (!refreshPromise) {
+        refreshPromise = axios.post('/api/auth/refresh', { refreshToken })
+          .finally(() => { refreshPromise = null; });
+      }
+      const { data } = await refreshPromise;
+      const nextRefresh = data.refreshToken || refreshToken;
+
+      localStorage.setItem('ak_token', data.token);
+      localStorage.setItem('ak_refresh_token', nextRefresh);
+      localStorage.setItem('ak_user', JSON.stringify(data.user));
+      window.dispatchEvent(new CustomEvent('ak:tokens', {
+        detail: { token: data.token, refreshToken: nextRefresh, user: data.user },
+      }));
+
+      original.headers.Authorization = `Bearer ${data.token}`;
+      return api(original);
+    } catch (refreshErr) {
+      clearSession();
+      return Promise.reject(err);
+    }
   }
 );
 

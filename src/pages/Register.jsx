@@ -32,7 +32,7 @@ export default function Register() {
     try {
       setLoading(true);
       const { data } = await authAPI.register(form);
-      login(data.user, data.token);
+      login(data.user, data.token, data.refreshToken);
       await fetchCart();
       addToast(`🎉 ${t('welcome_back', l)} ${data.user.firstName} !`, 'success');
       navigate('/dashboard?welcome=1');

@@ -198,6 +198,13 @@ function calculateOrderTotals(subtotal, paymentType) {
   }
 }
 
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+const ACCESS_TTL  = '7d';
+const REFRESH_TTL = '30d';
+
+const signAccessToken  = (userId) => jwt.sign({ userId, type: 'access'  }, process.env.JWT_SECRET, { expiresIn: ACCESS_TTL });
+const signRefreshToken = (userId) => jwt.sign({ userId, type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: REFRESH_TTL });
+
 // Authentication middleware
 async function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -208,6 +215,10 @@ async function authenticateToken(req, res, next) {
   try {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Les anciens tokens sans champ "type" restent valides jusqu'à leur expiration.
+    if (decoded.type && decoded.type !== 'access') {
+      return res.status(401).json({ error: 'Type de token invalide' });
+    }
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       select: { 
@@ -263,11 +274,13 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token        = signAccessToken(user.id);
+    const refreshToken = signRefreshToken(user.id);
 
     res.json({ 
       message: 'Connexion réussie', 
-      token, 
+      token,
+      refreshToken,
       user: {
         id: user.id, username: user.username, email: user.email,
         firstName: user.firstName, lastName: user.lastName, role: user.role,
@@ -311,13 +324,14 @@ app.post('/api/auth/register', async (req, res) => {
       },
     });
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token        = signAccessToken(user.id);
+    const refreshToken = signRefreshToken(user.id);
 
     // Send welcome email (non-blocking)
     sendWelcomeEmail({ email: user.email, firstName: user.firstName, lastName: user.lastName })
       .catch(err => console.error('Welcome email error:', err));
 
-    res.status(201).json({ message: 'Compte créé avec succès', token, user });
+    res.status(201).json({ message: 'Compte créé avec succès', token, refreshToken, user });
   } catch (e) {
     console.error('Register error:', e);
     res.status(500).json({ error: 'Erreur serveur' });
@@ -326,6 +340,36 @@ app.post('/api/auth/register', async (req, res) => {
 
 app.get('/api/auth/me', authenticateToken, async (req, res) => {
   res.json({ user: req.user });
+});
+
+// Renouvellement silencieux de la session (access 7j / refresh 30j)
+app.post('/api/auth/refresh', async (req, res) => {
+  const refreshToken = req.body?.refreshToken || req.headers.authorization?.replace('Bearer ', '');
+  if (!refreshToken) return res.status(401).json({ error: 'Refresh token manquant' });
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    if (decoded.type !== 'refresh') {
+      return res.status(401).json({ error: 'Refresh token invalide' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: {
+        id:true, username:true, email:true, firstName:true, lastName:true,
+        role:true, phone:true, address:true, monthlySalary:true,
+      },
+    });
+    if (!user) return res.status(401).json({ error: 'Utilisateur introuvable' });
+
+    res.json({
+      token: signAccessToken(user.id),
+      refreshToken: signRefreshToken(user.id),
+      user,
+    });
+  } catch (e) {
+    return res.status(401).json({ error: 'Session expirée' });
+  }
 });
 
 // Cars Routes - ORDER MATTERS: specific routes before parameterized routes

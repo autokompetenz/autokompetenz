@@ -15,13 +15,14 @@ export default function Login() {
   const [form, setForm] = useState({ email:'', password:'' });
   const [loading, setLoading] = useState(false);
   const l = lang || 'fr';
+  const sessionExpired = new URLSearchParams(window.location.search).get('reason') === 'session';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       const { data } = await authAPI.login(form);
-      login(data.user, data.token);
+      login(data.user, data.token, data.refreshToken);
       await fetchCart();
       addToast(`${t('welcome_back', l)} ${data.user.firstName} !`, 'success');
       navigate(data.user.role === 'ADMIN' ? '/admin' : '/dashboard');
@@ -41,6 +42,11 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleSubmit} style={{ background:'var(--bg-card)', border:'1px solid var(--border)', borderRadius:16, padding: isMobile ? 24 : 36, boxShadow:'var(--shadow-md)', display:'flex', flexDirection:'column', gap:18 }}>
+          {sessionExpired && (
+            <div style={{ background:'var(--red-bg)', border:'1px solid var(--red-border)', borderRadius:8, padding:'12px 14px', fontSize:13, color:'var(--red)', fontWeight:600, textAlign:'center' }}>
+              {l==='fr'?'Votre session a expiré. Reconnectez-vous pour continuer.':l==='en'?'Your session expired. Please sign in again.':l==='de'?'Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.':l==='es'?'Su sesión ha caducado. Vuelva a iniciar sesión.':l==='it'?'La sessione è scaduta. Accedi di nuovo.':'A sua sessão expirou. Inicie sessão novamente.'}
+            </div>
+          )}
           <div>
             <label style={{ display:'block', fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--text-3)', marginBottom:8 }}>{t('email', l)}</label>
             <input type="email" value={form.email} onChange={e => setForm({...form, email:e.target.value})}
