@@ -115,6 +115,42 @@ export default function AdminSidebar({ mobileOpen = false, onClose }) {
               )}
             </NavLink>
           ))}
+
+          <button
+            type="button"
+            onClick={() => {
+              logout();
+              navigate('/');
+              closeIfMobile();
+            }}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '11px 12px',
+              borderRadius: 8,
+              fontSize: 14,
+              color: '#DC2626',
+              background: 'rgba(239,68,68,0.06)',
+              border: '1px solid rgba(239,68,68,0.18)',
+              cursor: 'pointer',
+              fontFamily: "'Outfit',sans-serif",
+              fontWeight: 700,
+              textAlign: 'left',
+              marginTop: 6,
+              transition: 'background 0.2s',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = 'rgba(239,68,68,0.14)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = 'rgba(239,68,68,0.06)';
+            }}
+          >
+            <span style={{ fontSize: 17, width: 22, textAlign: 'center' }}>→</span>
+            <span>Déconnexion</span>
+          </button>
         </nav>
       </div>
 
@@ -153,42 +189,6 @@ export default function AdminSidebar({ mobileOpen = false, onClose }) {
         >
           <span style={{ fontSize: 17, width: 22, textAlign: 'center' }}>{isDark ? '☀️' : '🌙'}</span>
           {isDark ? t('light_mode', l) : t('dark_mode', l)}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            logout();
-            navigate('/');
-            closeIfMobile();
-          }}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            padding: '11px 14px',
-            borderRadius: 8,
-            fontSize: 14,
-            color: '#DC2626',
-            background: 'rgba(239,68,68,0.06)',
-            border: '1px solid rgba(239,68,68,0.18)',
-            cursor: 'pointer',
-            fontFamily: "'Outfit',sans-serif",
-            fontWeight: 700,
-            textAlign: 'left',
-            marginBottom: 6,
-            transition: 'background 0.2s',
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.background = 'rgba(239,68,68,0.1)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.background = 'rgba(239,68,68,0.06)';
-          }}
-        >
-          <span style={{ width: 22, textAlign: 'center' }}>→</span>
-          Déconnexion
         </button>
 
         <NavLink
