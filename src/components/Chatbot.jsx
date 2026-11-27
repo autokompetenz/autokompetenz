@@ -9,7 +9,7 @@ const RESPONSES = {
     prix:     "Nous proposons des tarifs compétitifs pour nos voitures neuves et d'occasion !\nDevis gratuit pour tout achat.\n\n💬 WhatsApp : +49 1578 8823274\n📧 info@autokompetenz.com",
     rdv:      "Pour prendre rendez-vous pour une visite ou un essai :\n\n💬 WhatsApp : +49 1578 8823274\n📧 info@autokompetenz.com\n\nNous répondons rapidement !",
     adresse:  "📍 Notre concessionnaire :\nWisbyring 10\n59494 Soest, Allemagne\n\n🅿️ Parking gratuit disponible !",
-    bonjour:  "Bonjour ! Bienvenue chez Auto-Kompetenz-Center Dreisbach e.K. 👋\n\nComment puis-je vous aider ?\n• Horaires d'ouverture\n• Prendre rendez-vous\n• Tarifs & devis\n• Notre adresse",
+    bonjour:  "Bonjour ! Bienvenue chez Auto-Kompetenz-Center Dreisbach GmbH 👋\n\nComment puis-je vous aider ?\n• Horaires d'ouverture\n• Prendre rendez-vous\n• Tarifs & devis\n• Notre adresse",
     garantie: "Oui ! Nous offrons une garantie sur :\n✅ Tous les véhicules vendus\n✅ Garantie constructeur et étendue\n✅ Service après-vente inclus\nVotre satisfaction est notre priorité !",
     marques:  "Nous proposons TOUTES les marques :\n🚗 BMW, Mercedes, VW, Audi, Toyota...\n⚡ Véhicules électriques & hybrides\n\nContactez-nous : +49 1578 8823274",
   },
@@ -19,7 +19,7 @@ const RESPONSES = {
     prix:     "We offer competitive pricing for our new and used cars!\nFree quote before any purchase.\n\n💬 WhatsApp: +49 1578 8823274\n📧 info@autokompetenz.com",
     rdv:      "To book an appointment for a visit or test drive:\n\n💬 WhatsApp: +49 1578 8823274\n📧 info@autokompetenz.com\n\nWe respond quickly!",
     adresse:  "📍 Our dealership:\nWisbyring 10\n59494 Soest, Germany\n\n🅿️ Free parking available!",
-    bonjour:  "Hello! Welcome to Auto-Kompetenz-Center Dreisbach e.K. 👋\n\nHow can I help you?\n• Opening hours\n• Book appointment\n• Pricing & quotes\n• Our address",
+    bonjour:  "Hello! Welcome to Auto-Kompetenz-Center Dreisbach GmbH 👋\n\nHow can I help you?\n• Opening hours\n• Book appointment\n• Pricing & quotes\n• Our address",
     garantie: "Yes! We offer warranty on:\n✅ All work carried out\n✅ All parts fitted\n\nYour satisfaction is our priority!",
     marques:  "We work with ALL makes:\n🔧 BMW, Mercedes, VW, Audi, Toyota...\n⚡ Electric & hybrid vehicles\n\nContact us: +49 1578 8823274",
   },
@@ -29,7 +29,7 @@ const RESPONSES = {
     prix:     "Faire & transparente Preise! Kostenloser Kostenvoranschlag.\n\n💬 WhatsApp: +49 1578 8823274\n📧 info@autokompetenz.com",
     rdv:      "Termin vereinbaren:\n\n💬 WhatsApp: +49 1578 8823274\n📧 info@autokompetenz.com",
     adresse:  "📍 Unsere Werkstatt:\nWisbyring 10\n59494 Soest\n\n🅿️ Kostenlose Parkplätze!",
-    bonjour:  "Hallo! Willkommen bei Auto-Kompetenz-Center Dreisbach e.K. 👋\n\nWie kann ich helfen?\n• Öffnungszeiten\n• Termin\n• Preise\n• Adresse",
+    bonjour:  "Hallo! Willkommen bei Auto-Kompetenz-Center Dreisbach GmbH 👋\n\nWie kann ich helfen?\n• Öffnungszeiten\n• Termin\n• Preise\n• Adresse",
     garantie: "Ja! Gewährleistung auf:\n✅ Alle Reparaturarbeiten\n✅ Alle verbauten Teile",
     marques:  "Alle Marken willkommen:\n🔧 BMW, Mercedes, VW, Audi...\n⚡ Elektro & Hybrid\n\nKontakt: +49 1578 8823274",
   },
@@ -39,7 +39,7 @@ const RESPONSES = {
     prix:     "أسعار عادلة وشفافة!\nعرض أسعار مجاني قبل أي عمل.\n\n💬 واتساب: +49 1578 8823274",
     rdv:      "لحجز موعد:\n\n💬 واتساب: +49 1578 8823274\n📧 info@autokompetenz.com",
     adresse:  "📍 ورشتنا:\nWisbyring 10\n59494 Soest، ألمانيا\n\n🅿️ مواقف مجانية!",
-    bonjour:  "مرحباً! أهلاً بك في Auto-Kompetenz-Center Dreisbach e.K. 👋\n\nكيف يمكنني مساعدتك?\n• ساعات العمل\n• حجز موعد\n• الأسعار\n• العنوان",
+    bonjour:  "مرحباً! أهلاً بك في Auto-Kompetenz-Center Dreisbach GmbH 👋\n\nكيف يمكنني مساعدتك?\n• ساعات العمل\n• حجز موعد\n• الأسعار\n• العنوان",
     garantie: "نعم! نقدم ضماناً على:\n✅ جميع الأعمال المنجزة\n✅ جميع قطع الغيار المركبة",
     marques:  "نعمل مع جميع الماركات:\n🔧 BMW, Mercedes, VW, Audi...\n⚡ السيارات الكهربائية والهجينة",
   },
@@ -149,7 +149,7 @@ export default function Chatbot() {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: 15, color: '#fff', letterSpacing: '0.02em' }}>
-              Auto Kompetenz e.K.
+              Auto Kompetenz GmbH
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
               <span style={{ width: 7, height: 7, background: '#4ade80', borderRadius: '50%', display: 'inline-block' }} />

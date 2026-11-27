@@ -562,7 +562,7 @@ export default function Home() {
 
           <motion.h1 initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.9, delay:0.2 }}
             style={{ fontFamily:"'Outfit',sans-serif", fontWeight:900, fontSize: isMobile ? 'clamp(38px,10vw,56px)' : 'clamp(52px,6vw,88px)', color:'#fff', letterSpacing:'-0.03em', lineHeight:1.0, marginBottom:22 }}>
-            Auto<br/><span style={{ color:'#C8102E' }}>Kompetenz</span><br/>e.K.
+            Auto<br/><span style={{ color:'#C8102E' }}>Kompetenz</span><br/>GmbH
           </motion.h1>
 
           <motion.p initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.35 }}
@@ -1222,7 +1222,7 @@ export default function Home() {
           <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'auto 1fr auto', gap: isMobile ? 24 : 40, alignItems:'start' }}>
             <div>
               <div style={{ fontFamily:"'Outfit',sans-serif", fontSize:16, fontWeight:900, color:'var(--text)', letterSpacing:'0.05em' }}>AUTO KOMPETENZ</div>
-              <div style={{ fontSize:9, letterSpacing:'0.4em', color:'var(--red)', textTransform:'uppercase', marginTop:3, marginBottom:12 }}>e.K. · Soest</div>
+              <div style={{ fontSize:9, letterSpacing:'0.4em', color:'var(--red)', textTransform:'uppercase', marginTop:3, marginBottom:12 }}>GmbH · Soest</div>
               <p style={{ fontSize:13, color:'var(--text-3)', lineHeight:1.6, maxWidth:240 }}>
                 {l==='fr'?'Votre partenaire automobile de confiance en Allemagne.':l==='en'?'Your trusted car partner in Germany.':l==='de'?'Ihr vertrauenswürdiger Autopartner in Deutschland.':l==='es'?'Su socio de confianza en Alemania.':l==='it'?'Il vostro partner automobilistico di fiducia in Germania.':'Seu parceiro automobilístico de confiança na Alemanha.'}
               </p>
@@ -1288,7 +1288,7 @@ export default function Home() {
               lineHeight:1.55,
             }}>
               <span style={{ color:'var(--text-3)', fontWeight:600 }}>{ci.name}</span>
-              <span style={{ color:'var(--text)', fontWeight:800 }}>Auto-Kompetenz-Center Dreisbach e.K.</span>
+              <span style={{ color:'var(--text)', fontWeight:800 }}>Auto-Kompetenz-Center Dreisbach GmbH</span>
 
               <span style={{ color:'var(--text-3)', fontWeight:600 }}>Handelsregister</span>
               <span style={{ color:'var(--red)', fontWeight:800 }}>HRA 8002 · Registergericht: Amtsgericht Arnsberg</span>
@@ -1299,7 +1299,7 @@ export default function Home() {
           </div>
 
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10 }}>
-            <p style={{ fontSize:12, color:'var(--text-3)' }}>© {new Date().getFullYear()} Auto-Kompetenz-Center Dreisbach e.K. {t('copyright', l)}</p>
+            <p style={{ fontSize:12, color:'var(--text-3)' }}>© {new Date().getFullYear()} Auto-Kompetenz-Center Dreisbach GmbH {t('copyright', l)}</p>
             <p style={{ fontSize:12, color:'var(--text-3)' }}>{t('made_in', l)}</p>
           </div>
         </div>

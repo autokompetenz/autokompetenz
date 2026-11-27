@@ -1,4 +1,4 @@
-# Auto-Kompetenz-Center Dreisbach e.K. — www.autokompetenz.com
+# Auto-Kompetenz-Center Dreisbach GmbH — www.autokompetenz.com
 
 ## Structure (monorepo unifié pour Vercel)
 ```
@@ -34,7 +34,7 @@ autokompetenz/
 
 ### 2. GitHub
 ```bash
-git init && git add . && git commit -m "🚀 Auto-Kompetenz-Center Dreisbach e.K."
+git init && git add . && git commit -m "🚀 Auto-Kompetenz-Center Dreisbach GmbH"
 git remote add origin https://github.com/VOTRE_USER/autokompetenz.git
 git push -u origin main
 ```

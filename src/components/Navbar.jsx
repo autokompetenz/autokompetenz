@@ -136,7 +136,7 @@ export default function Navbar() {
             AUTO KOMPETENZ
           </div>
           <div style={{ fontSize: 9, letterSpacing: '0.4em', color: 'var(--red)', textTransform: 'uppercase', marginTop: 2 }}>
-            e.K. · Soest
+            GmbH · Soest
           </div>
         </Link>
 
