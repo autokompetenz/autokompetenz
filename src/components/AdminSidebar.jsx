@@ -151,71 +151,29 @@ export default function AdminSidebar({ mobileOpen = false, onClose }) {
             <span style={{ fontSize: 17, width: 22, textAlign: 'center' }}>→</span>
             <span>Déconnexion</span>
           </button>
+
+          <button
+            type="button"
+            onClick={toggle}
+            className="admin-nav-link"
+            style={{ width: '100%', background: 'transparent', marginTop: 2, fontFamily: "'Outfit',sans-serif" }}
+          >
+            <span style={{ fontSize: 17, width: 22, textAlign: 'center' }}>{isDark ? '☀️' : '🌙'}</span>
+            <span>{isDark ? t('light_mode', l) : t('dark_mode', l)}</span>
+          </button>
+
+          <NavLink
+            to="/"
+            onClick={closeIfMobile}
+            className="admin-nav-link"
+            style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 2, fontFamily: "'Outfit',sans-serif" }}
+          >
+            <span style={{ fontSize: 17, width: 22, textAlign: 'center' }}>←</span>
+            <span>Retour au site</span>
+          </NavLink>
         </nav>
       </div>
 
-      <div style={{ padding: '12px 14px 18px', borderTop: '1px solid var(--border)', background: 'var(--bg-card2)' }}>
-        <button
-          type="button"
-          onClick={() => {
-            toggle();
-          }}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            padding: '11px 14px',
-            borderRadius: 8,
-            fontSize: 14,
-            color: 'var(--text-2)',
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            cursor: 'pointer',
-            fontFamily: "'Outfit',sans-serif",
-            fontWeight: 600,
-            textAlign: 'left',
-            marginBottom: 8,
-            transition: 'border-color 0.2s, color 0.2s',
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.borderColor = 'var(--red)';
-            e.currentTarget.style.color = 'var(--red)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.borderColor = 'var(--border)';
-            e.currentTarget.style.color = 'var(--text-2)';
-          }}
-        >
-          <span style={{ fontSize: 17, width: 22, textAlign: 'center' }}>{isDark ? '☀️' : '🌙'}</span>
-          {isDark ? t('light_mode', l) : t('dark_mode', l)}
-        </button>
-
-        <NavLink
-          to="/"
-          onClick={closeIfMobile}
-          style={{
-            display: 'block',
-            fontSize: 13,
-            color: 'var(--text-3)',
-            textDecoration: 'none',
-            padding: '8px 14px',
-            fontWeight: 600,
-            borderRadius: 8,
-            transition: 'color 0.2s, background 0.2s',
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.color = 'var(--red)';
-            e.currentTarget.style.background = 'var(--red-bg)';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.color = 'var(--text-3)';
-            e.currentTarget.style.background = 'transparent';
-          }}
-        >
-          ← Retour au site
-        </NavLink>
-      </div>
     </aside>
   );
 }
