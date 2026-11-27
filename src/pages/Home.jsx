@@ -497,12 +497,12 @@ function FAQSection({ l, isMobile }) {
 
 // ── INFOS ENTREPRISE (footer) ────────────────────────────────────────────────
 const COMPANY_INFO_LABELS = {
-  fr: { title:'Informations entreprise', name:'Raison sociale', address:'Adresse',     owner:'Titulaire' },
-  en: { title:'Company information',    name:'Company name',   address:'Address',     owner:'Owner' },
-  de: { title:'Unternehmensangaben',    name:'Firmenname',     address:'Adresse',     owner:'Inhaber' },
-  es: { title:'Datos de la empresa',    name:'Razón social',   address:'Dirección',   owner:'Titular' },
-  it: { title:'Dati aziendali',         name:'Ragione sociale',address:'Indirizzo',   owner:'Titolare' },
-  pt: { title:'Informações da empresa', name:'Nome da empresa',address:'Morada',      owner:'Titular' },
+  fr: { title:'Informations entreprise', name:'Raison sociale' },
+  en: { title:'Company information',    name:'Company name' },
+  de: { title:'Unternehmensangaben',    name:'Firmenname' },
+  es: { title:'Datos de la empresa',    name:'Razón social' },
+  it: { title:'Dati aziendali',         name:'Ragione sociale' },
+  pt: { title:'Informações da empresa', name:'Nome da empresa' },
 };
 
 export default function Home() {
@@ -1289,12 +1289,6 @@ export default function Home() {
             }}>
               <span style={{ color:'var(--text-3)', fontWeight:600 }}>{ci.name}</span>
               <span style={{ color:'var(--text)', fontWeight:800 }}>Auto-Kompetenz-Center Dreisbach e.K.</span>
-
-              <span style={{ color:'var(--text-3)', fontWeight:600 }}>{ci.address}</span>
-              <span style={{ color:'var(--text-2)' }}>Wisbyring 10, 59494 Soest, Allemagne</span>
-
-              <span style={{ color:'var(--text-3)', fontWeight:600 }}>{ci.owner}</span>
-              <span style={{ color:'var(--text-2)' }}>Massimiliano Cobianchi</span>
 
               <span style={{ color:'var(--text-3)', fontWeight:600 }}>Handelsregister</span>
               <span style={{ color:'var(--red)', fontWeight:800 }}>HRA 8002 · Registergericht: Amtsgericht Arnsberg</span>
